@@ -1,0 +1,19 @@
+<header class="header">
+  <div class="logo">
+    01<img src="developer.png" alt="01 Logo" class="logo-img">BLOG</div>
+  <div class="menu-toggle" (click)="toggleMenu()">
+    &#9776;
+  </div>
+  <nav [class.active]="menuActive" class="nav-links">
+    <ng-container *ngIf="!isLoggedIn">
+      <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
+        <a routerLink="login" routerLinkActive="active" (click)="closeMenu()">Sign-in</a>
+    </ng-container>
+    <ng-container *ngIf="isLoggedIn">
+      <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a> 
+      <a routerLink="about" routerLinkActive="active" (click)="closeMenu()">About</a>
+        <a routerLink="contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
+        <a (click)="logout()">Logout</a>
+    </ng-container>
+</nav>
+</header>

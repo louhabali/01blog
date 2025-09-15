@@ -1,0 +1,29 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Top image / logo -->
+    <div class="login-logo">
+      <img src="developer.png" alt="App Logo">
+    </div>
+
+    <!-- Title -->
+    <h2 class="login-title">Welcome Back</h2>
+      <!-- Show errors -->
+    <p *ngIf="errorMessage" style="color:red; font-size: 0.8em;">{{ errorMessage }}</p>
+    <!-- Login Form -->
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <label>Email or username</label>
+      <input type="text" [(ngModel)]="formData.email" name="identifier" required>
+
+      <label>Password</label>
+      <input type="password" [(ngModel)]="formData.password" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <!-- Register link -->
+    <p class="register-link">
+      Don’t have an account?
+      <a routerLink="/register">Create one</a>
+    </p>
+  </div>
+</div>

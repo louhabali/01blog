@@ -1,0 +1,96 @@
+.header {
+font-family: 'Press Start 2P', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to right,#000000, #060025, #000a20);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+.logo-img {
+  height: 1.7em; /* same as text height */
+ 
+}
+.logo {
+  font-size: 1.4vw;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+    color: white;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.07);
+  opacity: 0.95;
+}
+
+.nav-links a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: #666767;
+  font-weight: 500;
+ font-size: 0.8vw; 
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff; 
+}
+
+.nav-links a.active {
+  color: white;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.8rem;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+   
+    position: absolute;
+    top: 60px; 
+    right: 0px;
+    background:#000a20;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .nav-links.active {
+    opacity: 1;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 10px 20px;
+    margin: 0;
+    color: rgb(153, 150, 150);
+  }
+
+  .nav-links a.active {
+    color: white;
+    border-bottom: none;
+  }
+  .nav-links a:hover {
+    background: #000000;
+    color: white;
+  }
+}
