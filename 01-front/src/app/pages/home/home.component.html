@@ -1,0 +1,40 @@
+<div class="home-container">
+  <!-- Users Panel -->
+  <div class="users-panel">
+    <h3>Users</h3>
+    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
+    <ul>
+      <li *ngFor="let user of filteredUsers">
+        <img [src]="user.avatar" alt="{{user.name}}">
+        {{ user.name }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Posts Panel -->
+  <div class="posts-panel">
+    <!-- Post Creation Form -->
+    <div class="post-form">
+      <input type="text" placeholder="Post title" [(ngModel)]="newPost.title">
+      <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
+      <button (click)="submitPost()">Post</button>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts">
+        <div class="post-header">
+          <img [src]="post.avatar" alt="{{post.author}}">
+          <span>{{ post.author }}</span>
+        </div>
+        <h5>{{ post.title }}</h5>
+        <p style="font-size: 0.7em;">{{ post.content }}</p>
+        <div class="post-buttons">
+          <i (click)="editPost(post)" style="color: blue;" class="fa-solid fa-pen"></i>
+          <i (click)="deletePost(post)" style="color: rgb(255, 255, 255);" class="fas fa-trash"></i>
+          <i (click)="reportPost(post)"style="color: white;" class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,4 +9,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './presntation.component.html',
   styleUrl: './presntation.component.css'
 })
-export class PresentationComponent {}
+export class PresntationComponent {}

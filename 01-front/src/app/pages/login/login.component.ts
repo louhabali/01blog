@@ -1,46 +1,33 @@
+// src/app/login/login.component.ts (relevant parts)
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-
-
-// import { Router } from '@angular/router';
-// import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'; // <-- use AuthService
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-    errorMessage = '';
-
+  errorMessage = '';
   formData = { email: '', password: '' };
-  constructor(private http: HttpClient, private router: Router) {}
-  
+
+  constructor(private auth: AuthService, private router: Router) {}
+
   onSubmit() {
     this.errorMessage = '';
-   
-
-     console.log(this.http);
-    this.http.post('http://localhost:8087/auth/login',this.formData).subscribe({
-        next: (res: any) => {
-        console.log('connection successed', res);
-         this.router.navigate(['/']);
-         console.log("rani jit mn spring login");
-        },
-        error: err => {
-         if (err.status === 401) {
-          this.errorMessage = err.error.message;
-        } else {
-          this.errorMessage = 'Something went wrong, try again.';
-        }
-          
-        }
-      })
+    this.auth.login(this.formData).subscribe({
+      next: () => {
+        // header will update because the signal was set in AuthService
+        this.router.navigate(['/home']);
+      },
+      error: err => {
+        this.errorMessage = err.status === 401 ? err.error?.message || 'Invalid credentials' : 'Something went wrong';
+      }
+    });
   }
 }

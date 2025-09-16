@@ -1,44 +1,43 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule],  // ✅ needed for routerLink + routerLinkActive
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'] // ✅ corrected
+  styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  isLoggedIn = false;
-  menuActive = false; // track mobile menu state
+export class HeaderComponent implements OnInit {
+  menuActive = false;   // ✅ tracks mobile menu state
 
-  constructor(private auth: AuthService) {}
+  constructor(public auth: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    // Check authentication status on load
-    this.auth.checkAuth()
-      .pipe(tap(res => this.isLoggedIn = res.loggedIn))
-      .subscribe();
+  ngOnInit() {
+    // initial login check
+    this.auth.checkAuth().subscribe();
+
+    // re-check login on navigation
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.auth.checkAuth().subscribe());
   }
 
-  // Toggle mobile menu
-  toggleMenu(): void {
-    this.menuActive = !this.menuActive;
+  toggleMenu() {
+    this.menuActive = !this.menuActive;   // ✅ open/close menu
   }
 
-  // Close mobile menu after click
-  closeMenu(): void {
-    this.menuActive = false;
+  closeMenu() {
+    this.menuActive = false;              // ✅ close menu after clicking a link
   }
 
-  // Logout function
-  logout(): void {
+  logout() {
     this.auth.logout().subscribe(() => {
-      this.isLoggedIn = false;
-      this.closeMenu();
+      this.router.navigate(['/']);
+      this.menuActive = false; // ✅ also close menu after logout
     });
   }
 }
