@@ -1,53 +1,83 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+interface User { 
+  id: number; 
+  username: string; 
+  email: string; 
+  avatar?: string; // optional, you can add default in HTML
+}
+
+interface Post { 
+  id: number; 
+  title: string; 
+  content: string; 
+  author: string; 
+  avatar?: string; 
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-  searchQuery = '';
+export class HomeComponent implements OnInit {
+  users: User[] = [];
+  filteredUsers: User[] = [];
+  searchQuery: string = '';
 
-  users = [
-    { id: 1, name: 'Ali', avatar: 'https://i.pravatar.cc/50?img=1' },
-    { id: 2, name: 'Nouhaila', avatar: 'https://i.pravatar.cc/50?img=2' },
-    { id: 3, name: 'Othman', avatar: 'https://i.pravatar.cc/50?img=3' },
-    { id: 4, name: 'abdeladim', avatar: 'https://i.pravatar.cc/50?img=4' },
-    { id: 5, name: 'btissam', avatar: 'https://i.pravatar.cc/50?img=5' },
-  ];
-  filteredUsers = [...this.users];
+  posts: Post[] = [];
+  newPost: Partial<Post> = { title: '', content: '' };
 
-  posts = [
-    { id: 1, title: 'My First Post', content: 'Hello world!', author: 'Ali', avatar: 'https://i.pravatar.cc/50?img=1' },
-    { id: 2, title: 'Angular Tips', content: 'Use standalone components!', author: 'Nouhaila', avatar: 'https://i.pravatar.cc/50?img=2' },
-    { id: 3, title: 'Spring Boot', content: 'REST APIs are awesome!', author: 'othman', avatar: 'https://i.pravatar.cc/50?img=3' },
-    { id: 4, title: 'Learning CSS', content: 'Grid and Flexbox are powerful.', author: 'abdeladim', avatar: 'https://i.pravatar.cc/50?img=4' },
-  ];
+  constructor(private http: HttpClient) {}
 
-  newPost = { title: '', content: '' };
+  ngOnInit(): void {
+    this.fetchPosts();
+    this.fetchUsers();
+  }
+
+  fetchPosts() {
+    this.http.get<Post[]>('http://localhost:8087/posts/all', { withCredentials: true })
+      .subscribe(posts => this.posts = posts);
+  }
+
+  fetchUsers() {
+    this.http.get<User[]>('http://localhost:8087/users', { withCredentials: true })
+      .subscribe(users => {
+        console.log(users);
+        this.users = users;
+        this.filteredUsers = users;
+      });
+  }
 
   filterUsers() {
-    const q = this.searchQuery.toLowerCase();
-    this.filteredUsers = this.users.filter(u => u.name.toLowerCase().includes(q));
+    this.filteredUsers = this.users.filter(u =>
+      u.username.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
   }
 
-  submitPost() {
-    if (!this.newPost.title || !this.newPost.content) return;
-    this.posts.unshift({
-      id: this.posts.length + 1,
-      title: this.newPost.title,
-      content: this.newPost.content,
-      author: 'You',
-      avatar: 'https://i.pravatar.cc/50?img=6'
+submitPost() {
+  const postPayload = {
+    title: this.newPost.title,
+    content: this.newPost.content,
+    authorId: 1 // replace with actual logged-in user id
+  };
+
+  this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
+    .subscribe({
+      next: post => {
+        this.posts.unshift(post);
+        this.newPost = { title: '', content: '' };
+      },
+      error: err => console.error('Error creating post', err)
     });
-    this.newPost = { title: '', content: '' };
-  }
+}
 
-  editPost(post: any) { alert('Edit: ' + post.title); }
-  deletePost(post: any) { this.posts = this.posts.filter(p => p.id !== post.id); }
-  reportPost(post: any) { alert('Report: ' + post.title); }
+  editPost(post: Post) { alert('Edit post: ' + post.id); }
+  deletePost(post: Post) { alert('Delete post: ' + post.id); }
+  reportPost(post: Post) { alert('Report post: ' + post.id); }
 }

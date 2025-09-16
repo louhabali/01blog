@@ -13,7 +13,7 @@ margin-top: 60px;
 /* Users Panel */
 .users-panel {
   width: 30%;
- background: linear-gradient(to left,#000000, #070027, #000000); /* heavy blue gradient */
+ background: linear-gradient(to left,#000000, #000000, #000000); /* heavy blue gradient */
 color: white;
   padding: 1rem;
   box-sizing: border-box;

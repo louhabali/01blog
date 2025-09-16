@@ -5,8 +5,8 @@
     <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
     <ul>
       <li *ngFor="let user of filteredUsers">
-        <img [src]="user.avatar" alt="{{user.name}}">
-        {{ user.name }}
+        <img [src]="user.avatar" alt="{{user.username}}">
+        {{ user.username }}
       </li>
     </ul>
   </div>

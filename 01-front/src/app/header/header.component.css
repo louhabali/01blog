@@ -5,7 +5,7 @@ font-family: 'Press Start 2P', sans-serif;
   left: 0;
   right: 0;
   height: 60px;
-  background: linear-gradient(to right,#000000, #060025, #000a20);
+  background: linear-gradient(to right,#000000, #000000, #000000);
   display: flex;
   justify-content: space-between;
   align-items: center;
