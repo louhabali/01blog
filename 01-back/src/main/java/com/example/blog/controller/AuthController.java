@@ -64,7 +64,7 @@ public ResponseEntity<?> logout(HttpServletResponse response) {
     ResponseCookie cookie = ResponseCookie.from("jwt", "")
             .httpOnly(true)
             .path("/")
-            .maxAge(0) // expire immediately
+            .maxAge(0)
             .build();
     response.addHeader("Set-Cookie", cookie.toString());
 
