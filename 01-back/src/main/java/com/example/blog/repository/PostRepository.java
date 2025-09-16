@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByUser_id(User author); // get posts by specific user
+    List<Post> findByUser(User user); // updated to match Post entity field
 }

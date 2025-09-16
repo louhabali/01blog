@@ -6,8 +6,8 @@ import com.example.blog.service.PostService;
 import com.example.blog.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/posts")
@@ -23,10 +23,21 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public Post createPost(@RequestBody Post post, HttpServletRequest request) {
-        String email = (String) request.getAttribute("userEmail"); // from JWT filter
-        User author = userRepository.findByUsernameOrEmail(email,email).orElseThrow();
-        post.setUser_id(author);
+    public Post createPost(@RequestBody Map<String, Object> body) {
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+        String title = (String) body.get("title");
+        String content = (String) body.get("content");
+        Number authorIdNumber = (Number) body.get("authorId");
+        Long authorId = authorIdNumber.longValue();
+
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
+        post.setUser(author); // updated
+
         return postService.createPost(post);
     }
 
@@ -35,10 +46,9 @@ public class PostController {
         return postService.getAllPosts();
     }
 
-    @GetMapping("/me")
-    public List<Post> getMyPosts(HttpServletRequest request) {
-        String email = (String) request.getAttribute("userEmail");
-        User user = userRepository.findByUsernameOrEmail(email,email).orElseThrow();
+    @GetMapping("/user/{userId}")
+    public List<Post> getPostsByUser(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
         return postService.getPostsByUser(user);
     }
 }

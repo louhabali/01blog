@@ -7,22 +7,21 @@ import java.time.LocalDateTime;
 @Table(name = "posts")
 public class Post {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+ @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // << this is important
     private Long id;
 
     private String title;
-    private Boolean isAppropriate;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Boolean isAppropriate = true;
 
-    // Many posts belong to one user
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // getters and setters
     public Long getId() { return id; }
@@ -30,7 +29,7 @@ public class Post {
 
     public Boolean getIsAppro() { return isAppropriate; }
     public void setIsAppro(Boolean appro) { this.isAppropriate = appro; }
-    
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -40,6 +39,6 @@ public class Post {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public User getUser_id() { return user; }
-    public void setUser_id(User user) { this.user = user; }
+    public User getUser() { return user; } // updated
+    public void setUser(User user) { this.user = user; } // updated
 }
