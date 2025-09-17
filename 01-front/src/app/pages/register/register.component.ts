@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
+// my register cmp
 export class RegisterComponent {
   formData = { username: '', email: '', password: '' };
  constructor(private http: HttpClient, private router: Router) {}
