@@ -79,6 +79,23 @@ background-image: url('/postsback.jpg');
   display: flex;
   flex-direction: column;
 }
+.edit-input, .edit-textarea {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 0.7em;
+  width: 95%;
+  color: white;
+  padding: 0.3rem;
+  background-color: #000000;
+  border: 3px solid #ffffff;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.edit-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
 .post-form input, .post-form textarea {
     font-family: 'Press Start 2P', sans-serif;
   margin-bottom: 0.5rem;
