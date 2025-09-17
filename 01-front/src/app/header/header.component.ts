@@ -12,6 +12,7 @@ import { ThemeService, Theme } from '../services/theme.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
+// this is my header component
 export class HeaderComponent implements OnInit {
   menuActive = false;
   theme!: Theme;
