@@ -4,12 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
-interface User { 
-  id: number; 
-  username: string; 
-  email: string; 
-  avatar?: string;
-}
+import { UsersComponent } from '../users/users.component';
+import { Router } from '@angular/router';
 
 interface Post { 
   id: number; 
@@ -23,20 +19,16 @@ interface Post {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule,UsersComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
    currentUserId!: number;
-  users: User[] = [];
-  filteredUsers: User[] = [];
-  searchQuery: string = '';
-
   posts: Post[] = [];
   newPost: Partial<Post> = { title: '', content: '' };
 
-  constructor(private http: HttpClient,private postService: PostService, private userService: UserService) {}
+  constructor(private http: HttpClient,private postService: PostService, private userService: UserService,private router: Router) {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
@@ -48,29 +40,13 @@ export class HomeComponent implements OnInit {
      error: (err) => {
        console.error("Failed to fetch user:", err);
      }
-   });
-    this.fetchUsers();
+   });;
   }
 
   fetchPosts() {
 this.http.get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
   .subscribe(posts => this.posts = posts);
 
-  }
-
-  fetchUsers() {
-    this.http.get<User[]>('http://localhost:8087/users', { withCredentials: true })
-      .subscribe(users => {
-        console.log(users);
-        this.users = users;
-        this.filteredUsers = users;
-      });
-  }
-
-  filterUsers() {
-    this.filteredUsers = this.users.filter(u =>
-      u.username.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
   }
 
 submitPost() {
@@ -100,4 +76,7 @@ submitPost() {
   editPost(post: Post) { alert('Edit post: ' + post.id); }
   deletePost(post: Post) { alert('Delete post: ' + post.id); }
   reportPost(post: Post) { alert('Report post: ' + post.id); }
+  goToComments(postId: number) {
+  this.router.navigate([`/posts/${postId}/comments`]);
+}
 }

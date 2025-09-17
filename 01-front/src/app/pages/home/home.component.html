@@ -1,15 +1,6 @@
 <div class="home-container">
-  <!-- Users Panel -->
-  <div class="users-panel">
-    <h3>Users</h3>
-    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
-    <ul>
-      <li *ngFor="let user of filteredUsers">
-         <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" alt="{{user.username}}">
-        {{ user.username }}
-      </li>
-    </ul>
-  </div>
+  <!-- Users Panel is now UsersComponent -->
+  <app-users class="users-panel"></app-users>
 
   <!-- Posts Panel -->
   <div class="posts-panel">
@@ -29,16 +20,17 @@
         </div>
         <h5>{{ post.title }}</h5>
         <p style="font-size: 0.7em;">{{ post.content }}</p>
-      <i class="fa-heart"
-     [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
-     (click)="toggleLike(post)">
-     
-  </i>
-      <i style="color: white; padding-left: 10px;  font-size: 1.5rem; cursor: pointer;" class="fa-regular fa-comment"></i>
+        <i class="fa-heart"
+           [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
+           (click)="toggleLike(post)">
+        </i>
+        <i style="color: white; padding-left: 10px;  font-size: 1.5rem; cursor: pointer;"
+           (click)="goToComments(post.id)" 
+           class="fa-regular fa-comment"></i>
         <div class="post-buttons">
           <i (click)="editPost(post)" style="color: blue;" class="fa-solid fa-pen"></i>
           <i (click)="deletePost(post)" style="color: rgb(255, 255, 255);" class="fas fa-trash"></i>
-          <i (click)="reportPost(post)"style="color: white;" class="fa-solid fa-triangle-exclamation"></i>
+          <i (click)="reportPost(post)" style="color: white;" class="fa-solid fa-triangle-exclamation"></i>
         </div>
       </div>
     </div>

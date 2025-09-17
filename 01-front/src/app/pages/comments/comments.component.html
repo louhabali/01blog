@@ -1,1 +1,20 @@
-<p>comments works!</p>
+<div class="home-container">
+  <!-- Users Panel -->
+  <app-users class="users-panel"></app-users>
+
+  <!-- Comments Panel -->
+  <div class="comments-panel">
+    <h2>Comments</h2>
+    
+    <!-- Comment Form -->
+    <div class="comment-form">
+      <input [(ngModel)]="newComment" placeholder="Write a comment..." />
+      <button (click)="submitComment()">Post</button>
+    </div>
+
+    <!-- Comments List -->
+    <div *ngFor="let comment of comments" class="comment-card">
+      <p><strong>{{comment.author}}:</strong> {{comment.content}}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="users-panel">
+  <h3>Users</h3>
+  <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
+  <ul>
+    <li *ngFor="let user of filteredUsers">
+      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" alt="{{user.username}}">
+      {{ user.username }}
+    </li>
+  </ul>
+</div>
