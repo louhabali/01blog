@@ -131,10 +131,16 @@ export class HomeComponent implements OnInit {
     event.stopPropagation();
   }
 
-  deletePost(post: Post) { 
-    alert('Delete post: ' + post.id); 
-  }
-
+  deletePost(post: Post) {
+  this.http.delete<Post[]>(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
+    .subscribe({
+      next: () => {
+        // Remove post locally without re-fetching
+        this.posts = this.posts.filter(p => p.id !== post.id);
+      },
+      error: err => console.error("Error deleting post", err)
+    });
+}
   reportPost(post: Post) { 
     alert('Report post: ' + post.id); 
   }
