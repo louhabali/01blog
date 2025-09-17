@@ -25,6 +25,7 @@ public class UserService {
         user.setRole("ADMIN");
         return userRepository.save(user);
     }
+    // loginooooooooooooo
     public boolean login(String identifier, String password) {
         // identifier can be username or email
         Optional<User> userOpt = userRepository.findByUsernameOrEmail(identifier, identifier);
