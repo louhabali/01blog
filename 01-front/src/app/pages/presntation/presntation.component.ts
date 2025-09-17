@@ -9,4 +9,5 @@ import { RouterModule } from '@angular/router';
   templateUrl: './presntation.component.html',
   styleUrl: './presntation.component.css'
 })
+// just my static presentation of website
 export class PresntationComponent {}
