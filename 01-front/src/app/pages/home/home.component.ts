@@ -8,7 +8,7 @@ interface User {
   id: number; 
   username: string; 
   email: string; 
-  avatar?: string; // optional, you can add default in HTML
+  avatar?: string;
 }
 
 interface Post { 

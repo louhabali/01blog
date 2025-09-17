@@ -5,7 +5,7 @@
     <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
     <ul>
       <li *ngFor="let user of filteredUsers">
-        <img [src]="user.avatar" alt="{{user.username}}">
+         <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" alt="{{user.username}}">
         {{ user.username }}
       </li>
     </ul>
@@ -24,7 +24,7 @@
     <div class="posts-grid">
       <div class="post-card" *ngFor="let post of posts">
         <div class="post-header">
-          <img [src]="post.avatar" alt="{{post.author}}">
+          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}">
           <span>{{ post.author }}</span>
         </div>
         <h5>{{ post.title }}</h5>
@@ -32,8 +32,9 @@
       <i class="fa-heart"
      [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
      (click)="toggleLike(post)">
+     
   </i>
-
+      <i style="color: white; padding-left: 10px;  font-size: 1.5rem; cursor: pointer;" class="fa-regular fa-comment"></i>
         <div class="post-buttons">
           <i (click)="editPost(post)" style="color: blue;" class="fa-solid fa-pen"></i>
           <i (click)="deletePost(post)" style="color: rgb(255, 255, 255);" class="fas fa-trash"></i>
