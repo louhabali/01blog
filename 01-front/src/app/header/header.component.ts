@@ -3,41 +3,47 @@ import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { ThemeService, Theme } from '../services/theme.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],  // ✅ needed for routerLink + routerLinkActive
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  menuActive = false;   // ✅ tracks mobile menu state
+  menuActive = false;
+  theme!: Theme;
 
-  constructor(public auth: AuthService, private router: Router) {}
+  constructor(public auth: AuthService, private router: Router, private themeService: ThemeService) {}
 
   ngOnInit() {
-    // initial login check
     this.auth.checkAuth().subscribe();
-
-    // re-check login on navigation
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.auth.checkAuth().subscribe());
+
+    // Subscribe to theme changes
+    this.themeService.theme$.subscribe(t => this.theme = t);
   }
 
   toggleMenu() {
-    this.menuActive = !this.menuActive;   // ✅ open/close menu
+    this.menuActive = !this.menuActive;
   }
 
   closeMenu() {
-    this.menuActive = false;              // ✅ close menu after clicking a link
+    this.menuActive = false;
   }
 
   logout() {
     this.auth.logout().subscribe(() => {
       this.router.navigate(['/']);
-      this.menuActive = false; // ✅ also close menu after logout
+      this.menuActive = false;
     });
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

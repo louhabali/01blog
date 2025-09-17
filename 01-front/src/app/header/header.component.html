@@ -1,20 +1,22 @@
-<header class="header">
+<header class="header" [ngStyle]="{'background-color': theme.headerBg}">
   <div class="logo">
-   <a routerLink="" style="text-decoration: none; color: white;">01<img src="developer.png" alt="01 Logo" class="logo-img">BLOG</a>
+    <a routerLink="" style="text-decoration: none; color: white;">
+      01<img src="developer.png" alt="01 Logo" class="logo-img">BLOG
+    </a>
   </div>
+
+  <div class="theme-switch" (click)="toggleTheme()">
+    <i class="fa-solid fa-lightbulb"></i>
+  </div>
+
   <div class="menu-toggle" (click)="toggleMenu()">&#9776;</div>
   <nav [class.active]="menuActive" class="nav-links">
-
-    <!-- If not logged in -->
     <ng-container *ngIf="!auth.isLoggedIn()">
       <a routerLink="login" routerLinkActive="active" (click)="closeMenu()">Sign-in</a>
     </ng-container>
-
-    <!-- If logged in -->
     <ng-container *ngIf="auth.isLoggedIn()">
       <a routerLink="home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
       <a (click)="logout()">Logout</a>
     </ng-container>
-
   </nav>
 </header>

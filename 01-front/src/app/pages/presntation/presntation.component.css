@@ -7,7 +7,9 @@
   align-items: center;
   background: linear-gradient(to right,#000000, #060025, #000a20);
   color: white;
-
+  margin-top: 60px;
+  margin-left: -10px;
+  margin-right: -10px;
     font-family: 'Press Start 2P', sans-serif;
   
 }
