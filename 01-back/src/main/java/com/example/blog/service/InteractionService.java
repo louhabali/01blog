@@ -30,6 +30,7 @@ public class InteractionService {
                 interactionRepository.save(interaction);
                 return true;
             });
+            // if user interact first time
     }
     public long getLikesCount(Long postId) {
     Post post = postrepo.findById(postId).orElseThrow();
