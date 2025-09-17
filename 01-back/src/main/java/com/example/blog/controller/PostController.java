@@ -6,6 +6,8 @@ import com.example.blog.entity.User;
 import com.example.blog.service.PostService;
 import com.example.blog.repository.UserRepository;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -53,16 +55,27 @@ public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
             })
             .toList();
 }
-@PutMapping("/edit/{id}")
-public PostResponse editPost(@PathVariable Long id, @RequestBody Map<String, String> body) {
-    Post post = postService.getPostById(id);
-    post.setTitle(body.get("title"));
-    post.setContent(body.get("content"));
-    post = postService.savePost(post);
+ @PutMapping("/edit/{id}")
+    public ResponseEntity<Post> editPost(@PathVariable Long id, @RequestBody Post updatedPost) {
+        try {
+            Post post = postService.getPostById(id);
+            if (post == null) {
+                return ResponseEntity.notFound().build();
+            }
 
-    boolean liked =false ; // optional, or fetch like state for current user
-    return new PostResponse(post, liked);
-}
+            // Update fields
+            post.setTitle(updatedPost.getTitle());
+            post.setContent(updatedPost.getContent());
+
+            Post savedPost = postService.savePost(post);
+
+            return ResponseEntity.ok(savedPost);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @GetMapping("/user/{userId}")
     public List<Post> getPostsByUser(@PathVariable Long userId) {
