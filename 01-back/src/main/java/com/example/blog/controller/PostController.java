@@ -4,13 +4,14 @@ import com.example.blog.entity.Post;
 import com.example.blog.DTO.*;
 import com.example.blog.entity.User;
 import com.example.blog.service.PostService;
-import com.example.blog.repository.UserRepository;
+import com.example.blog.repository.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/posts")
@@ -18,12 +19,15 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
+     private final PostRepository postrepo;
     private final UserRepository userRepository;
+  private final InteractionRepository interactionRepository;
 
-
-    public PostController(PostService postService, UserRepository userRepository) {
+    public PostController(PostService postService, UserRepository userRepository,InteractionRepository interactionRepository,PostRepository postrepo) {
         this.postService = postService;
         this.userRepository = userRepository;
+        this.interactionRepository = interactionRepository;
+        this.postrepo = postrepo;
        
     }
 
@@ -76,7 +80,19 @@ public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
         }
     }
 
+@Transactional
+@DeleteMapping("/delete/{postId}")
+public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
+    // 1. Delete all interactions related to the post
+    interactionRepository.deleteByPostId(postId);
 
+    // 2. Delete the post itself
+    postrepo.deleteById(postId);
+
+    // 3. Return updated posts list (optional)
+    List<Post> posts = postrepo.findAll();
+    return ResponseEntity.ok(posts);
+}
     @GetMapping("/user/{userId}")
     public List<Post> getPostsByUser(@PathVariable Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
