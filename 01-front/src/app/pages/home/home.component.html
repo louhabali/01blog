@@ -29,6 +29,11 @@
         </div>
         <h5>{{ post.title }}</h5>
         <p style="font-size: 0.7em;">{{ post.content }}</p>
+      <i class="fa-heart"
+     [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
+     (click)="toggleLike(post)">
+  </i>
+
         <div class="post-buttons">
           <i (click)="editPost(post)" style="color: blue;" class="fa-solid fa-pen"></i>
           <i (click)="deletePost(post)" style="color: rgb(255, 255, 255);" class="fas fa-trash"></i>
