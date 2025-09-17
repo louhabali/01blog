@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service'; // <-- use AuthServic
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+// my login component logic
 export class LoginComponent {
   errorMessage = '';
   formData = { email: '', password: '' };
