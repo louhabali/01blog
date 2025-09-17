@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -18,10 +18,10 @@ interface User {
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  @Input() isDarkMode: boolean = false;
   users: User[] = [];
   filteredUsers: User[] = [];
   searchQuery: string = '';
-
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {

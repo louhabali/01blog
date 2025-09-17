@@ -1,9 +1,10 @@
 <div class="home-container">
   <!-- Users Panel is now UsersComponent -->
-  <app-users class="users-panel"></app-users>
+  <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
   <!-- Posts Panel -->
-  <div class="posts-panel">
+  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
     <!-- Post Creation Form -->
     <div class="post-form">
       <input type="text" placeholder="Post title" [(ngModel)]="newPost.title">
@@ -40,7 +41,7 @@
        [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
        (click)="toggleLike(post)">
     </i>
-    <i style="color: white; padding-left: 10px; font-size: 1.5rem; cursor: pointer;"
+    <i style=" padding-left: 10px; font-size: 1.5rem; cursor: pointer;"
        (click)="goToComments(post.id)" 
        class="fa-regular fa-comment"></i>
 
@@ -49,14 +50,14 @@
       <!-- Switch between Edit & Save -->
       <i *ngIf="!post.isEditing"
          (click)="enableEdit(post, $event)" 
-         style="color: blue;" class="fa-solid fa-pen"></i>
+         class="fa-solid fa-pen"></i>
 
       <i *ngIf="post.isEditing"
          (click)="savePost(post, $event); stopEvent($event)" 
-         style="color: rgb(23, 176, 23);" class="fa-solid fa-save"></i>
+          class="fa-solid fa-save"></i>
 
-      <i (click)="deletePost(post)" style="color: rgb(255, 255, 255);" class="fas fa-trash"></i>
-      <i (click)="reportPost(post)" style="color: white;" class="fa-solid fa-triangle-exclamation"></i>
+      <i (click)="deletePost(post)"  class="fas fa-trash"></i>
+      <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
     </div>
   </div>
 </div>

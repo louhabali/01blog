@@ -28,6 +28,7 @@ interface Post {
 })
 export class HomeComponent implements OnInit {
   currentUserId!: number;
+  isDarkMode: boolean = false;
   posts: Post[] = [];
   newPost: Partial<Post> = { title: '', content: '' };
 
@@ -50,7 +51,9 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-
+  toggleTheme() {
+  this.isDarkMode = !this.isDarkMode;
+}
   fetchPosts() {
     this.http
       .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })

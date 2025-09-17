@@ -59,6 +59,7 @@ font-family: 'Press Start 2P', sans-serif;
 
 /* Posts Panel */
 .posts-panel {
+    position: relative;
 background-image: url('/postsback.jpg');
   background-size: cover;
   background-position: center;
@@ -71,7 +72,66 @@ background-image: url('/postsback.jpg');
   flex-direction: column;
   align-items: center;
 }
+/* Theme toggle icon */
+.theme-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1.5rem;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  transition: transform 0.2s, color 0.3s;
+}
 
+.theme-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Dark mode for posts panel */
+.posts-panel.dark-mode {
+  background-image: url('/postsbackdark.jpg');
+  color: white;
+}
+.users-panel.dark-mode {
+  background: #ffffff; 
+  
+}
+/* Optional: change post cards in dark mode */
+.posts-panel.dark-mode .post-card {
+    border: 3px solid #000000;
+  background: #ffffff; 
+  color: rgb(0, 0, 0);
+}
+
+/* Optional: keep text areas readable in dark mode */
+.posts-panel.dark-mode .edit-input,
+.posts-panel.dark-mode .edit-textarea,
+.posts-panel.dark-mode .post-form input,
+.posts-panel.dark-mode .post-form textarea {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border: 3px solid #000000;
+}
+.posts-panel .f
+.posts-panel .fa-pen,
+.posts-panel .fa-save,
+.posts-panel .fa-trash,
+.posts-panel .fa-triangle-exclamation {
+  color: rgb(255, 255, 255); /* override colors in dark mode */
+}
+
+.posts-panel.dark-mode .fa-comment,
+.posts-panel.dark-mode .fa-save,
+.posts-panel.dark-mode .fa-trash,
+.posts-panel.dark-mode .fa-triangle-exclamation {
+  color: rgb(0, 0, 0); /* override colors in dark mode */
+}
+.posts-panel .fa-circle-half-stroke {
+    color: black;
+}
+.posts-panel.dark-mode .fa-circle-half-stroke {
+    color: white;
+}
 /* Post Form */
 .post-form {
   width: 60%;

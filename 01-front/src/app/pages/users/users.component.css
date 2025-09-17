@@ -4,7 +4,16 @@
   padding: 1rem;
   box-sizing: border-box;
 }
+.users-panel.dark-mode {
+  background: #ffffff; 
+  color: #000000;
+}
 
+.users-panel.dark-mode input {
+  background-color: #f0f0f0;
+  color: #000000;
+  border: 3px solid #000000;
+}
 .users-panel h3 { margin-bottom: 0.5rem; }
 
 .users-panel input{
