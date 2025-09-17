@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+// just getting the connected one
 export class UserService {
   constructor(private http: HttpClient) {}
 

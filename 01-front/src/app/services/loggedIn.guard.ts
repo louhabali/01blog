@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
+// logged in logic
 export class LoggedInGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 

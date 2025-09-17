@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
+// handling if he's alredy or not logged
 export class AuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 

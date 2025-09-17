@@ -4,6 +4,7 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
+// changing state 
 export class AuthService {
   // signal to track login state
   isLoggedIn = signal(false);

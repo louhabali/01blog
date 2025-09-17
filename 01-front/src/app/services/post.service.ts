@@ -11,6 +11,7 @@ export interface Post {
 }
 
 @Injectable({ providedIn: 'root' })
+// our post services methods and fetching
 export class PostService {
   posts = signal<Post[]>([]);
 
