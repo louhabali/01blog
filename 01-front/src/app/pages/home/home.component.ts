@@ -86,6 +86,11 @@ this.posts = posts;
   toggleLike(post: Post): void {
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
+        if (liked == true){
+          post.likes += 1;
+        }else {
+          post.likes -= 1;
+        }
         post.liked = liked;
       },
       error: (err) => console.error('Error toggling like', err)
