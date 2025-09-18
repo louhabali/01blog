@@ -11,7 +11,9 @@ interface Post {
   id: number; 
   title: string; 
   content: string; 
-  author: string; 
+  author: string;
+  authorId : number;
+  likes : number; 
   avatar?: string; 
   liked?: boolean;
   isEditing?: boolean; 
@@ -57,7 +59,11 @@ export class HomeComponent implements OnInit {
   fetchPosts() {
     this.http
       .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
-      .subscribe(posts => this.posts = posts);
+      .subscribe(posts =>{
+        console.log("++++ posts are : ",posts);
+        
+this.posts = posts;
+      } );
   }
 
   submitPost() {
