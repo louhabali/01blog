@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUser(User user); // updated to match Post entity field
+     List<Post> findByUserId(Long id);
 }

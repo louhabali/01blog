@@ -1,5 +1,6 @@
 package com.example.blog.controller;
 
+import com.example.blog.entity.Post;
 import com.example.blog.entity.User;
 import com.example.blog.service.UserService;
 
@@ -7,8 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -16,10 +21,11 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
-
-    public UserController(UserService userService,UserRepository userRepository) {
+    private final PostRepository postrepo;
+    public UserController(UserService userService,UserRepository userRepository,PostRepository postrepo) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.postrepo = postrepo;
     }
 
     // GET /users - list all users
@@ -39,4 +45,22 @@ public User getCurrentUser(HttpServletRequest request) {
     String email = (String) request.getAttribute("userEmail");
     return userRepository.findByUsernameOrEmail(email, email).orElseThrow();
 }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = userOpt.get();
+        List<Post> posts = postrepo.findByUserId(id);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("posts", posts);
+
+        return ResponseEntity.ok(response);
+    }
 }
