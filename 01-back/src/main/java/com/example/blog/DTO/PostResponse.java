@@ -1,5 +1,6 @@
 package com.example.blog.DTO;
 import com.example.blog.entity.*;
+import com.example.blog.service.*;
 //DTO => 
 public class PostResponse {
     private Long id;
@@ -8,10 +9,11 @@ public class PostResponse {
     private String authorName;
     private long authorId;
     private boolean liked;
-
+    private long likes;
     // Constructor
-    public PostResponse(Post post, boolean liked) {
+    public PostResponse(Post post, boolean liked,Long likes) {
         this.id = post.getId();
+        this.likes =likes;
         this.title = post.getTitle();
         this.content = post.getContent();
         this.authorName = post.getUser().getUsername(); 
@@ -26,4 +28,5 @@ public class PostResponse {
     public String getAuthorName() { return authorName; }
     public Long getAuthorId() { return authorId; }
     public boolean isLiked() { return liked; }
+    public Long getLikes() { return likes ; }
 }

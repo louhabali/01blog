@@ -3,6 +3,7 @@ package com.example.blog.controller;
 import com.example.blog.entity.Post;
 import com.example.blog.DTO.*;
 import com.example.blog.entity.User;
+import com.example.blog.service.InteractionService;
 import com.example.blog.service.PostService;
 import com.example.blog.repository.*;
 
@@ -22,12 +23,13 @@ public class PostController {
      private final PostRepository postrepo;
     private final UserRepository userRepository;
   private final InteractionRepository interactionRepository;
-
-    public PostController(PostService postService, UserRepository userRepository,InteractionRepository interactionRepository,PostRepository postrepo) {
+    private final InteractionService interactionService;
+    public PostController(PostService postService, UserRepository userRepository,InteractionRepository interactionRepository,PostRepository postrepo,InteractionService interactionService) {
         this.postService = postService;
         this.userRepository = userRepository;
         this.interactionRepository = interactionRepository;
         this.postrepo = postrepo;
+        this.interactionService = interactionService;
        
     }
 
@@ -55,7 +57,8 @@ public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
     return postService.getAllPosts().stream()
             .map(post -> {
                 boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                return new PostResponse(post, liked);
+                Long likes = interactionService.getLikesCount(post.getId());
+                return new PostResponse(post, liked,likes);
             })
             .toList();
 }
