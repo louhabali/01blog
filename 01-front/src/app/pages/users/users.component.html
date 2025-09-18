@@ -1,10 +1,13 @@
-<div class="users-panel"  [ngClass]="{'dark-mode': isDarkMode}">
+<div class="users-panel" [ngClass]="{'dark-mode': isDarkMode}">
   <h3>Users</h3>
-  <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="filterUsers()">
-  <ul>
-    <li *ngFor="let user of filteredUsers">
-      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" alt="{{user.username}}">
-      {{ user.username }}
-    </li>
-  </ul>
+  <input type="text" placeholder="Search users...">
+
+  <div class="users-list">
+    <ul>
+      <li *ngFor="let user of users">
+        <img [src]="user.avatar || 'default-avatar.png'" alt="{{user.username}}">
+        <span>{{ user.username }}</span>
+      </li>
+    </ul>
+  </div>
 </div>

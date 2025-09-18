@@ -1,0 +1,326 @@
+/* Container */
+.home-container {
+    display: flex;
+    font-family: 'Press Start 2P', sans-serif;
+    margin-top: 60px;
+    padding-left: 0;
+    padding-right: 0;
+    height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Users Panel */
+.users-panel {
+    width: 30%;
+    height: 100vh;
+   
+    padding-left: 10px;
+  background: linear-gradient(to left,#000000, #000000, #000000);
+  color: white;
+  box-sizing: border-box;
+}
+.users-panel.dark-mode {
+  background: #ffffff; 
+  color: #000000;
+}
+
+.users-panel.dark-mode input {
+  background-color: #f0f0f0;
+  color: #000000;
+  border: 3px solid #000000;
+}
+.users-panel h3 { margin-bottom: 0.5rem; }
+
+.users-panel input{
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 0.4em;
+  width: 90%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 3px solid #000000;
+}
+
+.users-panel input::placeholder{
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 0.4em;
+}
+
+.users-panel ul { list-style: none; padding: 0; }
+
+.users-panel li {
+  font-size: 0.7em;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.users-panel li img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.7rem;
+}
+
+/* Posts Panel */
+.posts-panel {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background-image: url('/postsback.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+}
+
+/* Dark mode posts panel */
+.posts-panel.dark-mode {
+    background-image: url('/postsbackdark.jpg');
+    color: white;
+}
+
+/* Theme Toggle Icon */
+.theme-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    color: black;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.3s;
+}
+
+.theme-icon:hover {
+    transform: scale(1.2);
+}
+
+.posts-panel.dark-mode .theme-icon {
+    color: white;
+}
+
+/* Profile Section */
+.profile-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #000;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+/* Dark mode profile */
+.posts-panel.dark-mode .profile-panel {
+    background-color: rgba(255, 255, 255, 0.6);
+    color: #000;
+}
+
+/* Left: avatar + username */
+.profile-panel .profile-left {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-panel .profile-left .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+}
+
+.profile-panel .profile-left h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Right: stats + email */
+.profile-panel .profile-right {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile-panel .profile-right .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 0.5rem;
+}
+
+.profile-panel .profile-right .stats div {
+    text-align: center;
+    font-size: 0.7rem;
+}
+
+.profile-panel .profile-right p {
+    margin: 0;
+    font-size: 0.7rem;
+}
+
+/* Post Form */
+.post-form {
+    width: 60%;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.post-form input, .post-form textarea {
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 0.4em;
+    padding: 0.5rem;
+    border-radius: 7px;
+    border: 4px solid #000;
+    outline: none;
+}
+
+.post-form input::placeholder,
+.post-form textarea::placeholder {
+    color: rgb(139, 134, 134);
+}
+
+.post-form button {
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    background: #1e3aa7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', sans-serif;
+}
+
+.post-form button:hover {
+    background-color: #0d47a1;
+}
+
+/* Posts Grid */
+.posts-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+/* Post Card */
+.post-card {
+    background: linear-gradient(to left, #000, #000, #000);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    position: relative;
+}
+
+.post-card .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.post-card .post-header img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.fa-heart {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.text-red-500 {
+    color: red;
+}
+
+/* Buttons */
+.post-buttons {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.post-buttons i {
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.post-buttons i:hover {
+    transform: scale(1.2);
+}
+
+/* Edit Inputs */
+.edit-input, .edit-textarea {
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 0.7em;
+    width: 95%;
+    color: white;
+    padding: 0.3rem;
+    background-color: #000;
+    border: 3px solid #fff;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.edit-textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Dark mode adjustments */
+.posts-panel.dark-mode .edit-input,
+.posts-panel.dark-mode .edit-textarea,
+.posts-panel.dark-mode .post-form input,
+.posts-panel.dark-mode .post-form textarea {
+    background-color: #fff;
+    color: #000;
+    border: 3px solid #000;
+}
+
+.posts-panel.dark-mode .post-card {
+    border: 3px solid #000;
+    background: #fff;
+    color: #000;
+}
+
+.posts-panel.dark-mode .fa-pen,
+.posts-panel.dark-mode .fa-save,
+.posts-panel.dark-mode .fa-trash,
+.posts-panel.dark-mode .fa-triangle-exclamation,
+.posts-panel.dark-mode .fa-comment {
+    color: #000;
+}
+
+.posts-panel .fa-pen,
+.posts-panel .fa-save,
+.posts-panel .fa-trash,
+.posts-panel .fa-triangle-exclamation {
+    color: white;
+}
+
+.posts-panel .fa-circle-half-stroke {
+    color: rgb(255, 255, 255);
+}
+
+.posts-panel.dark-mode .fa-circle-half-stroke {
+    color: rgb(0, 0, 0);
+}

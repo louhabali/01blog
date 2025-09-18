@@ -1,0 +1,73 @@
+<div class="home-container">
+  <!-- Users Panel -->
+  <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
+
+  <!-- Posts Panel (Profile + Form + Posts) -->
+  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- Theme toggle -->
+    <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
+
+    <!-- Profile Section at top of posts panel -->
+    <div class="profile-panel" *ngIf="profile">
+      <img src="default-avatar.png" [alt]="profile.username" class="avatar">
+      <div class="profile-info">
+        <h2>{{ profile.username }}</h2>
+        <p>{{ profile.email }}</p>
+      </div>
+    </div>
+
+    <!-- Post Creation Form -->
+    <div class="post-form" *ngIf="profile?.id === currentUserId">
+      <input type="text" placeholder="Post title" [(ngModel)]="newPost.title">
+      <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
+      <button (click)="submitPost()">Post</button>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts">
+        <div class="post-header">
+          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}">
+          <span>{{ post.author }}</span>
+        </div>
+
+        <!-- Title -->
+        <div *ngIf="!post.isEditing; else editTitle">
+          <h5>{{ post.title }}</h5>
+        </div>
+        <ng-template #editTitle>
+          <input [(ngModel)]="post.title" class="edit-input" />
+        </ng-template>
+
+        <!-- Content -->
+        <div *ngIf="!post.isEditing; else editContent">
+          <p style="font-size: 0.7em;">{{ post.content }}</p>
+        </div>
+        <ng-template #editContent>
+          <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
+        </ng-template>
+
+        <!-- Like + Comment -->
+        <i class="fa-heart"
+           [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
+           (click)="toggleLike(post)">
+        </i><span style="padding-left: 1px; font-size: 0.8em;">{{ post.likes }}</span>
+        <i style="padding-left: 10px; font-size: 1.5rem; cursor: pointer;"
+           (click)="goToComments(post.id)" 
+           class="fa-regular fa-comment"></i>
+
+        <!-- Buttons -->
+        <div class="post-buttons">
+          <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+            <i *ngIf="!post.isEditing" (click)="enableEdit(post, $event)" class="fa-solid fa-pen"></i>
+            <i *ngIf="post.isEditing" (click)="savePost(post, $event); stopEvent($event)" class="fa-solid fa-save"></i>
+            <i (click)="deletePost(post)" class="fas fa-trash"></i>
+          </ng-container>
+          <ng-template #reportOnly>
+            <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

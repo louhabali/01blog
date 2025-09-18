@@ -1,10 +1,11 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit ,HostListener} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { UsersComponent } from '../users/users.component';
+import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
-import { UsersComponent } from '../users/users.component';
 import { Router } from '@angular/router';
 
 interface Post { 
@@ -22,50 +23,40 @@ interface Post {
 }
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  imports :[CommonModule,UsersComponent,FormsModule],
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class HomeComponent implements OnInit {
-  
+export class ProfileComponent implements OnInit {
+  profile: any;
+
   currentUserId!: number;
-  isDarkMode: boolean = false;
-  posts: Post[] = [];
-  newPost: Partial<Post> = { title: '', content: '' };
-
-  constructor(
-    private http: HttpClient,
-    private postService: PostService,
+    isDarkMode: boolean = false;
+    posts: Post[] = [];
+    newPost: Partial<Post> = { title: '', content: '' };
+  constructor(private http: HttpClient, private route: ActivatedRoute, private postService: PostService,
     private userService: UserService,
-    private router: Router
-  ) {}
+    private router: Router) {}
 
-  ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUserId = user.id;
-        console.log("Logged-in user:", user);
-        this.fetchPosts();
-      },
-      error: (err) => {
-        console.error("Failed to fetch user:", err);
-      }
-    });
+  ngOnInit() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.http.get(`http://localhost:8087/users/${id}`, { withCredentials: true })
+      .subscribe(profile => this.profile = profile);
+      this.userService.getCurrentUser().subscribe({
+         next: (user) => {
+           this.currentUserId = user.id;
+           console.log("Logged-in user:", user);
+         },
+         error: (err) => {
+           console.error("Failed to fetch user:", err);
+         }
+       });
   }
-  toggleTheme() {
+      toggleTheme() {
   this.isDarkMode = !this.isDarkMode;
 }
-  fetchPosts() {
-    this.http
-      .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
-      .subscribe(posts =>{
-        console.log("++++ posts are : ",posts);
-        
-this.posts = posts;
-      } );
-  }
 
   submitPost() {
     const postPayload = {
@@ -164,3 +155,4 @@ this.posts = posts;
     this.router.navigate([`/posts/${postId}/comments`]);
   }
 }
+
