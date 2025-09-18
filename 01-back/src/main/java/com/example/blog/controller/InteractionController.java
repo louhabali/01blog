@@ -30,8 +30,5 @@ public class InteractionController {
 
         return interactionService.toggleLike(user, post);
     }
-    @GetMapping("/count/{postId}")
-public long getLikesCount(@PathVariable Long postId) {
-    return interactionService.getLikesCount(postId);
-}
+  
 }
