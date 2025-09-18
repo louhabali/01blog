@@ -26,7 +26,29 @@ public class AuthController {
         this.jwtUtil = jwtUtil; 
     }
 
-    
+    @PostMapping("/register")
+public ResponseEntity<?> register(@RequestBody User user) {
+    // 1. Check if username or email already exists
+    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", "Username already taken"));
+    }
+
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", "Email already taken"));
+    }
+
+    // 2. Hash password (use your UserService)
+    userService.register(user);
+
+    // 3. Save user
+    User savedUser = userRepository.save(user);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(Map.of("message", "User registered successfully", "userId", savedUser.getId()));
+}
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
 
