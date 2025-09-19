@@ -17,6 +17,9 @@
     <ng-container *ngIf="auth.isLoggedIn()">
       <a routerLink="home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
       <a (click)="logout()">Logout</a>
+      <a routerLink="/profile/{{ currentUserId }}" (click)="closeMenu()">
+       <img src="default-avatar.png" alt="Profile" class="profile-pic">
+     </a>
     </ng-container>
   </nav>
 </header>

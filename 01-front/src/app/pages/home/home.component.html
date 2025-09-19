@@ -37,13 +37,17 @@
     </ng-template>
 
     <!-- Like + Comment -->
-    <i class="fa-heart"
-       [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
-       (click)="toggleLike(post)">
-    </i><span style="padding-left: 1px; font-size: 0.8em;">{{ post.likes }}</span>
-    <i style=" padding-left: 10px; font-size: 1.5rem; cursor: pointer;"
-       (click)="goToComments(post.id)" 
-       class="fa-regular fa-comment"></i>
+    <div class="post-actions">
+  <i class="fa-heart"
+     [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
+     (click)="toggleLike(post)">
+  </i>
+  <span>{{ post.likes }}</span>
+
+  <i class="fa-regular fa-comment" 
+     (click)="goToComments(post.id)">
+  </i>
+</div>
 
     <!-- Buttons -->
     <!-- Buttons -->

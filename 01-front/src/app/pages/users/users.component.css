@@ -5,21 +5,26 @@
   display: flex;
   flex-direction: column;
   height: 100vh; /* full page height */
+  
 }
-
+.header-text{
+  width: 75%;
+  text-align: center;
+}
 .users-panel.dark-mode {
   background: #ffffff; 
   color: #000000;
 }
 
 .users-panel h3 {
+  
   margin: 0.5rem 0;
 }
 
 .users-panel input {
   font-family: 'Press Start 2P', sans-serif;
   font-size: 0.4em;
-  width: 90%;
+  width: 70%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 5px;
@@ -34,7 +39,7 @@
 /* ✅ scroll area */
 .users-list {
   flex: 1;                /* take remaining height */
-  overflow-y: auto;       /* vertical scroll only */
+  overflow-y: hidden;       /* vertical scroll only */
   overflow-x: hidden;     /* hide horizontal scroll */
   padding-right: 5px;     /* avoid scrollbar overlap */
 }
@@ -50,15 +55,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  font-size: 0.7em;
+  font-size: 0.6em;
   padding: 0.6rem;
-   width: 90%;
+  width: 70%;
   border-bottom: 1px solid rgba(92, 87, 87, 0.2);
   cursor: pointer;
 }
 
 .users-list li:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(59, 58, 58, 0.1);
 }
 
 .users-panel.dark-mode .users-list li {

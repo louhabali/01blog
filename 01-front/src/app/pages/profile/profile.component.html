@@ -1,22 +1,43 @@
 <div class="home-container">
+
   <!-- Users Panel -->
   <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
   <!-- Posts Panel -->
   <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+
     <!-- Theme Toggle -->
     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
 
     <!-- Profile Section -->
     <div class="profile-panel" *ngIf="user">
-      <img src="default-avatar.png" [alt]="user.username" class="avatar" />
-      <div class="profile-info">
+      <div class="profile-left">
+        <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.username" class="avatar" />
         <h2>{{ user.username }}</h2>
+         <button class="follow-btn" *ngIf="user.id !== currentUserId">
+            {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+      <div class="profile-right">
+        <div class="stats">
+          <div>
+            <strong style="color: rgb(99, 138, 232);">{{ user.postsCount }}3 </strong>
+            <span>Posts</span>
+          </div>
+          <div>
+            <strong  style="color: rgb(99, 138, 232);">{{ user.followersCount }}0 </strong>
+            <span>Followers</span>
+          </div>
+          <div>
+            <strong  style="color: rgb(99, 138, 232);">{{ user.followingCount }} 0 </strong>
+            <span>Following</span>
+          </div>
+        </div>
         <p>{{ user.email }}</p>
       </div>
     </div>
 
-    <!-- Post Creation Form: only show if logged user == profile user -->
+    <!-- Post Creation Form (only for profile owner) -->
     <div class="post-form" *ngIf="user?.id === currentUserId">
       <input type="text" placeholder="Post title" [(ngModel)]="newPost.title" />
       <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
@@ -26,12 +47,14 @@
     <!-- Posts Grid -->
     <div class="posts-grid">
       <div class="post-card" *ngFor="let post of posts">
+
+        <!-- Post Header -->
         <div class="post-header">
           <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{ post.author }}" />
           <span>{{ post.author }}</span>
         </div>
 
-        <!-- Title -->
+        <!-- Post Title -->
         <div *ngIf="!post.isEditing; else editTitle">
           <h5>{{ post.title }}</h5>
         </div>
@@ -39,9 +62,9 @@
           <input [(ngModel)]="post.title" class="edit-input" />
         </ng-template>
 
-        <!-- Content -->
+        <!-- Post Content -->
         <div *ngIf="!post.isEditing; else editContent">
-          <p style="font-size: 0.7em;">{{ post.content }}</p>
+          <p>{{ post.content }}</p>
         </div>
         <ng-template #editContent>
           <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
@@ -53,35 +76,25 @@
             [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
             (click)="toggleLike(post)">
           </i>
-          <span style="padding-left: 1px; font-size: 0.8em;">{{ post.likes }}</span>
+          <span>{{ post.likes }}</span>
 
-          <i style="padding-left: 10px; font-size: 1.5rem; cursor: pointer;"
-            (click)="goToComments(post.id)" 
-            class="fa-regular fa-comment">
-          </i>
+          <i class="fa-regular fa-comment" (click)="goToComments(post.id)"></i>
         </div>
 
-        <!-- Buttons -->
+        <!-- Post Buttons -->
         <div class="post-buttons">
-          <!-- If current user is the author -->
           <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-            <i *ngIf="!post.isEditing"
-              (click)="enableEdit(post, $event)" 
-              class="fa-solid fa-pen"></i>
-
-            <i *ngIf="post.isEditing"
-              (click)="savePost(post, $event); stopEvent($event)" 
-              class="fa-solid fa-save"></i>
-
+            <i *ngIf="!post.isEditing" (click)="enableEdit(post, $event)" class="fa-solid fa-pen"></i>
+            <i *ngIf="post.isEditing" (click)="savePost(post, $event); stopEvent($event)" class="fa-solid fa-save"></i>
             <i (click)="deletePost(post)" class="fas fa-trash"></i>
           </ng-container>
-
-          <!-- If not the author -->
           <ng-template #reportOnly>
             <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
           </ng-template>
         </div>
+
       </div>
     </div>
   </div>
+
 </div>

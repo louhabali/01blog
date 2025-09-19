@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { ThemeService, Theme } from '../services/theme.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -16,10 +17,19 @@ import { ThemeService, Theme } from '../services/theme.service';
 export class HeaderComponent implements OnInit {
   menuActive = false;
   theme!: Theme;
-
-  constructor(public auth: AuthService, private router: Router, private themeService: ThemeService) {}
+  currentUserId!: number;
+  constructor(public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
 
   ngOnInit() {
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUserId = user.id;
+        console.log("Logged-in user:", user);
+      },
+      error: (err) => {
+        console.error("Failed to fetch user:", err);
+      }
+    });
     this.auth.checkAuth().subscribe();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))

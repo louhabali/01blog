@@ -1,5 +1,5 @@
 .header {
-font-family: 'Press Start 2P', sans-serif;
+  font-family: 'Press Start 2P', sans-serif;
   position: fixed;
   top: 0;
   left: 0;
@@ -8,27 +8,31 @@ font-family: 'Press Start 2P', sans-serif;
   background: linear-gradient(to right,#000000, #000000, #000000);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 25px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  align-items: center; /* vertical center */
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  box-shadow: 0 3px 6px rgba(139, 141, 142, 0.15);
   z-index: 1000;
 }
+
 .logo-img {
-  height: 1.7em; /* same as text height */
- 
-}
-.logo {
-  font-size: 1.4vw;
-  font-weight: 800;
-  letter-spacing: 1.8px;
-    color: white;
-  cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  height: 35px; /* match profile pic height */
+  object-fit: cover;
 }
 
-.logo:hover {
-  transform: scale(1.07);
-  opacity: 0.95;
+.profile-pic {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 3px solid rgb(34, 82, 172);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center; /* vertical center for links inside nav */
 }
 
 .nav-links a {
@@ -36,16 +40,9 @@ font-family: 'Press Start 2P', sans-serif;
   text-decoration: none;
   color: #666767;
   font-weight: 500;
- font-size: 0.8vw; 
+  font-size: 0.8vw; 
   transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: #ffffff; 
-}
-
-.nav-links a.active {
-  color: white;
+  line-height: 35px; /* match profile pic height for perfect vertical alignment */
 }
 
 .menu-toggle {
