@@ -45,21 +45,21 @@ public User getCurrentUser(HttpServletRequest request) {
     String email = (String) request.getAttribute("userEmail");
     return userRepository.findByUsernameOrEmail(email, email).orElseThrow();
 }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
+        System.out.println("yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyyy"+id);
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         User user = userOpt.get();
-        List<Post> posts = postrepo.findByUserId(id);
-
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
         response.put("username", user.getUsername());
         response.put("email", user.getEmail());
-        response.put("posts", posts);
+       
 
         return ResponseEntity.ok(response);
     }
