@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 85vh;
+  height: 100vh;
   background: linear-gradient(to right,#000000, #060025, #03256e); /* heavy blue gradient */
 }
 
@@ -91,6 +91,7 @@ font-family: 'Press Start 2P', sans-serif;
   color: #1976d2;
   font-weight: bold;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .register-link a:hover {
