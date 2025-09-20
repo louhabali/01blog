@@ -2,7 +2,7 @@ import { Component, OnInit,Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-
+import { RouterModule } from '@angular/router';
 interface User { 
   id: number; 
   username: string; 
@@ -13,7 +13,7 @@ interface User {
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterModule],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })

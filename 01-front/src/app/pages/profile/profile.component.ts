@@ -29,149 +29,155 @@ interface Post {
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-    currentUserId!: number;
-      isDarkMode: boolean = false;
-      posts: Post[] = [];
-      user : any = {id : 0 , username : '' , email : ''};
-      newPost: Partial<Post> = { title: '', content: '' };
-    
-      constructor(
-        private http: HttpClient,
-        private postService: PostService,
-        private userService: UserService,
-        private router: Router ,private route : ActivatedRoute
-      ) {}
-    
-      ngOnInit(): void {
-        let id : any = null;
-        this.userService.getCurrentUser().subscribe({
-          next: (user) => {
-            this.currentUserId = user.id;
-            console.log("Logged-in user:", user);
-            this.route.paramMap.subscribe(params => {
-              id = params.get('id');
-              console.log("++++id is :",id);
-              
-              if (id) {
-                this.http.get(`http://localhost:8087/users/${id}`, { withCredentials: true })
-                .subscribe(res => {
-                  this.user = res;
-                });
-              }
-            });
-            this.fetchPosts(id);
-          }
-        })
+  currentUserId!: number;
+  isDarkMode: boolean = false;
+  posts: Post[] = [];
+  numberOfposts!: number;
+  user: any = { id: 0, username: '', email: '' };
+  newPost: Partial<Post> = { title: '', content: '' };
 
-      }
-      toggleTheme() {
-      this.isDarkMode = !this.isDarkMode;
-    }
-      fetchPosts(id:any) {
-        id  = Number(id);
-        this.http
-          .get<Post[]>(`http://localhost:8087/posts/all/${id}?currentUserId=${this.currentUserId}`, { withCredentials: true })
-          .subscribe(posts =>{
-            console.log("++++ posts are : ",posts);
-            
-    this.posts = posts;
-          } );
-      }
-    
-      submitPost() {
-        const postPayload = {
-          title: this.newPost.title,
-          content: this.newPost.content,
-          authorId: this.currentUserId
-        };
-    
-        this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
-          .subscribe({
-            next: post => {
-              this.posts.unshift(post);
-              this.newPost = { title: '', content: '' };
-            },
-            error: err => console.error('Error creating post', err)
-          });
-      }
-    
-      toggleLike(post: Post): void {
-        this.postService.toggleLike(post.id, this.currentUserId).subscribe({
-          next: (liked) => {
-            if (liked == true){
-              post.likes += 1;
-            }else {
-              post.likes -= 1;
-            }
-            post.liked = liked;
-          },
-          error: (err) => console.error('Error toggling like', err)
+  constructor(
+    private http: HttpClient,
+    private postService: PostService,
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    // Load current logged-in user
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUserId = user.id;
+        console.log('Logged-in user:', user);
+
+        // Listen to profile ID changes
+        this.route.paramMap.subscribe(params => {
+          const id = params.get('id');
+          console.log('++++id is :', id);
+
+          if (id) {
+            this.loadProfile(id);
+          }
         });
       }
-    
-      enableEdit(post: Post, event?: MouseEvent) {
-        if (event) event.stopPropagation();
-        // Cancel other edits
-        this.posts.forEach(p => p.isEditing = false);
-        // Save original values
-        post.originalTitle = post.title;
-        post.originalContent = post.content;
-        post.isEditing = true;
-      }
-    
-      savePost(post: Post, event?: MouseEvent) {
-        if (event) event.stopPropagation();
-        this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
-          title: post.title,
-          content: post.content
-        }, { withCredentials: true })
-        .subscribe({
-          next: (updated) => {
-            post.title = updated.title;
-            post.content = updated.content;
-            post.isEditing = false;
-            post.originalTitle = undefined;
-            post.originalContent = undefined;
-          },
-          error: (err) => console.error("Error updating post", err)
-        });
-      }
-    
-      // Cancel editing if clicking outside and restore original content
-      @HostListener('document:click', ['$event'])
-      handleClick(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-        if (!target.closest('.post-card')) {
-          this.posts.forEach(p => {
-            if (p.isEditing) {
-              p.title = p.originalTitle || p.title;
-              p.content = p.originalContent || p.content;
-              p.isEditing = false;
-            }
-          });
+    });
+  }
+
+  private loadProfile(id: string) {
+    this.http.get(`http://localhost:8087/users/${id}`, { withCredentials: true })
+      .subscribe(res => {
+        this.user = res;
+      });
+
+    this.fetchPosts(id);
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+  }
+
+  fetchPosts(id: any) {
+    id = Number(id);
+    this.http
+      .get<Post[]>(`http://localhost:8087/posts/all/${id}?currentUserId=${this.currentUserId}`, { withCredentials: true })
+      .subscribe(posts => {
+        console.log('++++ posts are : ', posts);
+        this.posts = posts;
+        this.numberOfposts = this.posts.length;
+      });
+  }
+
+  submitPost() {
+    const postPayload = {
+      title: this.newPost.title,
+      content: this.newPost.content,
+      authorId: this.currentUserId
+    };
+
+    this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
+      .subscribe({
+        next: post => {
+          this.posts.unshift(post);
+          this.newPost = { title: '', content: '' };
+        },
+        error: err => console.error('Error creating post', err)
+      });
+  }
+
+  toggleLike(post: Post): void {
+    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+      next: (liked) => {
+        if (liked) {
+          post.likes += 1;
+        } else {
+          post.likes -= 1;
         }
-      }
-    
-      // Prevent outside click while interacting inside post
-      stopEvent(event: MouseEvent) {
-        event.stopPropagation();
-      }
-    
-      deletePost(post: Post) {
-      this.http.delete<Post[]>(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
-        .subscribe({
-          next: () => {
-            // Remove post locally without re-fetching
-            this.posts = this.posts.filter(p => p.id !== post.id);
-          },
-          error: err => console.error("Error deleting post", err)
-        });
+        post.liked = liked;
+      },
+      error: (err) => console.error('Error toggling like', err)
+    });
+  }
+
+  enableEdit(post: Post, event?: MouseEvent) {
+    if (event) event.stopPropagation();
+    this.posts.forEach(p => p.isEditing = false);
+    post.originalTitle = post.title;
+    post.originalContent = post.content;
+    post.isEditing = true;
+  }
+
+  savePost(post: Post, event?: MouseEvent) {
+    if (event) event.stopPropagation();
+    this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
+      title: post.title,
+      content: post.content
+    }, { withCredentials: true })
+      .subscribe({
+        next: (updated) => {
+          post.title = updated.title;
+          post.content = updated.content;
+          post.isEditing = false;
+          post.originalTitle = undefined;
+          post.originalContent = undefined;
+        },
+        error: (err) => console.error('Error updating post', err)
+      });
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.post-card')) {
+      this.posts.forEach(p => {
+        if (p.isEditing) {
+          p.title = p.originalTitle || p.title;
+          p.content = p.originalContent || p.content;
+          p.isEditing = false;
+        }
+      });
     }
-      reportPost(post: Post) { 
-        alert('Report post: ' + post.id); 
-      }
-    
-      goToComments(postId: number) {
-        this.router.navigate([`/posts/${postId}/comments`]);
-      }
+  }
+
+  stopEvent(event: MouseEvent) {
+    event.stopPropagation();
+  }
+
+  deletePost(post: Post) {
+    this.http.delete<Post[]>(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          this.posts = this.posts.filter(p => p.id !== post.id);
+        },
+        error: err => console.error('Error deleting post', err)
+      });
+  }
+
+  reportPost(post: Post) {
+    alert('Report post: ' + post.id);
+  }
+
+  goToComments(postId: number) {
+    this.router.navigate([`/posts/${postId}/comments`]);
+  }
 }

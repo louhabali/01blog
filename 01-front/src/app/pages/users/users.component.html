@@ -1,12 +1,16 @@
 <div class="users-panel" [ngClass]="{'dark-mode': isDarkMode}">
   <div class="header-text"><h5>Users</h5></div>
-  <input type="text" placeholder="Search users...">
+  <input  [(ngModel)]="searchQuery" 
+    (input)="filterUsers()" type="text" placeholder="Search users...">
 
   <div class="users-list">
     <ul>
-      <li *ngFor="let user of users">
-        <img [src]="user.avatar || 'default-avatar.png'" alt="{{user.username}}">
-        <span>{{ user.username }}</span>
+      <li *ngFor="let user of filteredUsers">
+         <a style="text-decoration: none; color: rgb(114, 111, 111); display: flex; align-items: center;" routerLink="/profile/{{user.id}}">
+            <img [src]="user.avatar || 'default-avatar.png'" alt="{{user.username}}">
+            <span>{{ user.username }}</span>
+        </a>
+       
       </li>
     </ul>
   </div>
