@@ -130,7 +130,18 @@
     color: white;
     transition: background-color 0.3s;
 }
-
+.profile-left .unfollow-btn {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 0.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(89, 90, 93);
+    color: white;
+    transition: background-color 0.3s;
+}
 .profile-left .follow-btn:hover {
     background-color: rgb(70, 100, 200);
 }

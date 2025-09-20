@@ -14,7 +14,7 @@
       <div class="profile-left">
         <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.username" class="avatar" />
         <h2>{{ user.username }}</h2>
-         <button class="follow-btn" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
+         <button  [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
             {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
         </button>
       </div>
