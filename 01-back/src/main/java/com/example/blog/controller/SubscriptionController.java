@@ -2,7 +2,7 @@ package com.example.blog.controller;
 
 import com.example.blog.service.SubscriptionService;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.*;
 @RestController
 @RequestMapping("/subscriptions")
 public class SubscriptionController {
@@ -14,8 +14,11 @@ public class SubscriptionController {
     }
 
     @PostMapping("/toggle")
-    public boolean toggleFollow(@RequestParam Long followerId, @RequestParam Long followedId) {
-        return subscriptionService.toggleFollow(followerId, followedId);
+    public boolean toggleFollow(@RequestBody Map<String, Long> payload) {
+          Long followerId = payload.get("followerId");
+    Long followingId = payload.get("followingId");
+    return subscriptionService.toggleFollow(followerId, followingId);
+    
     }
 
     @GetMapping("/status")
@@ -23,12 +26,12 @@ public class SubscriptionController {
         return subscriptionService.isFollowing(followerId, followedId);
     }
 
-    @GetMapping("/{userId}/followers/count")
+    @GetMapping("/followers/{userId}")
     public Long getFollowersCount(@PathVariable Long userId) {
         return subscriptionService.countFollowers(userId);
     }
 
-    @GetMapping("/{userId}/following/count")
+    @GetMapping("/following/{userId}")
     public Long getFollowingCount(@PathVariable Long userId) {
         return subscriptionService.countFollowing(userId);
     }
