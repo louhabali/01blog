@@ -12,13 +12,23 @@ interface Post {
   title: string; 
   content: string; 
   author: string;
-  authorId : number;
-  likes : number; 
+  authorId: number;
+  likes: number; 
   avatar?: string; 
   liked?: boolean;
   isEditing?: boolean; 
   originalTitle?: string;
   originalContent?: string;
+}
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  avatar?: string;
+  followersCount?: number;
+  followingCount?: number;
+  isFollowed?: boolean; // only for UI
 }
 
 @Component({
@@ -30,10 +40,10 @@ interface Post {
 })
 export class ProfileComponent implements OnInit {
   currentUserId!: number;
-  isDarkMode: boolean = false;
+  isDarkMode = false;
   posts: Post[] = [];
   numberOfposts!: number;
-  user: any = { id: 0, username: '', email: '' };
+  user: User = { id: 0, username: '', email: '' };
   newPost: Partial<Post> = { title: '', content: '' };
 
   constructor(
@@ -45,31 +55,34 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load current logged-in user
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUserId = user.id;
-        console.log('Logged-in user:', user);
+    this.userService.getCurrentUser().subscribe(user => {
+      this.currentUserId = user.id;
 
-        // Listen to profile ID changes
-        this.route.paramMap.subscribe(params => {
-          const id = params.get('id');
-          console.log('++++id is :', id);
-
-          if (id) {
-            this.loadProfile(id);
-          }
-        });
-      }
+      // Listen to profile changes via route params
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) this.loadProfile(Number(id));
+      });
     });
   }
 
-  private loadProfile(id: string) {
-    this.http.get(`http://localhost:8087/users/${id}`, { withCredentials: true })
-      .subscribe(res => {
-        this.user = res;
+  private loadProfile(id: number) {
+    // Load profile user data
+    this.http.get<User>(`http://localhost:8087/users/${id}`, { withCredentials: true })
+      .subscribe(profile => {
+        this.user = profile;
+
+        // Fetch follow status and counts
+        if (this.user.id !== this.currentUserId) {
+          this.userService.toggleFollow(this.currentUserId, this.user.id); // only toggle after click
+          this.refreshFollowStatus();
+        } else {
+          // For own profile, counts still useful
+          this.refreshFollowCounts();
+        }
       });
 
+    // Load posts
     this.fetchPosts(id);
   }
 
@@ -77,45 +90,56 @@ export class ProfileComponent implements OnInit {
     this.isDarkMode = !this.isDarkMode;
   }
 
-  fetchPosts(id: any) {
-    id = Number(id);
+  toggleFollow() {
+    if (!this.currentUserId || !this.user.id) return;
+
+    this.userService.toggleFollow(this.currentUserId, this.user.id).subscribe({
+      next: (isNowFollowed) => {
+        this.user.isFollowed = isNowFollowed;
+        this.refreshFollowCounts();
+      },
+      error: err => console.error('Error toggling follow', err)
+    });
+  }
+
+  private refreshFollowStatus() {
+    this.userService.getFollowersCount(this.user.id).subscribe(count => this.user.followersCount = count);
+    this.userService.getFollowingCount(this.user.id).subscribe(count => this.user.followingCount = count);
+
+    // Check if current user follows this profile
+    this.http.get<boolean>(
+      `http://localhost:8087/subscriptions/status?followerId=${this.currentUserId}&followedId=${this.user.id}`,
+      { withCredentials: true }
+    ).subscribe(isFollowing => this.user.isFollowed = isFollowing);
+  }
+
+  private refreshFollowCounts() {
+    this.userService.getFollowersCount(this.user.id).subscribe(count => this.user.followersCount = count);
+    this.userService.getFollowingCount(this.user.id).subscribe(count => this.user.followingCount = count);
+  }
+
+  fetchPosts(id: number) {
     this.http
       .get<Post[]>(`http://localhost:8087/posts/all/${id}?currentUserId=${this.currentUserId}`, { withCredentials: true })
       .subscribe(posts => {
-        console.log('++++ posts are : ', posts);
         this.posts = posts;
-        this.numberOfposts = this.posts.length;
+        this.numberOfposts = posts.length;
       });
   }
 
   submitPost() {
-    const postPayload = {
-      title: this.newPost.title,
-      content: this.newPost.content,
-      authorId: this.currentUserId
-    };
-
-    this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
-      .subscribe({
-        next: post => {
-          this.posts.unshift(post);
-          this.newPost = { title: '', content: '' };
-        },
-        error: err => console.error('Error creating post', err)
+    const payload = { title: this.newPost.title, content: this.newPost.content, authorId: this.currentUserId };
+    this.http.post<Post>('http://localhost:8087/posts/create', payload, { withCredentials: true })
+      .subscribe(post => {
+        this.posts.unshift(post);
+        this.newPost = { title: '', content: '' };
       });
   }
 
-  toggleLike(post: Post): void {
-    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
-      next: (liked) => {
-        if (liked) {
-          post.likes += 1;
-        } else {
-          post.likes -= 1;
-        }
-        post.liked = liked;
-      },
-      error: (err) => console.error('Error toggling like', err)
+  toggleLike(post: Post) {
+    this.postService.toggleLike(post.id, this.currentUserId).subscribe(liked => {
+      post.liked = liked;
+      post.likes += liked ? 1 : -1;
     });
   }
 
@@ -129,19 +153,11 @@ export class ProfileComponent implements OnInit {
 
   savePost(post: Post, event?: MouseEvent) {
     if (event) event.stopPropagation();
-    this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
-      title: post.title,
-      content: post.content
-    }, { withCredentials: true })
-      .subscribe({
-        next: (updated) => {
-          post.title = updated.title;
-          post.content = updated.content;
-          post.isEditing = false;
-          post.originalTitle = undefined;
-          post.originalContent = undefined;
-        },
-        error: (err) => console.error('Error updating post', err)
+    this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, { title: post.title, content: post.content }, { withCredentials: true })
+      .subscribe(updated => {
+        post.title = updated.title;
+        post.content = updated.content;
+        post.isEditing = false;
       });
   }
 
@@ -164,13 +180,8 @@ export class ProfileComponent implements OnInit {
   }
 
   deletePost(post: Post) {
-    this.http.delete<Post[]>(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
-      .subscribe({
-        next: () => {
-          this.posts = this.posts.filter(p => p.id !== post.id);
-        },
-        error: err => console.error('Error deleting post', err)
-      });
+    this.http.delete(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
+      .subscribe(() => this.posts = this.posts.filter(p => p.id !== post.id));
   }
 
   reportPost(post: Post) {

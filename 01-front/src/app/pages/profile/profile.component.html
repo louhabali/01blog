@@ -14,22 +14,22 @@
       <div class="profile-left">
         <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.username" class="avatar" />
         <h2>{{ user.username }}</h2>
-         <button class="follow-btn" *ngIf="user.id !== currentUserId">
+         <button class="follow-btn" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
             {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
         </button>
       </div>
       <div class="profile-right">
         <div class="stats">
           <div>
-            <strong style="color: rgb(99, 138, 232);">{{numberOfposts}} </strong>
+            <strong style="color: rgb(99, 138, 232);">{{numberOfposts || 0}} </strong>
             <span>Posts</span>
           </div>
           <div>
-            <strong  style="color: rgb(99, 138, 232);">{{ user.followersCount }}0 </strong>
+            <strong  style="color: rgb(99, 138, 232);">{{ user.followersCount || 0 }} </strong>
             <span>Followers</span>
           </div>
           <div>
-            <strong  style="color: rgb(99, 138, 232);">{{ user.followingCount }} 0 </strong>
+            <strong  style="color: rgb(99, 138, 232);">{{ user.followingCount || 0}} </strong>
             <span>Following</span>
           </div>
         </div>
