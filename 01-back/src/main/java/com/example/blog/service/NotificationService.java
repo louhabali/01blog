@@ -1,7 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.entity.Notification;
-import com.example.blog.dto.NotificationDTO;
+import com.example.blog.DTO.NotificationDTO;
 import com.example.blog.repository.NotificationRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
