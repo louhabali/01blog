@@ -52,9 +52,9 @@
     <!-- Buttons -->
     <!-- Buttons -->
 <div class="post-buttons">
-  <!-- If current user is the author -->
+
   <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-    <!-- Switch between Edit & Save -->
+    
     <i *ngIf="!post.isEditing"
        (click)="enableEdit(post, $event)" 
        class="fa-solid fa-pen"></i>

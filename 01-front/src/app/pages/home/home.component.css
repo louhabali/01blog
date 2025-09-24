@@ -227,7 +227,7 @@
 
 /* Post Card */
 .post-card {
-    
+    position: relative; /* Add this */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -263,20 +263,12 @@
 /* Footer: Like + Comment */
 .post-actions {
     display: flex;
-  flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     gap: 0.5rem;
-    margin-top: auto; /* push footer to bottom */
-}
-.post-actions i {
-    font-size: 1.2rem;
-    cursor: pointer;
+    margin-top: auto; /* pushes to bottom */
 }
 
-.post-actions span {
-    font-size: 0.8em;
-}
 .fa-heart {
     font-size: 1.5rem;
     cursor: pointer;
@@ -287,10 +279,10 @@
     color: red;
 }
 
-/* Buttons (edit/delete/report) */
+/* Buttons */
 .post-buttons {
-    position: absolute; /* fixed at bottom right */
-    bottom: 10px;
+    position: absolute; /* changed from relative/static */
+    bottom: 20px;
     right: 10px;
     display: flex;
     gap: 0.5rem;
@@ -299,6 +291,7 @@
 
 .post-buttons i {
     font-size: 1.1rem;
+    color   : white;
     cursor: pointer;
     transition: transform 0.2s, color 0.2s;
 }
