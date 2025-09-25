@@ -18,8 +18,7 @@ public class Notification {
     private boolean seen = false;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // --- Getters & Setters ---
-
+    // Getters & Setters
     public Long getId() {
         return id;
     }

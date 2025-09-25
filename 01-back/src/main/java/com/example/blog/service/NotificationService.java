@@ -32,13 +32,7 @@ public class NotificationService {
             n.getId(), n.getActorId(), n.getType(), n.getMessage(), n.getPostId(), n.getCreatedAt(), n.isSeen()
         );
 
-        // ----- OPTION A (recommended): user-destination (STOMP user mapping) -----
-        // This sends to the authenticated user's session. The client should subscribe to "/user/queue/notifications".
         messaging.convertAndSendToUser(String.valueOf(recipientId), "/queue/notifications", dto);
-
-        // ----- OPTION B (if you prefer a literal path /topic/notifications/{id}) -----
-        // messaging.convertAndSend("/topic/notifications/" + recipientId, dto);
-
         return n;
     }
 
