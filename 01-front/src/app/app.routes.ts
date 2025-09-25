@@ -7,6 +7,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { CommentsComponent } from './pages/comments/comments.component';
 import { LoggedInGuard } from './services/loggedIn.guard';
 import { AuthGuard } from './services/auth.guard';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 export const routes: Routes = [
   { path: '', component: PresntationComponent },
   { path: 'login', component: LoginComponent,canActivate:[LoggedInGuard] },
@@ -14,4 +15,5 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent,canActivate:[AuthGuard] },
   { path: 'posts/:id/comments',component:CommentsComponent,canActivate:[AuthGuard]},
   { path: 'profile/:id', component: ProfileComponent,canActivate:[AuthGuard] },
+  { path: 'notifications', component: NotificationsComponent,canActivate:[AuthGuard] },
 ];

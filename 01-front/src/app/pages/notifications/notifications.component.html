@@ -1,0 +1,9 @@
+<div class="notifications">
+  <h3>Notifications</h3>
+  <ul>
+    <li *ngFor="let n of (notifications$ | async)">
+      <strong>{{ n.type }}</strong> - {{ n.message }}
+      <small>({{ n.createdAt | date:'short' }})</small>
+    </li>
+  </ul>
+</div>
