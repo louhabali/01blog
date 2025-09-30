@@ -13,16 +13,19 @@ import { Observable } from 'rxjs';
 })
 export class NotificationsComponent implements OnInit {
   notifications$!: Observable<NotificationDTO[]>;
-   currentUserId!: number;
-  constructor(private wsService: WebsocketService,private userservice: UserService) {}
+  currentUserId!: number;
+
+  constructor(private wsService: WebsocketService, private userService: UserService) {}
 
   ngOnInit() {
-    // suppose the logged-in user has id=1
-     this.userservice.getCurrentUser().subscribe(user => {
+    this.userService.getCurrentUser().subscribe(user => {
       this.currentUserId = user.id;
-   
+
+      // Connect WebSocket (fetch stored + listen live)
       this.wsService.connect(this.currentUserId);
+
+      // Subscribe to all notifications (stored + live)
       this.notifications$ = this.wsService.getNotifications();
     });
   }
-} 
+}
