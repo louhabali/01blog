@@ -28,8 +28,10 @@ export class WebsocketService {
       console.log('Connected to WebSocket!');
 
       // Subscribe to private notifications for this user
-      this.stompClient?.subscribe(`/user/${userId}/queue/notifications`, (message) => {
+      this.stompClient?.subscribe("/topic/notifications", (message) => {
         if (message.body) {
+          console.log("++++++notifs : " ,message , message.body);
+          
           const notif: NotificationDTO = JSON.parse(message.body);
           const current = this.notifications$.getValue();
           this.notifications$.next([notif, ...current]); // prepend

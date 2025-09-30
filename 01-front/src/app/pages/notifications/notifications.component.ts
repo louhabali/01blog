@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WebsocketService, NotificationDTO } from '../../services/websocket.service';
+import { UserService } from '../../services/user.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,12 +13,16 @@ import { Observable } from 'rxjs';
 })
 export class NotificationsComponent implements OnInit {
   notifications$!: Observable<NotificationDTO[]>;
-
-  constructor(private wsService: WebsocketService) {}
+   currentUserId!: number;
+  constructor(private wsService: WebsocketService,private userservice: UserService) {}
 
   ngOnInit() {
     // suppose the logged-in user has id=1
-    this.wsService.connect(1);
-    this.notifications$ = this.wsService.getNotifications();
+     this.userservice.getCurrentUser().subscribe(user => {
+      this.currentUserId = user.id;
+   
+      this.wsService.connect(this.currentUserId);
+      this.notifications$ = this.wsService.getNotifications();
+    });
   }
-}
+} 
