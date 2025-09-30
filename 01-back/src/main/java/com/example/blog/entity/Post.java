@@ -19,7 +19,7 @@ public class Post {
     private Boolean isAppropriate = true;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
     private LocalDateTime createdAt = LocalDateTime.now();
 

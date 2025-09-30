@@ -19,21 +19,36 @@ public class NotificationService {
         this.messaging = messaging;
     }
 
-    public Notification pushNotification(Long recipientId, Long actorId, String type, String message, Long postId) {
-        Notification n = new Notification();
-        n.setRecipientId(recipientId);
-        n.setActorId(actorId);
-        n.setType(type);
-        n.setMessage(message);
-        n.setPostId(postId);
-        n = repo.save(n);
+    // public Notification pushNotification(Long recipientId,  String message) {
+    //     // Notification n = new Notification();
+    //     // n.setRecipientId(recipientId);
+       
+       
+    //     // n.setMessage(message);
+        
+    //     // n = repo.save(n);
 
+    //     // NotificationDTO dto = new NotificationDTO(
+    //     //     n.getId(), n.getActorId(), n.getType(), n.getMessage(), n.getPostId(), n.getCreatedAt(), n.isSeen()
+    //     // );
+
+    //     // messaging.convertAndSendToUser(String.valueOf(recipientId), "/queue/notifications", dto);
+    //     // return n;
+        
+    // }
+ public void pushNotification(Notification notification) {
+        // Send to specific user's private queue
         NotificationDTO dto = new NotificationDTO(
-            n.getId(), n.getActorId(), n.getType(), n.getMessage(), n.getPostId(), n.getCreatedAt(), n.isSeen()
-        );
-
-        messaging.convertAndSendToUser(String.valueOf(recipientId), "/queue/notifications", dto);
-        return n;
+        notification.getId(),
+        notification.getActorId(),
+        notification.getType(),
+        notification.getMessage(),
+        notification.getPostId(),
+        notification.getCreatedAt(),
+        notification.isSeen()
+    );
+        messaging.convertAndSend("/topic/notifications", dto);
+       //System.out.println("+++++++++ Sending notification to user " + recipientId + ": " + notification);
     }
 
     public List<Notification> getNotificationsFor(Long userId) {

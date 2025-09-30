@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
 
-import java.util.HashMap;
 import java.util.*;
 
 @RestController
@@ -49,12 +48,8 @@ public User getCurrentUser(HttpServletRequest request) {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
         System.out.println("yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyyy"+id);
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        User user = userOpt.get();
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
         response.put("username", user.getUsername());
