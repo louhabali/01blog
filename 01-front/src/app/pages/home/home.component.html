@@ -7,6 +7,7 @@
      <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
     <!-- Post Creation Form -->
     <div class="post-form">
+      <input type="file" (change)="onFileSelected($event)" />
       <input type="text" placeholder="Post title" [(ngModel)]="newPost.title">
       <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
       <button (click)="submitPost()">Post</button>
@@ -27,7 +28,14 @@
     <ng-template #editTitle>
       <input [(ngModel)]="post.title" class="edit-input" />
     </ng-template>
+    <!--media-->
+    <div *ngIf="post.imageUrl">
+  <img [src]="post.imageUrl" alt="post image" style="max-width:100%; border-radius:10px;" />
+</div>
 
+<div *ngIf="post.videoUrl">
+  <video controls [src]="post.videoUrl" style="max-width:100%; border-radius:10px;"></video>
+</div>
     <!-- Content -->
     <div *ngIf="!post.isEditing; else editContent">
       <p style="font-size: 0.7em;">{{ post.content }}</p>

@@ -11,6 +11,8 @@ interface Post {
   id: number; 
   title: string; 
   content: string; 
+  imageUrl : string | null;
+  videoUrl :string | null;
   author: string;
   authorId : number;
   likes : number; 
@@ -40,7 +42,7 @@ export class HomeComponent implements OnInit {
     private postService: PostService,
     private userService: UserService,
     private router: Router
-  ) {}
+  ) {}  
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
@@ -61,29 +63,62 @@ export class HomeComponent implements OnInit {
     this.http
       .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
       .subscribe(posts =>{
+         this.posts = posts.map(p => ({
+        ...p,
+        imageUrl: p.imageUrl ? `http://localhost:8087/uploads/${p.imageUrl}` : null,
+        videoUrl: p.videoUrl ? `http://localhost:8087/uploads/${p.videoUrl}` : null,
+      }));
         console.log("++++ posts are : ",posts);
         
 this.posts = posts;
       } );
   }
+newMedia: File | null = null;
 
-  submitPost() {
-    const postPayload = {
-      title: this.newPost.title,
-      content: this.newPost.content,
-      authorId: this.currentUserId
-    };
+onFileSelected(event: any) {
+  this.newMedia = event.target.files[0];
+  console.log("selected media is ",this.newMedia);
+  
+}
 
-    this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
-      .subscribe({
-        next: post => {
-          this.posts.unshift(post);
-          this.newPost = { title: '', content: '' };
-        },
-        error: err => console.error('Error creating post', err)
+submitPost() {
+  if (this.newMedia) {
+    const formData = new FormData();
+    formData.append("file", this.newMedia);
+
+    this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
+      .subscribe(url => {
+  console.log("url media is ",url);
+
+        this.createPost(url);
       });
+  } else {
+    this.createPost(null);
+  }
+}
+  createPost(mediaUrl: string | null) {
+  const postPayload: any = {
+    title: this.newPost.title,
+    content: this.newPost.content,
+    authorId: this.currentUserId
+  };
+
+  if (mediaUrl) {
+    if (mediaUrl.endsWith(".mp4")) postPayload.videoUrl = mediaUrl;
+    else postPayload.imageUrl = mediaUrl;
   }
 
+  this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
+    .subscribe({
+      next: post => {
+        post.authorId = this.currentUserId;
+        this.posts.unshift(post);
+        this.newPost = { title: '', content: '' };
+        this.newMedia = null;
+      },
+      error: err => console.error('Error creating post', err)
+    });
+}
   toggleLike(post: Post): void {
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
