@@ -40,6 +40,8 @@ public class PostController {
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
         String title = (String) body.get("title");
         String content = (String) body.get("content");
+        String imageUrl = (String) body.get("imageUrl");
+        String videoUrl = (String) body.get("videoUrl");
         Number authorIdNumber = (Number) body.get("authorId");
         Long authorId = authorIdNumber.longValue();
 
@@ -49,6 +51,8 @@ public class PostController {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
+        post.setImageUrl(imageUrl);
+        post.setVideoUrl(videoUrl);
         post.setUser(author); // updated
 
         return postService.createPost(post);

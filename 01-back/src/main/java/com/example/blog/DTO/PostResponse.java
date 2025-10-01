@@ -1,6 +1,5 @@
 package com.example.blog.DTO;
 import com.example.blog.entity.*;
-import com.example.blog.service.*;
 //DTO => 
 public class PostResponse {
     private Long id;
