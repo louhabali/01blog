@@ -9,6 +9,8 @@ public class PostResponse {
     private long authorId;
     private boolean liked;
     private long likes;
+    private String imageUrl;
+     private String videoUrl;
     // Constructor
     public PostResponse(Post post, boolean liked,Long likes) {
         this.id = post.getId();
@@ -18,6 +20,8 @@ public class PostResponse {
         this.authorName = post.getUser().getUsername(); 
         this.authorId = post.getUser().getId();
         this.liked = liked;
+        this.imageUrl = post.getImageUrl();
+        this.videoUrl = post.getVideoUrl();
     }
 
     // Getters and setters
@@ -28,4 +32,6 @@ public class PostResponse {
     public Long getAuthorId() { return authorId; }
     public boolean isLiked() { return liked; }
     public Long getLikes() { return likes ; }
+     public String getImageUrl() { return imageUrl;}
+         public String getVideoUrl() { return videoUrl;} 
 }
