@@ -1,5 +1,5 @@
 package com.example.blog.controller;
-
+import java.io.File;
 import com.example.blog.entity.Post;
 import com.example.blog.entity.User;
 import com.example.blog.service.UserService;
@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
@@ -54,8 +55,41 @@ public User getCurrentUser(HttpServletRequest request) {
         response.put("id", user.getId());
         response.put("username", user.getUsername());
         response.put("email", user.getEmail());
-       
+        response.put("avatar", user.getAvatar());
 
         return ResponseEntity.ok(response);
+    }
+      @PostMapping("/{id}/avatar")
+    public ResponseEntity<Map<String, String>> uploadAvatar(
+            @PathVariable Long id,
+            @RequestParam("avatar") MultipartFile file
+    ) {
+        try {
+            // Create uploads folder if not exists
+            String uploadDir = System.getProperty("user.dir") + "/uploads/";
+            File directory = new File(uploadDir);
+            if (!directory.exists()) directory.mkdirs();
+
+            // Save file with unique name
+            String filename = id + "_" + file.getOriginalFilename();
+            File dest = new File(uploadDir + filename);
+            file.transferTo(dest);
+
+            // Build URL for frontend
+            String avatarUrl = "http://localhost:8087/uploads/" + filename;
+
+            // Update user in DB
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            user.setAvatar(avatarUrl);
+            userRepository.save(user);
+
+            return ResponseEntity.ok(Map.of("avatarUrl", avatarUrl));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(Map.of("error", "Avatar upload failed"));
+        }
     }
 }
