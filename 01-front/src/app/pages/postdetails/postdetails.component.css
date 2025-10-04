@@ -1,0 +1,93 @@
+.home-container {
+  display: flex;
+  font-family: 'Press Start 2P', sans-serif;
+  margin-top: 60px;
+  
+  height: 100vh;
+  overflow: hidden;
+  background-color: black;
+  padding-bottom: 50px;
+}
+
+/* Users Panel */
+.users-panel { width: 30%; padding-left: 10px; color: white; box-sizing: border-box; }
+.users-panel.dark-mode { background: #ffffff; color: #000; }
+
+/* Posts Panel */
+.posts-panel {
+  padding-top: 20px;
+  padding-bottom: 50px;
+  width: 70%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-image: url('/postsback.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.posts-panel.dark-mode { background-image: url('/postsbackdark.jpg'); color: white; }
+
+/* Theme Toggle */
+.theme-icon { position: absolute; top: 10px; left: 10px; font-size: 1.5rem; color: black; cursor: pointer; }
+.posts-panel.dark-mode .theme-icon { color: white; }
+
+/* Post Details Card */
+.post-details-card {
+
+  width: 95%;
+  max-width: 700px;
+  background-color: #000;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+/* Media */
+.post-details-card img, .post-details-card video { width: 100%; border-radius: 10px; margin-bottom: 1rem; object-fit: cover; }
+
+/* Header */
+.post-details-card .post-header { display: flex; align-items: center; margin-bottom: 0.5rem; font-size: 0.9rem; }
+.post-details-card .post-header img { width: 35px; height: 35px; border-radius: 50%; margin-right: 0.5rem; }
+
+/* Title & Content */
+.post-details-card h3, .post-details-card p { word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 1rem; }
+
+/* Edit inputs */
+.edit-input, .edit-textarea {
+  width: 100%;
+  background: #111;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+/* Media */
+.post-details-card img, 
+.post-details-card video { 
+  width: 100%; 
+  height: 80%;           /* 40% of the card height */
+  max-height: 300px;     /* optional: prevent too tall images */
+  border-radius: 10px; 
+  margin-bottom: 1rem; 
+  object-fit: cover;     /* maintain aspect ratio and cover area */
+}
+/* Actions */
+.post-actions { display: flex; align-items: center; gap: 10px; margin-top: auto; }
+.post-actions i { font-size: 1.2rem; cursor: pointer; }
+.post-actions span { font-size: 0.8rem; }
+.text-red-500 { color: red; }
+
+/* Buttons */
+.post-buttons { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
+.post-buttons i { font-size: 1.2rem; color: white; cursor: pointer; }
+
+/* Posts grid (center single post) */
+.posts-grid { width: 100%; display: flex; justify-content: center; }

@@ -37,10 +37,10 @@
   <video controls [src]="post.videoUrl" style="max-width:100%; border-radius:10px;"></video>
 </div>
     <!-- Content -->
-    <div *ngIf="!post.isEditing; else editContent">
-      <p style="font-size: 0.7em;">{{ post.content }}</p>
+    <div >
+      <p style="font-size: 0.7em;">{{ post.content | slice:0:25 }}<a style="cursor: pointer; color: rgb(48, 85, 216);" (click)="goTopostdetails(post)">   ...</a></p>
     </div>
-    <ng-template #editContent>
+    <ng-template>
       <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
     </ng-template>
 
@@ -51,10 +51,6 @@
      (click)="toggleLike(post)">
   </i>
   <span>{{ post.likes }}</span>
-
-  <i class="fa-regular fa-comment" 
-     (click)="goToComments(post.id)">
-  </i>
 </div>
 
     <!-- Buttons -->
@@ -62,14 +58,6 @@
 <div class="post-buttons">
 
   <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-    
-    <i *ngIf="!post.isEditing"
-       (click)="enableEdit(post, $event)" 
-       class="fa-solid fa-pen"></i>
-
-    <i *ngIf="post.isEditing"
-       (click)="savePost(post, $event); stopEvent($event)" 
-       class="fa-solid fa-save"></i>
 
     <i (click)="deletePost(post)" class="fas fa-trash"></i>
   </ng-container>

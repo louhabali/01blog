@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
     private postService: PostService,
     private userService: UserService,
     private router: Router
-  ) {}  
+  ) {}    
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
@@ -195,7 +195,7 @@ submitPost() {
     alert('Report post: ' + post.id); 
   }
 
-  goToComments(postId: number) {
-    this.router.navigate([`/posts/${postId}/comments`]);
+  goTopostdetails(post: Post) {
+     this.router.navigate([`/posts/${post.id}`], { state: { post } });
   }
 }

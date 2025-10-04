@@ -1,0 +1,65 @@
+<div class="home-container">
+  <!-- Users Panel -->
+  <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
+
+  <!-- Post Panel -->
+  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+    <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
+
+    <div class="posts-grid">
+      <div class="post-details-card" *ngIf="post" (click)="stopEvent($event)">
+        
+        <!-- Header -->
+        <div class="post-header">
+          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}">
+          <span>{{ post.author }}</span>
+        </div>
+
+        <!-- Title -->
+        <div *ngIf="!post.isEditing; else editTitle">
+          <h3>{{ post.title }}</h3>
+        </div>
+        <ng-template #editTitle>
+          <input [(ngModel)]="post.title" class="edit-input"/>
+        </ng-template>
+
+        <!-- Media -->
+        <div *ngIf="post.imageUrl">
+          <img [src]="post.imageUrl" alt="post image"/>
+        </div>
+        <div *ngIf="post.videoUrl">
+          <video controls [src]="post.videoUrl"></video>
+        </div>
+
+        <!-- Content -->
+        <div *ngIf="!post.isEditing; else editContent">
+          <p>{{ post.content }}</p>
+        </div>
+        <ng-template #editContent>
+          <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
+        </ng-template>
+
+        <!-- Actions -->
+        <div class="post-actions">
+          <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
+          <span>{{ post.likes }}</span>
+          <i class="fa-solid fa-comment" (click)="goToComments(post.id)"></i>
+        </div>
+
+        <!-- Buttons -->
+        <div class="post-buttons">
+          <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+            <i *ngIf="!post.isEditing" class="fa-solid fa-pen" (click)="editPost(post)"></i>
+            <i *ngIf="post.isEditing" class="fa-solid fa-save" (click)="savePost(post)"></i>
+            <i class="fas fa-trash" (click)="deletePost(post)"></i>
+          </ng-container>
+
+          <ng-template #reportOnly>
+            <i class="fa-solid fa-triangle-exclamation" (click)="reportPost(post)"></i>
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
