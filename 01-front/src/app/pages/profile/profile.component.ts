@@ -11,8 +11,10 @@ interface Post {
   id: number; 
   title: string; 
   content: string; 
-  author: string;
+  authorName: string;
   authorId: number;
+  imageUrl : string | null;
+  videoUrl :string | null;
   likes: number; 
   avatar?: string; 
   liked?: boolean;
@@ -219,5 +221,8 @@ export class ProfileComponent implements OnInit {
 
   goToComments(postId: number) {
     this.router.navigate([`/posts/${postId}/comments`]);
+  }
+   goTopostdetails(post: Post) {
+     this.router.navigate([`/posts/${post.id}`], { state: { post } });
   }
 }

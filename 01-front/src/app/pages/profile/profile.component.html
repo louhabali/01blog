@@ -15,7 +15,7 @@
          <div class="avatar-wrapper">
       <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
       <!-- Edit Icon Overlay -->
-      <i class="fa-solid fa-pen edit-avatar-icon" (click)="triggerAvatarUpload()"></i>
+      <i class="fa-solid fa-pen edit-avatar-icon" *ngIf="user.id === currentUserId"  (click)="triggerAvatarUpload()"></i>
       <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
     </div>
         <h2 style="margin-top: 10px;">{{ user.username }}</h2>
@@ -50,55 +50,48 @@
     </div>
 
     <!-- Posts Grid -->
-    <div class="posts-grid">
-      <div class="post-card" *ngFor="let post of posts">
+   <div class="posts-grid">
+  <div class="post-card" *ngFor="let post of posts">
+    <!-- Header -->
+    <div class="post-header">
+      <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
+      <span>{{ post.authorName }}</span>
+    </div>
 
-        <!-- Post Header -->
-        <div class="post-header">
-          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{ post.author }}" />
-          <span>{{ post.author }}</span>
-        </div>
+    <!-- Title -->
+    <h5>{{ post.title }}</h5>
 
-        <!-- Post Title -->
-        <div *ngIf="!post.isEditing; else editTitle">
-          <h5>{{ post.title }}</h5>
-        </div>
-        <ng-template #editTitle>
-          <input [(ngModel)]="post.title" class="edit-input" />
-        </ng-template>
+    <!-- Media -->
+    <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="post image" class="post-media" />
+    <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls class="post-media"></video>
 
-        <!-- Post Content -->
-        <div *ngIf="!post.isEditing; else editContent">
-          <p>{{ post.content }}</p>
-        </div>
-        <ng-template #editContent>
-          <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
-        </ng-template>
+    <!-- Content -->
+    <p>{{ post.content | slice:0:25 }}<a (click)="goTopostdetails(post)" style="color: #3055d8; cursor: pointer;">...</a></p>
 
-        <!-- Like + Comment -->
-        <div class="post-actions">
-          <i class="fa-heart"
-            [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
-            (click)="toggleLike(post)">
-          </i>
-          <span>{{ post.likes || 0 }}</span>
+    <!-- Actions -->
+    <div class="post-actions">
+      <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
+      <span>{{ post.likes || 0 }}</span>
+    </div>
+    <div class="post-buttons">
 
-          <i class="fa-regular fa-comment" (click)="goToComments(post.id)"></i>
-        </div>
+  <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+    
+  
 
-        <!-- Post Buttons -->
-        <div class="post-buttons">
-          <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-            <i *ngIf="!post.isEditing" (click)="enableEdit(post, $event)" class="fa-solid fa-pen"></i>
-            <i *ngIf="post.isEditing" (click)="savePost(post, $event); stopEvent($event)" class="fa-solid fa-save"></i>
-            <i (click)="deletePost(post)" class="fas fa-trash"></i>
-          </ng-container>
-          <ng-template #reportOnly>
-            <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
-          </ng-template>
-        </div>
+    <i (click)="deletePost(post)" class="fas fa-trash"></i>
+  </ng-container>
 
-      </div>
+  <!-- If not the author, show only Report -->
+  <ng-template #reportOnly>
+    <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
+  </ng-template>
+</div>
+  </div>
+</div>
+    <!-- If no posts -->
+    <div *ngIf="posts.length === 0" class="no-posts">
+      <p>No posts to display.</p>
     </div>
   </div>
 

@@ -86,10 +86,7 @@ export class PostdetailsComponent {
     alert(`Reported post ${post.id}`);
   }
 
-  goToComments(postId: number) {
-    console.log("Go to comments for post:", postId);
-    // implement comments section
-  }
+
 
   stopEvent(event: MouseEvent) {
     event.stopPropagation();
@@ -101,5 +98,8 @@ export class PostdetailsComponent {
     if (!target.closest('.post-card') && this.post.isEditing) {
       this.cancelEdit(this.post);
     }
+  }
+  goToComments(postid: Number) {
+     this.router.navigate([`/posts/${postid}/comments`]);
   }
 }

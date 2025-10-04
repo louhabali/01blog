@@ -13,10 +13,10 @@ interface Post {
   content: string; 
   imageUrl : string | null;
   videoUrl :string | null;
-  author: string;
+  authorName: string;
   authorId : number;
   likes : number; 
-  avatar?: string; 
+  avatar: string; 
   liked?: boolean;
   isEditing?: boolean; 
   originalTitle?: string;
@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   currentUserId!: number;
   isDarkMode: boolean = false;
   posts: Post[] = [];
-  newPost: Partial<Post> = { title: '', content: '' };
+  newPost: Partial<Post> = { title: '', content: '', likes: 0 };
 
   constructor(
     private http: HttpClient,
