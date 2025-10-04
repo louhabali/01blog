@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener ,ViewChild, ElementRef} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,7 +25,7 @@ interface User {
   id: number;
   username: string;
   email: string;
-  avatar?: string;
+  avatar: string;
   followersCount?: number;
   followingCount?: number;
   isFollowed?: boolean; // only for UI
@@ -39,11 +39,12 @@ interface User {
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+   @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
   currentUserId!: number;
   isDarkMode = false;
   posts: Post[] = [];
   numberOfposts!: number;
-  user: User = { id: 0, username: '', email: '' };
+  user: User = { id: 0, username: '', email: '' , avatar: '' };
   newPost: Partial<Post> = { title: '', content: '' };
 
   constructor(
@@ -65,7 +66,35 @@ export class ProfileComponent implements OnInit {
       });
     });
   }
+  triggerAvatarUpload() {
+    this.avatarInput.nativeElement.click();
+  }
+   onAvatarSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
 
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      // Send request to backend
+      this.http.post<{ avatarUrl: string }>(
+        `http://localhost:8087/users/${this.currentUserId}/avatar`,
+        formData,
+        { withCredentials: true }
+      ).subscribe({
+        next: (res) => {
+          // Update avatar locally
+          console.log('Avatar uploaded successfully', res);
+          
+          this.user.avatar = res.avatarUrl;
+        },
+        error: (err) => {
+          console.error('Error uploading avatar', err);
+        }
+      });
+    }
+  }
   private loadProfile(id: number) {
     // Load profile user data
     this.http.get<User>(`http://localhost:8087/users/${id}`, { withCredentials: true })

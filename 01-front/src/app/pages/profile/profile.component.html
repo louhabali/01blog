@@ -12,8 +12,13 @@
     <!-- Profile Section -->
     <div class="profile-panel" *ngIf="user">
       <div class="profile-left">
-        <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.username" class="avatar" />
-        <h2>{{ user.username }}</h2>
+         <div class="avatar-wrapper">
+      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
+      <!-- Edit Icon Overlay -->
+      <i class="fa-solid fa-pen edit-avatar-icon" (click)="triggerAvatarUpload()"></i>
+      <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
+    </div>
+        <h2 style="margin-top: 10px;">{{ user.username }}</h2>
          <button  [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
             {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
         </button>
@@ -76,7 +81,7 @@
             [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
             (click)="toggleLike(post)">
           </i>
-          <span>{{ post.likes }}</span>
+          <span>{{ post.likes || 0 }}</span>
 
           <i class="fa-regular fa-comment" (click)="goToComments(post.id)"></i>
         </div>
