@@ -17,13 +17,14 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-
+    private final TokenBlacklist tokenBlacklist;
     public AuthController(UserService userService,
                           UserRepository userRepository,
-                          JwtUtil jwtUtil) {
+                          JwtUtil jwtUtil ,TokenBlacklist tokenBlacklist) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil; 
+        this.tokenBlacklist = tokenBlacklist;
     }
 
     @PostMapping("/register")
@@ -82,7 +83,22 @@ public ResponseEntity<?> register(@RequestBody User user) {
     }
 
 @PostMapping("/logout")
-public ResponseEntity<?> logout(HttpServletResponse response) {
+public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    // extract the JWT token from the cookies
+    if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+            if ("jwt".equals(cookie.getName())) {
+                String token = cookie.getValue();
+
+                // 🧱 add token to blacklist
+                tokenBlacklist.add(token);
+
+                break;
+            }
+        }
+    }
+
+    // remove the cookie
     ResponseCookie cookie = ResponseCookie.from("jwt", "")
             .httpOnly(true)
             .path("/")
