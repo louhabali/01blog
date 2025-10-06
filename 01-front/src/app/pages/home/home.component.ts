@@ -196,6 +196,6 @@ submitPost() {
   }
 
   goTopostdetails(post: Post) {
-     this.router.navigate([`/posts/${post.id}`], { state: { post } });
+     this.router.navigate([`/posts/${post.id}`]);
   }
 }
