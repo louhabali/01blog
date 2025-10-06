@@ -69,4 +69,21 @@
     </div>
 
   </div>
+  <div class="modal-backdrop" *ngIf="isReportModalOpen" (click)="closeReportModal()"></div>
+
+<div class="modal" *ngIf="isReportModalOpen">
+  <h2>Report Post</h2>
+  <form (submit)="submitReport($event)">
+    <label>Reason:</label>
+    <input type="text" [(ngModel)]="reportData.reason" name="reason" required>
+
+    <label>Description:</label>
+    <textarea [(ngModel)]="reportData.description" name="description" rows="3" required></textarea>
+
+    <div class="modal-actions">
+      <button type="submit">Submit</button>
+      <button type="button" (click)="closeReportModal()">Cancel</button>
+    </div>
+  </form>
+</div>
 </div>

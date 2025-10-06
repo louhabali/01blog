@@ -1,98 +1,84 @@
 <div class="home-container">
 
-  <!-- Users Panel -->
+  <!-- LEFT: Users Panel -->
   <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
-  <!-- Posts Panel -->
-  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
-
-    <!-- Theme Toggle -->
+  <!-- MIDDLE: Posts & Post Form -->
+  <div class="center-panel" [ngClass]="{'dark-mode': isDarkMode}">
     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
 
-    <!-- Profile Section -->
-    <div class="profile-panel" *ngIf="user">
-      <div class="profile-left">
-         <div class="avatar-wrapper">
-      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
-      <!-- Edit Icon Overlay -->
-      <i class="fa-solid fa-pen edit-avatar-icon" *ngIf="user.id === currentUserId"  (click)="triggerAvatarUpload()"></i>
-      <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
-    </div>
-        <h2 style="margin-top: 10px;">{{ user.username }}</h2>
-         <button  [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
-            {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
-        </button>
-      </div>
-      <div class="profile-right">
-        <div class="stats">
-          <div>
-            <strong style="color: rgb(99, 138, 232);">{{numberOfposts || 0}} </strong>
-            <span>Posts</span>
-          </div>
-          <div>
-            <strong  style="color: rgb(99, 138, 232);">{{ user.followersCount || 0 }} </strong>
-            <span>Followers</span>
-          </div>
-          <div>
-            <strong  style="color: rgb(99, 138, 232);">{{ user.followingCount || 0}} </strong>
-            <span>Following</span>
-          </div>
-        </div>
-        <p>{{ user.email }}</p>
-      </div>
-    </div>
-
-    <!-- Post Creation Form (only for profile owner) -->
+    <!-- Post Creation Form -->
     <div class="post-form" *ngIf="user?.id === currentUserId">
-      <input type="text" placeholder="Post title" [(ngModel)]="newPost.title" />
-      <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
-      <button (click)="submitPost()">Post</button>
+      <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
+      <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
+      <button (click)="submitPost()">Publish</button>
     </div>
 
-    <!-- Posts Grid -->
-   <div class="posts-grid">
-  <div class="post-card" *ngFor="let post of posts">
-    <!-- Header -->
-    <div class="post-header">
-      <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
-      <span>{{ post.authorName }}</span>
+    <!-- Posts Feed -->
+    <div class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts">
+  <!-- Top-right actions -->
+  <div class="post-top-actions">
+    <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+      <i (click)="deletePost(post)" class="fas fa-trash"></i>
+    </ng-container>
+    <ng-template #reportOnly>
+      <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
+    </ng-template>
+  </div>
+
+  <div class="post-content-wrapper">
+    <div class="post-text">
+      <div class="post-header">
+        <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
+        <span>{{ post.authorName }}</span>
+      </div>
+      <h5>{{ post.title }}</h5>
+      <p (click)="goTopostdetails(post)">
+        {{ post.content | slice:0:100 }}...
+        <span style="color:#1a8917;cursor:pointer;">Read more</span>
+      </p>
+      <div class="post-actions">
+        <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
+        <span>{{ post.likes || 0 }}</span>
+      </div>
     </div>
 
-    <!-- Title -->
-    <h5>{{ post.title }}</h5>
-
-    <!-- Media -->
-    <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="post image" class="post-media" />
-    <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls class="post-media"></video>
-
-    <!-- Content -->
-    <p>{{ post.content | slice:0:25 }}<a (click)="goTopostdetails(post)" style="color: #3055d8; cursor: pointer;">...</a></p>
-
-    <!-- Actions -->
-    <div class="post-actions">
-      <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
-      <span>{{ post.likes || 0 }}</span>
+    <!-- Small image/video at right -->
+    <div class="post-media-wrapper" *ngIf="post.imageUrl || post.videoUrl">
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="post image" />
+      <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
     </div>
-    <div class="post-buttons">
-
-  <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-    
-  
-
-    <i (click)="deletePost(post)" class="fas fa-trash"></i>
-  </ng-container>
-
-  <!-- If not the author, show only Report -->
-  <ng-template #reportOnly>
-    <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
-  </ng-template>
-</div>
   </div>
 </div>
-    <!-- If no posts -->
+
+    </div>
+
+    <!-- No Posts -->
     <div *ngIf="posts.length === 0" class="no-posts">
       <p>No posts to display.</p>
     </div>
   </div>
 
+  <!-- RIGHT: Profile Info -->
+  <div class="profile-panel" *ngIf="user" [ngClass]="{'dark-mode': isDarkMode}">
+    <div class="avatar-wrapper">
+      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
+      <i class="fa-solid fa-pen edit-avatar-icon" *ngIf="user.id === currentUserId" (click)="triggerAvatarUpload()"></i>
+      <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
+    </div>
+
+    <h2>{{ user.username }}</h2>
+    <p>{{ user.email }}</p>
+
+    <button [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
+      {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
+    </button>
+
+    <div class="stats">
+      <div><strong>{{ numberOfposts || 0 }}</strong><span>Posts</span></div>
+      <div><strong>{{ user.followersCount || 0 }}</strong><span>Followers</span></div>
+      <div><strong>{{ user.followingCount || 0 }}</strong><span>Following</span></div>
+    </div>
+  </div>
 </div>

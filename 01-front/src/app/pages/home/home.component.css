@@ -1,4 +1,66 @@
 /* ==================== CSS STYLES ==================== */
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+}
+
+/* Modal box */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 10px;
+  width: 350px;
+  z-index: 200;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.modal.dark-mode {
+  background: #222;
+  color: #fff;
+}
+
+.modal h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+}
+
+.modal input, .modal textarea {
+  width: 95%;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #000000;
+  color: white;
+}
+
+.modal-actions button:last-child {
+  background: #ccc;
+}
 
 /* Container */
 .home-container {

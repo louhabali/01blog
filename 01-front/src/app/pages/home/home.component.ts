@@ -191,11 +191,58 @@ submitPost() {
       error: err => console.error("Error deleting post", err)
     });
 }
-  reportPost(post: Post) { 
-    alert('Report post: ' + post.id); 
-  }
 
   goTopostdetails(post: Post) {
      this.router.navigate([`/posts/${post.id}`]);
   }
+
+  ///// REPORT 
+  isReportModalOpen = false;
+reportData = {
+  reason: '',
+  description: '',
+  postId: 0,
+  reportedUserId: 0
+};
+
+// Open the modal and store post info
+reportPost(post: Post) {
+  this.isReportModalOpen = true;
+  this.reportData = {
+    reason: '',
+    description: '',
+    postId: post.id,
+    reportedUserId: post.authorId
+  };
+}
+
+// Close the modal
+closeReportModal() {
+  this.isReportModalOpen = false;
+}
+
+// Handle report submission
+submitReport(event: Event) {
+  event.preventDefault();
+
+  const payload = {
+    reporterId: this.currentUserId,
+    reportedUserId: this.reportData.reportedUserId,
+    postId: this.reportData.postId,
+    reason: this.reportData.reason,
+    description: this.reportData.description
+  };
+
+  this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
+    .subscribe({
+      next: () => {
+        alert('Report submitted successfully');
+        this.closeReportModal();
+      },
+      error: (err) => {
+        console.error('Error submitting report', err);
+        alert('Failed to submit report');
+      }
+    });
+}
 }
