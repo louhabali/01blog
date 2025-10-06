@@ -157,16 +157,52 @@ export class ProfileComponent implements OnInit {
         this.numberOfposts = posts.length;
       });
   }
+newMedia: File | null = null;
+
+onFileSelected(event: any) {
+  this.newMedia = event.target.files[0];
+  console.log("selected media is ",this.newMedia);
+  
+}
 
   submitPost() {
-    const payload = { title: this.newPost.title, content: this.newPost.content, authorId: this.currentUserId };
-    this.http.post<Post>('http://localhost:8087/posts/create', payload, { withCredentials: true })
-      .subscribe(post => {
-        this.posts.unshift(post);
-        this.newPost = { title: '', content: '' };
+  if (this.newMedia) {
+    const formData = new FormData();
+    formData.append("file", this.newMedia);
+
+    this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
+      .subscribe(url => {
+  console.log("url media is ",url);
+
+        this.createPost(url);
       });
+  } else {
+    this.createPost(null);
+  }
+}
+  createPost(mediaUrl: string | null) {
+  const postPayload: any = {
+    title: this.newPost.title,
+    content: this.newPost.content,
+    authorId: this.currentUserId
+  };
+
+  if (mediaUrl) {
+    if (mediaUrl.endsWith(".mp4")) postPayload.videoUrl = mediaUrl;
+    else postPayload.imageUrl = mediaUrl;
   }
 
+  this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
+    .subscribe({
+      next: post => {
+        post.authorId = this.currentUserId;
+        this.posts.unshift(post);
+        this.newPost = { title: '', content: '' };
+        this.newMedia = null;
+      },
+      error: err => console.error('Error creating post', err)
+    });
+}
   toggleLike(post: Post) {
     this.postService.toggleLike(post.id, this.currentUserId).subscribe(liked => {
       post.liked = liked;

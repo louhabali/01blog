@@ -11,7 +11,13 @@
     <div class="post-form" *ngIf="user?.id === currentUserId">
       <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
-      <button (click)="submitPost()">Publish</button>
+          <div class="form-actions">
+        <input type="file" (change)="onFileSelected($event)" id="file-upload" />
+        <label for="file-upload" class="file-label">
+          <i class="fa-solid fa-image"></i>
+        </label>
+        <button (click)="submitPost()" class="publish-btn">Publish</button>
+      </div>
     </div>
 
     <!-- Posts Feed -->

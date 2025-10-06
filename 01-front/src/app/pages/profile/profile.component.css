@@ -139,6 +139,46 @@
   margin: 3px 0;
 }
 
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#file-upload {
+  display: none;
+}
+
+.file-label {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+.file-label:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.9);
+}
+.publish-btn {
+  margin-left: auto;
+  background-color: #000000;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.publish-btn:hover {
+  background-color: #156d13;
+}
 .post-card p {
   font-size: 0.95rem;
   color: #444;

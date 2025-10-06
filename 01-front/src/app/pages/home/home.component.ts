@@ -115,6 +115,7 @@ submitPost() {
         this.posts.unshift(post);
         this.newPost = { title: '', content: '' };
         this.newMedia = null;
+    
       },
       error: err => console.error('Error creating post', err)
     });

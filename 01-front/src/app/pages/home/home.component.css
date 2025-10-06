@@ -95,7 +95,7 @@
   flex: 1;
   padding: 40px 24px;
   height: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
   background-color: #fff;
   display: flex;
   flex-direction: column;
