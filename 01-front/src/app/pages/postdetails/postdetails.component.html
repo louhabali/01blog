@@ -2,64 +2,114 @@
   <!-- Users Panel -->
   <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
-  <!-- Post Panel -->
-  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+  <!-- Article Panel -->
+  <div class="article-panel" [ngClass]="{'dark-mode': isDarkMode}">
+    <!-- Theme Toggle -->
     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
 
-    <div class="posts-grid">
-      <div class="post-details-card" *ngIf="post" (click)="stopEvent($event)">
-        
-        <!-- Header -->
-        <div class="post-header">
-          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}">
-          <span>{{ post.author }}</span>
-        </div>
+    <article class="article-container" *ngIf="post">
+      <!-- Article Header -->
+      <header class="article-header">
 
         <!-- Title -->
-        <div *ngIf="!post.isEditing; else editTitle">
-          <h3>{{ post.title }}</h3>
-        </div>
+        <h1 *ngIf="!post.isEditing; else editTitle" class="article-title">
+          {{ post.title }}
+        </h1>
         <ng-template #editTitle>
-          <input [(ngModel)]="post.title" class="edit-input"/>
+          <input [(ngModel)]="post.title" class="title-edit-input" placeholder="Title" />
         </ng-template>
 
-        <!-- Media -->
-        <div *ngIf="post.imageUrl">
-          <img [src]="post.imageUrl" alt="post image"/>
-        </div>
-        <div *ngIf="post.videoUrl">
-          <video controls [src]="post.videoUrl"></video>
+        <!-- Author Section -->
+        <div class="author-section">
+          <div class="author-info">
+            <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar">
+            <div class="author-details">
+              <span class="author-name">{{ post.author }}</span>
+              <div class="article-meta">
+                <span class="read-time">6 min read</span>
+                <span class="separator">·</span>
+                <span class="publish-date">{{ 'Jul 28, 2025' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="header-actions">
+            <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+              <button class="icon-btn" *ngIf="!post.isEditing" (click)="editPost(post, $event)" title="Edit">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="icon-btn save-btn" *ngIf="post.isEditing" (click)="savePost(post, $event)" title="Save">
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="icon-btn" (click)="deletePost(post)" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+
+              <!-- Change Picture Icon -->
+              <button *ngIf="post.isEditing" class="icon-btn" title="Change Picture" (click)="changePicture(post)">
+                <i class="fa-solid fa-image"></i>
+              </button>
+            </ng-container>
+            <ng-template #reportOnly>
+              <button class="icon-btn" (click)="reportPost(post)" title="Report">
+                <i class="fa-solid fa-flag"></i>
+              </button>
+            </ng-template>
+          </div>
         </div>
 
-        <!-- Content -->
-        <div *ngIf="!post.isEditing; else editContent">
+        <!-- Engagement Bar -->
+        <div class="engagement-bar">
+          <div class="engagement-actions">
+            <button class="engagement-btn" (click)="toggleLike(post)">
+              <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"></i>
+              <span>{{ post.likes || 0 }}</span>
+            </button>
+            <button class="engagement-btn" (click)="goToComments(post.id)">
+              <i class="fa-solid fa-comment"></i>
+              <span>{{ 0 }}</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Featured Media -->
+      <div *ngIf="!post.isEditing && post.imageUrl" class="featured-image">
+        <img [src]="post.imageUrl" alt="Article featured image"/>
+      </div>
+      <div *ngIf="!post.isEditing && post.videoUrl" class="featured-video">
+        <video controls [src]="post.videoUrl"></video>
+      </div>
+
+      <!-- Edit Mode Image Upload -->
+      <div *ngIf="post.isEditing" class="featured-image-edit">
+        <input type="file" (change)="onImageChange($event, post)" />
+      </div>
+
+      <!-- Article Content -->
+      <div class="article-content">
+        <div *ngIf="!post.isEditing; else editContent" class="content-text">
           <p>{{ post.content }}</p>
         </div>
         <ng-template #editContent>
-          <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
+          <textarea [(ngModel)]="post.content" class="content-edit-textarea" placeholder="Tell your story..."></textarea>
         </ng-template>
-
-        <!-- Actions -->
-        <div class="post-actions">
-          <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
-          <span>{{ post.likes }}</span>
-          <i class="fa-solid fa-comment" (click)="goToComments(post.id)"></i>
-        </div>
-
-        <!-- Buttons -->
-        <div class="post-buttons">
-          <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-            <i *ngIf="!post.isEditing" class="fa-solid fa-pen" (click)="editPost(post)"></i>
-            <i *ngIf="post.isEditing" class="fa-solid fa-save" (click)="savePost(post)"></i>
-            <i class="fas fa-trash" (click)="deletePost(post)"></i>
-          </ng-container>
-
-          <ng-template #reportOnly>
-            <i class="fa-solid fa-triangle-exclamation" (click)="reportPost(post)"></i>
-          </ng-template>
-        </div>
-
       </div>
-    </div>
+
+      <!-- Article Footer -->
+      <footer class="article-footer">
+        <div class="footer-actions">
+          <button class="engagement-btn large" (click)="toggleLike(post)">
+            <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"></i>
+            <span>{{ post.likes || 0 }}</span>
+          </button>
+          <button class="engagement-btn large" (click)="goToComments(post.id)">
+            <i class="fa-solid fa-comment"></i>
+            <span>Respond</span>
+          </button>
+        </div>
+      </footer>
+    </article>
   </div>
 </div>

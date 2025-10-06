@@ -1,73 +1,72 @@
+<!-- HTML Template -->
 <div class="home-container">
-  <!-- Users Panel is now UsersComponent -->
+
+  <!-- Users Panel -->
   <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
   <!-- Posts Panel -->
   <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
-     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
+    
+    <!-- Theme Toggle -->
+    <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
+
     <!-- Post Creation Form -->
     <div class="post-form">
-      <input type="file" (change)="onFileSelected($event)" />
-      <input type="text" placeholder="Post title" [(ngModel)]="newPost.title">
-      <textarea placeholder="Post content" [(ngModel)]="newPost.content"></textarea>
-      <button (click)="submitPost()">Post</button>
+      <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
+      <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
+      <div class="form-actions">
+        <input type="file" (change)="onFileSelected($event)" id="file-upload" />
+        <label for="file-upload" class="file-label">
+          <i class="fa-solid fa-image"></i>
+        </label>
+        <button (click)="submitPost()" class="publish-btn">Publish</button>
+      </div>
     </div>
 
-    <!-- Posts Grid -->
-    <div class="posts-grid">
-  <div class="post-card" *ngFor="let post of posts">
-    <div class="post-header">
-      <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}">
-      <span>{{ post.authorName }}</span>
+    <!-- Posts Feed -->
+    <div class="posts-feed">
+      <article class="post-card" *ngFor="let post of posts">
+
+        <!-- Post Header -->
+        <div class="post-header">
+          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}" class="avatar">
+          <div class="author-info">
+            <span class="author-name">{{ post.authorName }}</span>
+          </div>
+          <div class="post-actions-menu">
+            <i class="fa-solid fa-triangle-exclamation" *ngIf="post.authorId !== currentUserId" (click)="reportPost(post)"></i>
+            <i class="fas fa-trash" *ngIf="post.authorId === currentUserId" (click)="deletePost(post)"></i>
+          </div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="post-body">
+          <div class="post-text">
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-content">
+              {{ post.content | slice:0:40 }}
+              <span class="read-more" (click)="goTopostdetails(post)">...Read more</span>
+            </p>
+          </div>
+
+          <!-- Media Preview -->
+          <div *ngIf="post.imageUrl" class="post-thumbnail">
+            <img [src]="post.imageUrl" alt="post image">
+          </div>
+        </div>
+
+        <!-- Post Footer -->
+        <div class="post-footer">
+          <div class="post-actions">
+            <button class="action-btn" (click)="toggleLike(post)">
+              <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid' : 'fa-regular'"></i>
+              <span>{{ post.likes || 0 }}</span>
+            </button>
+          </div>
+        </div>
+
+      </article>
     </div>
-
-    <!-- Title -->
-    <div *ngIf="!post.isEditing; else editTitle">
-      <h5>{{ post.title }}</h5>
-    </div>
-    <ng-template #editTitle>
-      <input [(ngModel)]="post.title" class="edit-input" />
-    </ng-template>
-    <!--media-->
-    <div *ngIf="post.imageUrl">
-  <img [src]="post.imageUrl" alt="post image" style="max-width:100%; border-radius:10px;" />
-</div>
-
-<div *ngIf="post.videoUrl">
-  <video controls [src]="post.videoUrl" style="max-width:100%; border-radius:10px;"></video>
-</div>
-    <!-- Content -->
-    <div >
-      <p style="font-size: 0.7em;">{{ post.content | slice:0:25 }}<a style="cursor: pointer; color: rgb(48, 85, 216);" (click)="goTopostdetails(post)">   ...</a></p>
-    </div>
-    <ng-template>
-      <textarea [(ngModel)]="post.content" class="edit-textarea"></textarea>
-    </ng-template>
-
-    <!-- Like + Comment -->
-    <div class="post-actions">
-  <i class="fa-heart"
-     [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"
-     (click)="toggleLike(post)">
-  </i>
-  <span>{{ post.likes || 0 }}</span>
-
-</div>
-
-    <!-- Buttons -->
-    <!-- Buttons -->
-<div class="post-buttons">
-  <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-    <i (click)="deletePost(post)" class="fas fa-trash"></i>
-  </ng-container>
-
-  <!-- If not the author, show only Report -->
-  <ng-template #reportOnly>
-    <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
-  </ng-template>
-</div>
-  </div>
-</div>
 
   </div>
 </div>

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UsersComponent } from '../users/users.component';
-
+import { PostService } from '../../services/post.service';
 interface Post { 
   id: number; 
   title: string; 
@@ -32,7 +32,7 @@ export class PostdetailsComponent {
   currentUserId!: number;
   isDarkMode = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router ,private postService: PostService,) {
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras.state && nav.extras.state['post']) {
       this.post = nav.extras.state['post'] as Post;
@@ -49,8 +49,19 @@ export class PostdetailsComponent {
   }
 
   toggleLike(post: Post) {
-    post.liked = !post.liked;
-    post.likes += post.liked ? 1 : -1;
+    console.log(post.id , "sssssss" , this.currentUserId);
+    
+    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+      next: (liked) => {
+        if (liked == true){
+          post.likes += 1;
+        }else {
+          post.likes -= 1;
+        }
+        post.liked = liked;
+      },
+      error: (err) => console.error('Error toggling like', err)
+    });
   }
 
   editPost(post: Post, event?: MouseEvent) {
@@ -92,14 +103,26 @@ export class PostdetailsComponent {
     event.stopPropagation();
   }
 
-  @HostListener('document:click', ['$event'])
-  handleClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.post-card') && this.post.isEditing) {
-      this.cancelEdit(this.post);
-    }
-  }
+
   goToComments(postid: Number) {
      this.router.navigate([`/posts/${postid}/comments`]);
   }
+  changePicture(post: Post) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e: any) => this.onImageChange(e, post);
+  input.click();
+}
+
+onImageChange(event: any, post: Post) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      post.imageUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+}
 }

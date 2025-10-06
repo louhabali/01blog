@@ -1,11 +1,9 @@
 .users-panel {
-  background: linear-gradient(to left,#000000, #000000, #000000);
-  color: white;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100vh; /* full page height */
-  padding-bottom: 30px;
+ overflow: hidden; 
   
 }
 .header-text{
@@ -13,7 +11,7 @@
   text-align: center;
 }
 .users-panel.dark-mode {
-  background: #ffffff; 
+
   color: #000000;
 }
 
@@ -23,7 +21,7 @@
 }
 
 .users-panel input {
-  font-family: 'Press Start 2P', sans-serif;
+  
   font-size: 0.4em;
   width: 70%;
   padding: 0.5rem;
@@ -33,7 +31,7 @@
 }
 
 .users-panel input::placeholder {
-  font-family: 'Press Start 2P', sans-serif;
+ 
   font-size: 0.4em;
 }
 
