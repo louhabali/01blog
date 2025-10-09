@@ -1,4 +1,6 @@
 package com.example.blog.DTO;
+import java.time.LocalDateTime;
+
 import com.example.blog.entity.*;
 //DTO => 
 public class PostResponse {
@@ -11,9 +13,11 @@ public class PostResponse {
     private long likes;
     private String imageUrl;
      private String videoUrl;
+     private LocalDateTime createdAt; 
     // Constructor
     public PostResponse(Post post, boolean liked,Long likes) {
         this.id = post.getId();
+        this.createdAt = post.getCreatedAt();
         this.likes =likes;
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -32,6 +36,8 @@ public class PostResponse {
     public Long getAuthorId() { return authorId; }
     public boolean isLiked() { return liked; }
     public Long getLikes() { return likes ; }
-     public String getImageUrl() { return imageUrl;}
-         public String getVideoUrl() { return videoUrl;} 
+    public String getImageUrl() { return imageUrl;}
+    public String getVideoUrl() { return videoUrl;} 
+    public LocalDateTime getCreatedAT() { return createdAt ; }
+    
 }

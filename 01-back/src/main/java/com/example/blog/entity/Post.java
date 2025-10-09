@@ -24,6 +24,10 @@ public class Post {
      private String imageUrl;   // e.g. "http://localhost:8080/uploads/pic.jpg"
     private String videoUrl;   // e.g. "http://localhost:8080/uploads/clip.mp4"
     private LocalDateTime createdAt = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     // getters and setters
     public Long getId() { return id; }

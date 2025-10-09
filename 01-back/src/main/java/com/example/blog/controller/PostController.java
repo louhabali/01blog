@@ -10,6 +10,9 @@ import com.example.blog.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +45,9 @@ public class PostController {
         String content = (String) body.get("content");
         String imageUrl = (String) body.get("imageUrl");
         String videoUrl = (String) body.get("videoUrl");
+        String createdAtStr = (String) body.get("createdAt");
+         OffsetDateTime offsetDateTime = OffsetDateTime.parse(createdAtStr);
+    LocalDateTime createdAt = offsetDateTime.toLocalDateTime();
         Number authorIdNumber = (Number) body.get("authorId");
         Long authorId = authorIdNumber.longValue();
 
@@ -52,6 +58,7 @@ public class PostController {
         post.setTitle(title);
         post.setContent(content);
         post.setImageUrl(imageUrl);
+        post.setCreatedAt(createdAt);
         post.setVideoUrl(videoUrl);
         post.setUser(author); // updated
 

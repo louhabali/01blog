@@ -3,10 +3,11 @@ import java.util.*;
 
 import com.example.blog.entity.User;
 import com.example.blog.repository.UserRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService {
@@ -19,6 +20,14 @@ public class UserService {
     }
      public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+    public User getUserById(long id){
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        User user = optionalUser.get();
+        return user;
     }
     public User makeAdmin(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
