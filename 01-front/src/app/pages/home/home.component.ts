@@ -6,7 +6,7 @@ import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
 import { UsersComponent } from '../users/users.component';
 import { Router } from '@angular/router';
-
+import { TimeAgoPipe } from '../../services/time-ago.pipe';
 interface Post { 
   id: number; 
   title: string; 
@@ -15,6 +15,7 @@ interface Post {
   videoUrl :string | null;
   authorName: string;
   authorId : number;
+  createdAT : string | Date;
   likes : number; 
   avatar: string; 
   liked?: boolean;
@@ -26,7 +27,7 @@ interface Post {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent],
+  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -100,7 +101,8 @@ submitPost() {
   const postPayload: any = {
     title: this.newPost.title,
     content: this.newPost.content,
-    authorId: this.currentUserId
+    authorId: this.currentUserId,
+    createdAt: new Date()
   };
 
   if (mediaUrl) {
@@ -113,6 +115,7 @@ submitPost() {
       next: post => {
         post.authorId = this.currentUserId;
         this.posts.unshift(post);
+        
         this.newPost = { title: '', content: '' };
         this.newMedia = null;
     

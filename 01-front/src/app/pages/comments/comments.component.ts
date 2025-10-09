@@ -1,47 +1,60 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { UsersComponent } from '../users/users.component';
-
+import { CommonModule } from '@angular/common';
+import { TimeAgoPipe } from '../../services/time-ago.pipe';
+import { FormsModule } from '@angular/forms';
 interface Comment {
-  id: number;
+  id?: number;
+  user: { id: number; username: string; avatar?: string };
   content: string;
-  author: string;
   createdAt: string;
 }
 
 @Component({
   selector: 'app-comments',
-  standalone: true,
-  imports: [CommonModule, FormsModule,UsersComponent],
+  imports : [UsersComponent,TimeAgoPipe,CommonModule,FormsModule],
   templateUrl: './comments.component.html',
   styleUrls: ['./comments.component.css']
 })
 export class CommentsComponent implements OnInit {
-  postId!: number;
   comments: Comment[] = [];
-  newComment: string = '';
+  newComment = '';
+  currentUserId = 1; // example
+  postId!: number;
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.postId = Number(this.route.snapshot.paramMap.get('id'));
-    this.fetchComments();
+  ngOnInit() {
+    // get postId from route
+    this.route.paramMap.subscribe(params => {
+      this.postId = Number(params.get('id'));
+      console.log(this.postId);
+      
+      this.loadComments();
+      
+      
+    });
   }
 
-  fetchComments() {
-    this.http.get<Comment[]>(`http://localhost:8087/comments/post/${this.postId}`, { withCredentials: true })
-      .subscribe(comments => this.comments = comments);
+  loadComments() {
+    this.http.get<Comment[]>(`http://localhost:8087/posts/${this.postId}/comments`)
+      .subscribe(res =>{
+        this.comments = res
+        console.log(this.comments);
+      } );
   }
 
-  submitComment() {
-    const payload = { content: this.newComment, postId: this.postId };
-    this.http.post<Comment>('http://localhost:8087/comments/create', payload, { withCredentials: true })
-      .subscribe(comment => {
-        this.comments.push(comment);
+  addComment() {
+    if (!this.newComment.trim()) return;
+
+    const dto = { userId: this.currentUserId, postId: this.postId , content: this.newComment };
+
+    this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto)
+      .subscribe(() => {
         this.newComment = '';
+        this.loadComments();
       });
   }
 }

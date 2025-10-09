@@ -31,8 +31,10 @@
         <div class="post-header">
           <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}" class="avatar">
           <div class="author-info">
-            <span class="author-name">{{ post.authorName }}</span>
+            <span class="author-name">{{ post.authorName }}  | </span>
+            <span style="color: rgb(148, 143, 143);font-size: 0.875rem;">{{ post.createdAT | timeAgo }} </span>
           </div>
+         
           <div class="post-actions-menu">
             <i class="fa-solid fa-triangle-exclamation" *ngIf="post.authorId !== currentUserId" (click)="reportPost(post)"></i>
             <i class="fas fa-trash" *ngIf="post.authorId === currentUserId" (click)="deletePost(post)"></i>

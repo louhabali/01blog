@@ -1,20 +1,41 @@
 <div class="home-container">
-  <!-- Users Panel -->
+
+  <!-- LEFT: Users Panel -->
   <app-users class="users-panel"></app-users>
 
-  <!-- Comments Panel -->
-  <div class="comments-panel">
-    <h2>Comments</h2>
-    
+  <!-- CENTER: Comments Feed & Form -->
+  <div class="posts-panel">
+    <i class="fa-solid fa-circle-half-stroke theme-icon"></i>
+
     <!-- Comment Form -->
-    <div class="comment-form">
-      <input [(ngModel)]="newComment" placeholder="Write a comment..." />
-      <button (click)="submitComment()">Post</button>
+    <div class="post-form">
+      <textarea class="content-input" placeholder="Write a comment..." [(ngModel)]="newComment"></textarea>
+      <div class="form-actions">
+        <button class="publish-btn" (click)="addComment()">Publish</button>
+      </div>
     </div>
 
-    <!-- Comments List -->
-    <div *ngFor="let comment of comments" class="comment-card">
-      <p><strong>{{comment.author}}:</strong> {{comment.content}}</p>
+    <!-- Comments Feed -->
+    <div class="posts-feed">
+      <div class="post-card" *ngFor="let comment of comments">
+        <div class="post-header">
+          <div class="author-info">
+            <img class="avatar" [src]="comment.user.avatar || 'default-avatar.png'" alt="avatar">
+            <span class="author-name">{{ comment.user.username }}</span>
+          </div>
+          <small>{{ comment.createdAt | timeAgo }}</small>
+        </div>
+        <div class="post-body">
+          <div class="post-text">
+            <p class="post-content">{{ comment.content }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- No comments -->
+      <div *ngIf="comments.length === 0" class="no-posts">
+        <p>No comments yet.</p>
+      </div>
     </div>
   </div>
 </div>
