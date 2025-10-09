@@ -37,7 +37,8 @@
     <div class="post-text">
       <div class="post-header">
         <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
-        <span>{{ post.authorName }}</span>
+        <span style="color: black;">{{ post.authorName }}  |</span>
+        <span>{{ post.createdAT | timeAgo}}</span> 
       </div>
       <h5>{{ post.title }}</h5>
       <p (click)="goTopostdetails(post)">

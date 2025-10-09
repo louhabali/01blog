@@ -6,7 +6,7 @@ import { UsersComponent } from '../users/users.component';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
-
+import { TimeAgoPipe } from '../../services/time-ago.pipe';
 interface Post { 
   id: number; 
   title: string; 
@@ -15,6 +15,7 @@ interface Post {
   authorId: number;
   imageUrl : string | null;
   videoUrl :string | null;
+  createdAT : string | Date;
   likes: number; 
   avatar?: string; 
   liked?: boolean;
@@ -36,7 +37,7 @@ interface User {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, UsersComponent, FormsModule],
+  imports: [CommonModule, UsersComponent, FormsModule,TimeAgoPipe],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -154,6 +155,8 @@ export class ProfileComponent implements OnInit {
       .get<Post[]>(`http://localhost:8087/posts/all/${id}?currentUserId=${this.currentUserId}`, { withCredentials: true })
       .subscribe(posts => {
         this.posts = posts;
+        console.log("profil posts",this.posts);
+        
         this.numberOfposts = posts.length;
       });
   }
