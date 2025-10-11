@@ -17,9 +17,9 @@
       <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
 
       <!-- 🔔 Notifications -->
-      <a routerLink="/notifications" class="nav-link notif-link" (click)="closeMenu()">
+      <a routerLink="/notifications" class="nav-link notif-link"(click)="hideBadge()" (click)="closeMenu()">
         <i class="fa-regular fa-bell"></i>
-        <span class="notif-badge">8</span>
+       <span *ngIf="showBadge" class="notif-badge">{{ notifsnumber }}</span>
       </a>
 
       <a (click)="logout()" class="nav-link">Logout</a>

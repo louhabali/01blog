@@ -50,9 +50,12 @@ export class WebsocketService {
   getNotifications() {
     return this.notifications$.asObservable();
   }
-
+  private storedFetched = false;
   // Fetch stored notifications from backend
   fetchStoredNotifications(userId: number) {
+    if (this.storedFetched) return;
+    this.storedFetched = true;
+
     this.http.get<NotificationDTO[]>(`http://localhost:8087/api/notifications/${userId}`)
       .subscribe(fetchedNotifs => {
         const current = this.notifications$.getValue();

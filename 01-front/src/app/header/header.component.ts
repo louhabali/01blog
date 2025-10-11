@@ -1,60 +1,78 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { filter } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
-import { ThemeService, Theme } from '../services/theme.service';
-import { UserService } from '../services/user.service';
+  import { Component, OnInit } from '@angular/core';
+  import { Router, NavigationEnd, RouterModule } from '@angular/router';
+  import { AuthService } from '../services/auth.service';
+  import { filter } from 'rxjs/operators';
+  import { CommonModule } from '@angular/common';
+  import { ThemeService, Theme } from '../services/theme.service';
+  import { UserService } from '../services/user.service';
+  import { WebsocketService,  } from '../services/websocket.service';
+  @Component({
+    selector: 'app-header',
+    standalone: true,
+    imports: [CommonModule, RouterModule],
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css']
+  })
+  // this is my header component
+  export class HeaderComponent implements OnInit {
+    menuActive = false;
+     showBadge = true; // <- control visibility
+    notifsnumber: number = 0; // initialize with 0
+    theme!: Theme;
+    currentUserId!: number;
+    constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
 
-@Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
-})
-// this is my header component
-export class HeaderComponent implements OnInit {
-  menuActive = false;
-  theme!: Theme;
-  currentUserId!: number;
-  constructor(public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
+    ngOnInit() {
+      this.userService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.currentUserId = user.id;
+             this.wsService.connect(this.currentUserId);
 
-  ngOnInit() {
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUserId = user.id;
-        console.log("Logged-in user:", user);
-      },
-      error: (err) => {
-        console.error("Failed to fetch user:", err);
-      }
-    });
-    this.auth.checkAuth().subscribe();
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => this.auth.checkAuth().subscribe());
+        // Subscribe to notifications to update the count live
+        this.wsService.getNotifications().subscribe(notifs => {
+          this.notifsnumber = notifs.length;
+        });
+          //this.wsService.connect(this.currentUserId);
+          console.log("Logged-in user:", user);
+        },
+        error: (err) => {
+          console.error("Failed to fetch user:", err);
+        }
+      });
+      
+      
+      this.auth.checkAuth().subscribe();
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: any) =>{
+           if (!event.url.includes('/notifications')) {
+          this.showBadge = true; // show badge again
+        }
+            this.auth.checkAuth().subscribe()
+        } );
 
-    // Subscribe to theme changes
-    this.themeService.theme$.subscribe(t => this.theme = t);
+      // Subscribe to theme changes
+      this.themeService.theme$.subscribe(t => this.theme = t);
+    }
+     hideBadge() {
+    this.showBadge = false; // hide badge when clicked
   }
+    toggleMenu() {
+      this.menuActive = !this.menuActive;
+    }
 
-  toggleMenu() {
-    this.menuActive = !this.menuActive;
-  }
-
-  closeMenu() {
-    this.menuActive = false;
-  }
-
-  logout() {
-    this.auth.logout().subscribe(() => {
-      this.router.navigate(['/']);
+    closeMenu() {
       this.menuActive = false;
-    });
-  }
+    }
 
-  toggleTheme() {
-    this.themeService.toggleTheme();
+    logout() {
+      this.auth.logout().subscribe(() => {
+        this.router.navigate(['/']);
+        this.menuActive = false;
+      });
+    }
+
+    toggleTheme() {
+      this.themeService.toggleTheme();
+    }
   }
-}
