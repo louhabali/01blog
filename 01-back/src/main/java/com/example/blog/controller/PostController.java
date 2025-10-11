@@ -62,6 +62,7 @@ public class PostController {
         post.setVideoUrl(videoUrl);
         post.setUser(author); // updated
 
+        
         return postService.createPost(post);
     }
 
@@ -96,8 +97,11 @@ public List<PostResponse> getAllPostsOfUser(@PathVariable Long id,@RequestParam 
             }
 
             // Update fields
+            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "  + updatedPost.getImageUrl());
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
+            post.setImageUrl(updatedPost.getImageUrl());
+            post.setVideoUrl(updatedPost.getVideoUrl());
 
             Post savedPost = postService.savePost(post);
 

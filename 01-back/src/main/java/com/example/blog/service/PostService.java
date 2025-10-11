@@ -1,8 +1,6 @@
 package com.example.blog.service;
 
-import com.example.blog.entity.Interaction;
-import com.example.blog.entity.Post;
-import com.example.blog.entity.User;
+import com.example.blog.entity.*;
 import com.example.blog.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +11,38 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final InteractionRepository interactionRepository;
-    public PostService(PostRepository postRepository,InteractionRepository interactionRepository) {
+    private final SubscriptionRepository subrepo;
+    private final NotificationRepository notifrepo;
+    private final NotificationService notifservice;
+
+    public PostService(NotificationService notifservice,NotificationRepository notifrepo,SubscriptionRepository subrepo,PostRepository postRepository,InteractionRepository interactionRepository) {
         this.postRepository = postRepository;
         this.interactionRepository = interactionRepository;
+        this.subrepo =subrepo;
+        this.notifrepo = notifrepo;
+        this.notifservice = notifservice;
     }
 
     public Post createPost(Post post) {
+    User author = post.getUser(); 
+    List<User> followers = subrepo.findFollowersByFollowed(author);
+    
+    // 2️⃣ Loop through followers and create a notification for each
+    for (User follower : followers) {
+        Notification n = new Notification();
+        n.setRecipientId(follower.getId()); // the follower
+        n.setActorId(author.getId());              // the one who posted
+        n.setType("POST");
+        n.setPostId(post.getId());
+        n.setMessage(post.getUser().getUsername() + " has posted a new update!");
+
+        // Save to DB
+        n = notifrepo.save(n);
+
+        // Push in real time (optional)
+       
+        notifservice.pushNotification(n);
+    }
         return postRepository.save(post);
     }
 
@@ -42,7 +66,10 @@ public class PostService {
 }
 
 public Post savePost(Post post) {
-    return postRepository.save(post);
+    // Save the post first
+    
+    Post savedPost = postRepository.save(post);
+    return savedPost;
 }
 public boolean isPostLikedByUser(Long postId, Long userId) {
     return interactionRepository.findByPostIdAndUserId(postId, userId)
