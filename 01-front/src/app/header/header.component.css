@@ -1,93 +1,119 @@
 .header {
-  font-family: 'Press Start 2P', sans-serif;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: linear-gradient(to right,#000000, #000000, #000000);
+  height: 64px;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* vertical center */
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 5px;
-  box-shadow: 0 3px 6px rgba(139, 141, 142, 0.15);
+  align-items: center;
+  padding: 0 32px;
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
   z-index: 1000;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
 .logo-img {
-  height: 35px; /* match profile pic height */
-  object-fit: cover;
+  height: 32px;
+  width: 32px;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+.logo-text {
+  letter-spacing: 0.5px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: black;
+  font-weight: 500;
 }
 
 .profile-pic {
-  width: 35px;
-  height: 35px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid #ddd;
   cursor: pointer;
-  border: 3px solid rgb(34, 82, 172);
+  transition: transform 0.2s ease;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center; /* vertical center for links inside nav */
+.profile-pic:hover {
+  transform: scale(1.05);
 }
 
-.nav-links a {
-  margin-left: 25px;
-  text-decoration: none;
-  color: #666767;
-  font-weight: 500;
-  font-size: 0.8vw; 
-  transition: color 0.3s ease;
-  line-height: 35px; /* match profile pic height for perfect vertical alignment */
-}
-
-.menu-toggle {
-  display: none;
-  font-size: 1.8rem;
-  color: rgb(255, 255, 255);
+.theme-switch {
+  margin-left: 10px;
   cursor: pointer;
+  font-size: 1.2rem;
+  color: #555;
+  transition: color 0.2s ease;
 }
 
-/* Mobile styles */
-@media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
+.theme-switch:hover {
+  color: black;
+}
 
-  .nav-links {
-   
-    position: absolute;
-    top: 60px; 
-    right: 0px;
-    background:#000a20;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-  }
+/* 🔔 Notification styles */
+.notif-link {
+  position: relative;
+  font-size: 1.2rem;
+  color: #555;
+}
 
-  .nav-links.active {
-    opacity: 1;
-  }
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background-color: #ff3b30;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  font-weight: 600;
+}
 
-  .nav-links a {
-    display: block;
-    padding: 10px 20px;
-    margin: 0;
-    color: rgb(153, 150, 150);
-  }
+/* 🌙 Dark mode (optional) */
+.dark-mode .header {
+  background-color: #121212;
+  color: #eaeaea;
+  border-bottom: 1px solid #2a2a2a;
+}
 
-  .nav-links a.active {
-    color: white;
-    border-bottom: none;
-  }
-  .nav-links a:hover {
-    background: #000000;
-    color: white;
-  }
+.dark-mode .nav-link {
+  color: #ccc;
+}
+
+.dark-mode .nav-link:hover {
+  color: white;
+}
+
+.dark-mode .theme-switch {
+  color: #eaeaea;
 }

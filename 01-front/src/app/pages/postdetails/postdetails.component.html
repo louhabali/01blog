@@ -83,9 +83,9 @@
       </div>
 
       <!-- Edit Mode Image Upload -->
-      <div *ngIf="post.isEditing" class="featured-image-edit">
-        <input type="file" (change)="onImageChange($event, post)" />
-      </div>
+     <button *ngIf="post.isEditing" class="icon-btn" title="Change Media" (click)="changeMedia(post)">
+  <i class="fa-solid fa-image"></i>
+</button>
 
       <!-- Article Content -->
       <div class="article-content">

@@ -21,6 +21,8 @@ interface Post {
   isEditing?: boolean; 
   originalTitle?: string;
   originalContent?: string;
+  originalImage?: string | null;
+  originalVideo?:string | null;
 }
 
 @Component({
@@ -31,11 +33,11 @@ interface Post {
   styleUrls: ['./postdetails.component.css']
 })
 export class PostdetailsComponent {
-
+  
   post!: Post;
   currentUserId!: number;
   isDarkMode = false;
-
+  selectedMedia: File | null = null;
   constructor(
     private userService: UserService,
     private http: HttpClient,
@@ -103,24 +105,68 @@ export class PostdetailsComponent {
       error: (err) => console.error('Error toggling like', err)
     });
   }
+  changeMedia(post: Post) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,video/*';
+    input.onchange = (e: any) => this.onMediaSelected(e, post);
+    input.click();
+  }
 
+  onMediaSelected(event: any, post: Post) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.selectedMedia = file;
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // 🔼 Upload to backend
+    this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
+      .subscribe({
+        next: (url) => {
+          console.log("Uploaded media URL:", url);
+          if (url.endsWith(".mp4")) {
+            post.videoUrl = url;
+            post.imageUrl = null; // reset image if new video
+          } else {
+            console.log("URL IS " , url);
+            
+            post.imageUrl = url;
+            post.videoUrl = null; // reset video if new image
+          }
+        },
+        error: (err) => console.error("Error uploading media", err)
+      });
+  }
   editPost(post: Post, event?: MouseEvent) {
     if (event) event.stopPropagation();
     post.isEditing = true;
     post.originalTitle = post.title;
     post.originalContent = post.content;
+    post.originalImage = post.imageUrl;
+    post.originalVideo = post.videoUrl;
+
   }
 
 savePost(post: Post, event?: MouseEvent) {
     if (event) event.stopPropagation();
+    console.log("IMAAAAAGE :",post.imageUrl);
+    
     this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
       title: post.title,
-      content: post.content
+      content: post.content,
+      imageUrl : post.imageUrl,
+      videoUrl : post.videoUrl
     }, { withCredentials: true })
     .subscribe({
       next: (updated) => {
+        console.log(updated);
+        
         post.title = updated.title;
         post.content = updated.content;
+        post.imageUrl = updated.imageUrl;
+        post.videoUrl = updated.videoUrl;
         post.isEditing = false;
         post.originalTitle = undefined;
         post.originalContent = undefined;

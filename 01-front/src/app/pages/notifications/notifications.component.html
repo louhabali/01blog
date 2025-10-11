@@ -1,9 +1,13 @@
-<div class="notifications">
-  <h3>Notifications</h3>
-  <ul>
-    <li *ngFor="let n of (notifications$ | async)">
-      <strong>{{ n.type }}</strong> - {{ n.message }}
-      <small>({{ n.createdAt | date:'short' }})</small>
-    </li>
-  </ul>
+<div class="notifications-container">
+  <h2 class="notifications-title">Notifications</h2>
+
+  <div class="notifications-list">
+    <div class="notification-item" *ngFor="let n of (notifications$ | async)">
+      <div class="notification-header">
+        <span class="notification-type">{{ n.type }}</span>
+        <span class="notification-date">{{ n.createdAt | date:'short' }}</span>
+      </div>
+      <p class="notification-message">{{ n.message }}</p>
+    </div>
+  </div>
 </div>
