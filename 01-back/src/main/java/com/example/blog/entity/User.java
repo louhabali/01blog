@@ -38,4 +38,6 @@
         public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
         public String getAvatar() { return avatar; }
         public void setAvatar(String avatar) { this.avatar = avatar; }
+        public boolean isEnabled() { return enabled; }
+        public void setEnabled(boolean enabled) { this.enabled = enabled; }
     }

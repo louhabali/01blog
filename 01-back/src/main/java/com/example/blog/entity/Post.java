@@ -16,40 +16,40 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private Boolean isAppropriate = true;
+   @Column(nullable = false)
+private boolean hidden = false;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
-    private User user;
-     private String imageUrl;   // e.g. "http://localhost:8080/uploads/pic.jpg"
-    private String videoUrl;   // e.g. "http://localhost:8080/uploads/clip.mp4"
-    private LocalDateTime createdAt = LocalDateTime.now();
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+@ManyToOne
+@JoinColumn(name = "user_id",referencedColumnName = "id")
+private User user;
+private String imageUrl;   // e.g. "http://localhost:8080/uploads/pic.jpg"
+private String videoUrl;   // e.g. "http://localhost:8080/uploads/clip.mp4"
+private LocalDateTime createdAt = LocalDateTime.now();
+@PrePersist
+protected void onCreate() {
+  this.createdAt = LocalDateTime.now();
+}
 
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+// getters and setters
+public Long getId() { return id; }
+public void setId(Long id) { this.id = id; }
 
-    public Boolean getIsAppro() { return isAppropriate; }
-    public void setIsAppro(Boolean appro) { this.isAppropriate = appro; }
+public String getTitle() { return title; }
+public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+public String getContent() { return content; }
+public void setContent(String content) { this.content = content; }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+public LocalDateTime getCreatedAt() { return createdAt; }
+public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+public User getUser() { return user; } // updated
+public void setUser(User user) { this.user = user; } // updated
+public String getImageUrl() { return imageUrl; }
+public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public User getUser() { return user; } // updated
-    public void setUser(User user) { this.user = user; } // updated
-      public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    public String getVideoUrl() { return videoUrl; }
-    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+public String getVideoUrl() { return videoUrl; }
+public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+public boolean isHidden() { return hidden; }
+public void setHidden(boolean hidden) { this.hidden = hidden; }
 }

@@ -6,22 +6,33 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.example.blog.service.CustomUserDetailsService;
+
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+     private final CustomUserDetailsService userDetailsService;
+     public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+   @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(csrf -> csrf.disable()) 
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-            );
+                .requestMatchers("/dashboard/**").hasRole("ADMIN")
+                .anyRequest().permitAll()
+            )
+            .formLogin(form -> form
+                .loginPage("/login").permitAll()
+            )
+            .logout(logout -> logout.permitAll())
+            .userDetailsService(userDetailsService);
 
         return http.build();
     }
