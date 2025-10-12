@@ -1,0 +1,30 @@
+:host { display:block; padding: 1rem; font-family: "Inter", sans-serif; color: #111; }
+.admin-dashboard { max-width: 1200px; margin: 0 auto; }
+
+.dashboard-header { display:flex; align-items:center; justify-content:space-between; gap: 1rem; margin-bottom: 1rem; }
+.dashboard-header h1 { margin:0; color: #fff; }
+.stats-overview { display:flex; gap: 1rem; }
+.stat-card { background:#0b1220; color:#fff; padding: 1rem 1.2rem; border-radius:8px; text-align:center; min-width:120px; }
+.stat-card h3 { margin:0; font-size:1.6rem; }
+.stat-card p { margin:0; opacity:0.8; font-size:0.85rem; }
+
+.dashboard-content { display:grid; grid-template-columns: 1fr; gap: 1.2rem; margin-top:1rem; }
+.table-section { background: rgba(255,255,255,0.03); padding: 1rem; border-radius:8px; color:#fff; }
+.table-section h2 { margin-top:0; }
+
+.admin-table { width:100%; border-collapse: collapse; }
+.admin-table thead th { text-align:left; padding: 0.6rem 0.5rem; font-weight:600; color:#cfd8e3; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.admin-table tbody td { padding: 0.6rem 0.5rem; vertical-align: middle; color: #e6eef6; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+.actions { display:flex; gap:0.5rem; }
+.ban-btn, .hide-btn, .resolve-btn, .delete-btn { padding: 0.35rem 0.6rem; border-radius:6px; border: none; cursor:pointer; font-size:0.85rem; }
+.ban-btn { background:#ff8a65; color:#111; }
+.hide-btn { background:#fdd835; color:#111; }
+.resolve-btn { background:#66bb6a; color:#fff; }
+.delete-btn { background:#e53935; color:#fff; }
+
+.admin-table td.banned { color: #f87171; font-weight:600; }
+.admin-table td.hidden { color: #f5c542; font-weight:600; }
+
+.loading { margin-top:1rem; color:#fff; }
+.error { margin-top:1rem; color:#ff6b6b; }

@@ -1,0 +1,94 @@
+<div class="admin-dashboard">
+  <header class="dashboard-header">
+    <h1>Admin Dashboard</h1>
+    <div class="stats-overview">
+      <div class="stat-card">
+        <h3>{{ usersCount }}</h3>
+        <p>Total Users</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ bannedUsersCount }}</h3>
+        <p>Banned</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ postsCount }}</h3>
+        <p>Posts</p>
+      </div>
+      <div class="stat-card">
+        <h3>{{ hiddenPostsCount }}</h3>
+        <p>Hidden Posts</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-content">
+    <section class="table-section">
+      <h2>Users</h2>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users">
+            <td>{{u.id}}</td>
+            <td>{{u.username}}</td>
+            <td>{{u.email}}</td>
+            <td>{{u.role}}</td>
+            <td [class.banned]="!u.enabled">{{ u.enabled ? 'Active' : 'Banned' }}</td>
+            <td class="actions">
+              <button class="ban-btn" (click)="toggleBan(u)">{{u.enabled ? 'Ban' : 'Unban'}}</button>
+              <button class="delete-btn" (click)="deleteUser(u)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="table-section">
+      <h2>Posts</h2>
+      <table class="admin-table">
+        <thead>
+          <tr><th>ID</th><th>Author</th><th>Title</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of posts">
+            <td>{{p.id}}</td>
+            <td>{{p.authorName || p.author}}</td>
+            <td>{{p.title}}</td>
+            <td [class.hidden]="p.hidden">{{ p.hidden ? 'Hidden' : 'Visible' }}</td>
+            <td class="actions">
+              <button class="hide-btn" (click)="hidePost(p)">{{ p.hidden ? 'Unhide' : 'Hide' }}</button>
+              <button class="delete-btn" (click)="deletePost(p)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="table-section">
+      <h2>Reports</h2>
+      <table class="admin-table">
+        <thead>
+          <tr><th>ID</th><th>Post ID</th><th>Reporter</th><th>Reason</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of reports">
+            <td>{{r.id}}</td>
+            <td>{{r.postId}}</td>
+            <td>{{r.reporterName || r.reporter}}</td>
+            <td>{{r.reason}}</td>
+            <td class="actions">
+              <button class="resolve-btn" (click)="resolveReport(r)">Resolve</button>
+              <button class="delete-btn" (click)="deletePostFromReport(r.postId)">Delete Post</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</div>
