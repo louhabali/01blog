@@ -32,7 +32,11 @@ export class AuthService {
     return this.http
       .post<LoginResponse>('http://localhost:8087/auth/login', data, { withCredentials: true })
       .pipe(
-        tap(() => this.isLoggedIn.set(true))
+        tap((d) =>{
+          if (!d.banned) {
+            this.isLoggedIn.set(true)
+          }
+        } )
       );
   }
 
