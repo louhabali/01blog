@@ -10,6 +10,7 @@ import { LoggedInGuard } from './services/loggedIn.guard';
 import { AuthGuard } from './services/auth.guard';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { AdmindashboardComponent } from './pages/admindashboard/admindashboard.component';
+import { AdminGuard } from './services/admin.guard';
 export const routes: Routes = [
   { path: '', component: PresntationComponent },
   { path: 'login', component: LoginComponent,canActivate:[LoggedInGuard] },
@@ -19,5 +20,5 @@ export const routes: Routes = [
   { path: 'posts/:id/comments',component:CommentsComponent,canActivate:[AuthGuard]},
   { path: 'profile/:id', component: ProfileComponent,canActivate:[AuthGuard] },
   { path: 'notifications', component: NotificationsComponent,canActivate:[AuthGuard] },
-  { path: 'dashboard', component: AdmindashboardComponent,canActivate:[AuthGuard] },
+  { path: 'dashboard', component: AdmindashboardComponent,canActivate:[AdminGuard] },
 ];

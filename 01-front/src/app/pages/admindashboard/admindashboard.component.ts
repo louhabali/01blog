@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
-import { AdminGuard } from '../../services/admin.guard';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+  import { Router } from '@angular/router';
 @Component({
   selector: 'app-admindashboard',
   standalone: true,
@@ -20,26 +19,44 @@ export class AdmindashboardComponent implements OnInit {
   postsCount = 0;
   hiddenPostsCount = 0;
 
-  // lists
+  // users scroll
   users: any[] = [];
-  posts: any[] = [];
-  reports: any[] = [];
+  usersOffset = 0;
+  usersLimit = 10;
+  allUsersLoaded = false;
+  loadingUsers = false;
 
-  // UI state
+  // posts scroll
+  posts: any[] = [];
+  postsOffset = 0;
+  postsLimit = 10;
+  allPostsLoaded = false;
+  loadingPosts = false;
+
+  // reports scroll
+  reports: any[] = [];
+  reportsOffset = 0;
+  reportsLimit = 10;
+  allReportsLoaded = false;
+  loadingReports = false;
+
+  // general UI
   loading = false;
   error: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService,private router: Router,) {}
 
   ngOnInit(): void {
-    this.reloadAll();
+    this.loadStats();
+    this.loadUsers();
+    this.loadPosts();
+    this.loadReports();
   }
-
-  reloadAll() {
-    this.loading = true;
-    this.error = null;
-
-    // parallel-ish fetching; simple approach
+  navigateToPost(postId: number) {
+    this.router.navigate(['/posts', postId]);
+  }
+  // ------------------- STATS -------------------
+  loadStats() {
     this.adminService.getStats().subscribe({
       next: stats => {
         this.usersCount = stats.usersCount;
@@ -47,39 +64,35 @@ export class AdmindashboardComponent implements OnInit {
         this.postsCount = stats.postsCount;
         this.hiddenPostsCount = stats.hiddenPostsCount;
       },
-      error: err => this.error = 'Failed to load stats'
-    });
-
-    this.adminService.getUsers().subscribe({
-      next: users => this.users = users,
-      error: err => this.error = 'Failed to load users'
-    });
-
-    this.adminService.getPosts().subscribe({
-      next: posts => this.posts = posts,
-      error: err => this.error = 'Failed to load posts'
-    });
-
-    this.adminService.getReports().subscribe({
-      next: r => {
-        this.reports = r;
-        this.loading = false;
-      },
-      error: err => {
-        this.error = 'Failed to load reports';
-        this.loading = false;
-      }
+      error: () => this.error = 'Failed to load stats'
     });
   }
 
-  // user actions
+  // ------------------- USERS -------------------
+  loadUsers() {
+    if (this.loadingUsers || this.allUsersLoaded) return;
+    this.loadingUsers = true;
+    this.adminService.getUsers(this.usersOffset, this.usersLimit).subscribe({
+      next: newUsers => {
+        if (newUsers.length < this.usersLimit) this.allUsersLoaded = true;
+        this.users.push(...newUsers);
+        this.usersOffset += newUsers.length;
+        this.loadingUsers = false;
+      },
+      error: () => { this.error = 'Failed to load users'; this.loadingUsers = false; }
+    });
+  }
+
+  onUsersScroll(event: any) {
+    const div = event.target;
+    if (div.scrollTop + div.clientHeight >= div.scrollHeight - 50) {
+      this.loadUsers();
+    }
+  }
+
   toggleBan(user: any) {
     this.adminService.banUser(user.id).subscribe({
-      next: updated => {
-        user.enabled = updated.enabled;
-        // update counts
-        this.reloadAll();
-      },
+      next: updated => user.enabled = updated.enabled,
       error: () => this.error = 'Failed to change ban status'
     });
   }
@@ -87,21 +100,36 @@ export class AdmindashboardComponent implements OnInit {
   deleteUser(user: any) {
     if (!confirm(`Delete user ${user.username}?`)) return;
     this.adminService.deleteUser(user.id).subscribe({
-      next: () => {
-        this.users = this.users.filter(u => u.id !== user.id);
-        this.reloadAll();
-      },
+      next: () => this.users = this.users.filter(u => u.id !== user.id),
       error: () => this.error = 'Failed to delete user'
     });
   }
 
-  // posts
+  // ------------------- POSTS -------------------
+  loadPosts() {
+    if (this.loadingPosts || this.allPostsLoaded) return;
+    this.loadingPosts = true;
+    this.adminService.getPosts(this.postsOffset, this.postsLimit).subscribe({
+      next: newPosts => {
+        if (newPosts.length < this.postsLimit) this.allPostsLoaded = true;
+        this.posts.push(...newPosts);
+        this.postsOffset += newPosts.length;
+        this.loadingPosts = false;
+      },
+      error: () => { this.error = 'Failed to load posts'; this.loadingPosts = false; }
+    });
+  }
+
+  onPostsScroll(event: any) {
+    const div = event.target;
+    if (div.scrollTop + div.clientHeight >= div.scrollHeight - 50) {
+      this.loadPosts();
+    }
+  }
+
   hidePost(post: any) {
     this.adminService.toggleHidePost(post.id).subscribe({
-      next: updated => {
-        post.hidden = updated.hidden;
-        this.reloadAll();
-      },
+      next: updated => post.isAppropriate = updated.isAppropriate,
       error: () => this.error = 'Failed to toggle hide'
     });
   }
@@ -109,21 +137,36 @@ export class AdmindashboardComponent implements OnInit {
   deletePost(post: any) {
     if (!confirm(`Delete post "${post.title}"?`)) return;
     this.adminService.deletePost(post.id).subscribe({
-      next: () => {
-        this.posts = this.posts.filter(p => p.id !== post.id);
-        this.reloadAll();
-      },
+      next: () => this.posts = this.posts.filter(p => p.id !== post.id),
       error: () => this.error = 'Failed to delete post'
     });
   }
 
-  // reports
+  // ------------------- REPORTS -------------------
+  loadReports() {
+    if (this.loadingReports || this.allReportsLoaded) return;
+    this.loadingReports = true;
+    this.adminService.getReports(this.reportsOffset, this.reportsLimit).subscribe({
+      next: newReports => {
+        if (newReports.length < this.reportsLimit) this.allReportsLoaded = true;
+        this.reports.push(...newReports);
+        this.reportsOffset += newReports.length;
+        this.loadingReports = false;
+      },
+      error: () => { this.error = 'Failed to load reports'; this.loadingReports = false; }
+    });
+  }
+
+  onReportsScroll(event: any) {
+    const div = event.target;
+    if (div.scrollTop + div.clientHeight >= div.scrollHeight - 50) {
+      this.loadReports();
+    }
+  }
+
   resolveReport(report: any) {
     this.adminService.resolveReport(report.id).subscribe({
-      next: () => {
-        this.reports = this.reports.filter(r => r.id !== report.id);
-        this.reloadAll();
-      },
+      next: () => this.reports = this.reports.filter(r => r.id !== report.id),
       error: () => this.error = 'Failed to resolve report'
     });
   }
@@ -134,7 +177,6 @@ export class AdmindashboardComponent implements OnInit {
       next: () => {
         this.posts = this.posts.filter(p => p.id !== postId);
         this.reports = this.reports.filter(r => r.postId !== postId);
-        this.reloadAll();
       },
       error: () => this.error = 'Failed to delete post'
     });

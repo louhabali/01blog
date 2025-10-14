@@ -1,94 +1,187 @@
 <div class="admin-dashboard">
-  <header class="dashboard-header">
-    <h1>Admin Dashboard</h1>
-    <div class="stats-overview">
-      <div class="stat-card">
+  <!-- STATS PANEL -->
+  <aside class="stats-panel">
+    <h2>Stats Overview</h2>
+    <div class="stat-card">
+      <i class="fas fa-users"></i>
+      <div>
         <h3>{{ usersCount }}</h3>
         <p>Total Users</p>
       </div>
-      <div class="stat-card">
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-user-slash"></i>
+      <div>
         <h3>{{ bannedUsersCount }}</h3>
         <p>Banned</p>
       </div>
-      <div class="stat-card">
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-file-alt"></i>
+      <div>
         <h3>{{ postsCount }}</h3>
         <p>Posts</p>
       </div>
-      <div class="stat-card">
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-eye-slash"></i>
+      <div>
         <h3>{{ hiddenPostsCount }}</h3>
         <p>Hidden Posts</p>
       </div>
     </div>
-  </header>
+  </aside>
 
-  <div class="dashboard-content">
+  <!-- TABLES PANEL -->
+  <main class="tables-panel">
+    <!-- USERS -->
     <section class="table-section">
       <h2>Users</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let u of users">
-            <td>{{u.id}}</td>
-            <td>{{u.username}}</td>
-            <td>{{u.email}}</td>
-            <td>{{u.role}}</td>
-            <td [class.banned]="!u.enabled">{{ u.enabled ? 'Active' : 'Banned' }}</td>
-            <td class="actions">
-              <button class="ban-btn" (click)="toggleBan(u)">{{u.enabled ? 'Ban' : 'Unban'}}</button>
-              <button class="delete-btn" (click)="deleteUser(u)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-wrapper" (scroll)="onUsersScroll($event)">
+        <div class="table-scroll-inner">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let u of users">
+                <tr *ngIf="u.role !== 'ADMIN'">
+                  <td>
+                    <a [routerLink]="['/profile', u.id]" class="link">{{
+                      u.id
+                    }}</a>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/profile', u.id]" class="link">{{
+                      u.username
+                    }}</a>
+                  </td>
+                  <td class="email">{{ u.email }}</td>
+                  <td [class.active]="u.enabled" [class.banned]="!u.enabled">
+                    {{ u.enabled ? 'Active' : 'Banned' }}
+                  </td>
+                  <td class="actions">
+                    <i
+                      class="fas"
+                      [ngClass]="u.enabled ? 'fa-user-slash' : 'fa-user-check'"
+                      (click)="toggleBan(u)"
+                      title="Toggle ban"
+                    ></i>
+                    <i
+                      class="fas fa-trash"
+                      (click)="deleteUser(u)"
+                      title="Delete user"
+                    ></i>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <div *ngIf="loadingUsers" class="loading">Loading more...</div>
+        </div>
+      </div>
     </section>
 
+    <!-- POSTS -->
     <section class="table-section">
       <h2>Posts</h2>
-      <table class="admin-table">
-        <thead>
-          <tr><th>ID</th><th>Author</th><th>Title</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of posts">
-            <td>{{p.id}}</td>
-            <td>{{p.authorName || p.author}}</td>
-            <td>{{p.title}}</td>
-            <td [class.hidden]="p.hidden">{{ p.hidden ? 'Hidden' : 'Visible' }}</td>
-            <td class="actions">
-              <button class="hide-btn" (click)="hidePost(p)">{{ p.hidden ? 'Unhide' : 'Hide' }}</button>
-              <button class="delete-btn" (click)="deletePost(p)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-wrapper" (scroll)="onPostsScroll($event)">
+        <div class="table-scroll-inner">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Author</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of posts">
+                <td>{{ p.id }}</td>
+                <td>
+                  <a [routerLink]="['/profile', p.user.id]" class="link">{{
+                    p.user.username
+                  }}</a>
+                </td>
+                <td class="title">{{ p.title }}</td>
+                <td [class.hidden]="!p.isAppropriate">
+                  {{ p.isAppropriate ? 'Hidden' : 'Visible' }}
+                </td>
+                <td class="actions">
+                  <i
+                    class="fas fa-eye"
+                    (click)="navigateToPost(p.id)"
+                    title="View post"
+                  ></i>
+                  <i
+                    class="fas fa-trash"
+                    (click)="deletePost(p)"
+                    title="Delete post"
+                  ></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="loadingPosts" class="loading">Loading more...</div>
+        </div>
+      </div>
     </section>
 
+    <!-- REPORTS -->
     <section class="table-section">
       <h2>Reports</h2>
-      <table class="admin-table">
-        <thead>
-          <tr><th>ID</th><th>Post ID</th><th>Reporter</th><th>Reason</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of reports">
-            <td>{{r.id}}</td>
-            <td>{{r.postId}}</td>
-            <td>{{r.reporterName || r.reporter}}</td>
-            <td>{{r.reason}}</td>
-            <td class="actions">
-              <button class="resolve-btn" (click)="resolveReport(r)">Resolve</button>
-              <button class="delete-btn" (click)="deletePostFromReport(r.postId)">Delete Post</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-wrapper" (scroll)="onReportsScroll($event)">
+        <div class="table-scroll-inner">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Post ID</th>
+                <th>Reporter</th>
+                <th>Reason</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of reports">
+                <td>{{ r.id }}</td>
+                <td>
+                  <a [routerLink]="['/posts', r.postId]" class="link">{{
+                    r.postId
+                  }}</a>
+                </td>
+                <td>
+                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{
+                    r.reporterName
+                  }}</a>
+                </td>
+                <td class="reason">{{ r.reason }}</td>
+                <td class="actions">
+                  <i
+                    class="fas fa-check"
+                    (click)="resolveReport(r)"
+                    title="Resolve report"
+                  ></i>
+                  <i
+                    class="fas fa-trash"
+                    (click)="deletePostFromReport(r.postId)"
+                    title="Delete post"
+                  ></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="loadingReports" class="loading">Loading more...</div>
+        </div>
+      </div>
     </section>
-  </div>
-
-  <div *ngIf="loading" class="loading">Loading...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  </main>
 </div>

@@ -11,9 +11,9 @@ export class AuthService {
   private meUrl = 'http://localhost:8087/users/me';
   constructor(private http: HttpClient) {}
 
-  checkAuth(): Observable<{ loggedIn: boolean }> {
+  checkAuth(): Observable<{ loggedIn: boolean , role: string}> {
     return this.http
-      .get<{ loggedIn: boolean }>('http://localhost:8087/auth/check', { withCredentials: true })
+      .get<{ loggedIn: boolean , role : string}>('http://localhost:8087/auth/check', { withCredentials: true })
       .pipe(
         tap(res => this.isLoggedIn.set(res.loggedIn))
       );

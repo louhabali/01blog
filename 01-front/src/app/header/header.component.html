@@ -19,7 +19,7 @@
       <!-- 🔔 Notifications -->
       <a routerLink="/notifications" class="nav-link notif-link"(click)="hideBadge()" (click)="closeMenu()">
         <i class="fa-regular fa-bell"></i>
-       <span *ngIf="showBadge" class="notif-badge">{{ notifsnumber }}</span>
+       <span *ngIf="showBadge && notifsnumber > 0" class="notif-badge">{{ notifsnumber }}</span>
       </a>
 
       <a (click)="logout()" class="nav-link">Logout</a>

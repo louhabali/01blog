@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -8,24 +8,46 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
-  // stats endpoint (implement server-side to return counts)
+  // ---------------- STATS ----------------
   getStats(): Observable<any> {
     return this.http.get<any>(`${this.base}/stats`, { withCredentials: true });
   }
 
-  // users
-  getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.base}/users`, { withCredentials: true });
+  // ---------------- USERS ----------------
+  getUsers(offset: number = 0, limit: number = 10): Observable<any[]> {
+    let params = new HttpParams().set('offset', offset).set('limit', limit);
+    return this.http.get<any[]>(`${this.base}/users`, { params, withCredentials: true });
   }
-  banUser(userId: number) { return this.http.put<any>(`${this.base}/users/${userId}/ban`, {}, { withCredentials: true }); }
-  deleteUser(userId: number) { return this.http.delete(`${this.base}/users/${userId}`, { withCredentials: true }); }
 
-  // posts
-  getPosts() { return this.http.get<any[]>(`${this.base}/posts`, { withCredentials: true }); }
-  deletePost(postId: number) { return this.http.delete(`${this.base}/posts/${postId}`, { withCredentials: true }); }
-  toggleHidePost(postId: number) { return this.http.put<any>(`${this.base}/posts/${postId}/hide`, {}, { withCredentials: true }); }
+  banUser(userId: number): Observable<any> {
+    return this.http.put<any>(`${this.base}/users/${userId}/ban`, {}, { withCredentials: true });
+  }
 
-  // reports
-  getReports() { return this.http.get<any[]>(`${this.base}/reports`, { withCredentials: true }); }
-  resolveReport(reportId: number) { return this.http.delete(`${this.base}/reports/${reportId}`, { withCredentials: true }); }
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.base}/users/${userId}`, { withCredentials: true });
+  }
+
+  // ---------------- POSTS ----------------
+  getPosts(offset: number = 0, limit: number = 10): Observable<any[]> {
+    let params = new HttpParams().set('offset', offset).set('limit', limit);
+    return this.http.get<any[]>(`${this.base}/posts`, { params, withCredentials: true });
+  }
+
+  deletePost(postId: number): Observable<any> {
+    return this.http.delete(`${this.base}/posts/${postId}`, { withCredentials: true });
+  }
+
+  toggleHidePost(postId: number): Observable<any> {
+    return this.http.put<any>(`${this.base}/posts/${postId}/hide`, {}, { withCredentials: true });
+  }
+
+  // ---------------- REPORTS ----------------
+  getReports(offset: number = 0, limit: number = 10): Observable<any[]> {
+    let params = new HttpParams().set('offset', offset).set('limit', limit);
+    return this.http.get<any[]>(`${this.base}/reports`, { params, withCredentials: true });
+  }
+
+  resolveReport(reportId: number): Observable<any> {
+    return this.http.delete(`${this.base}/reports/${reportId}`, { withCredentials: true });
+  }
 }

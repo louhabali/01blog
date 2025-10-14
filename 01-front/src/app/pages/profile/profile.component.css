@@ -6,7 +6,7 @@
   background-color: #fff;
   color: #242424;
   height: 100vh;
-  margin-top: 65px;
+ 
   overflow: hidden;
 }
 
@@ -109,7 +109,7 @@
 
 .publish-btn {
   margin-left: auto;
-  background-color: #1a8917;
+  background-color: #000000;
   color: #fff;
   border: none;
   padding: 8px 20px;
