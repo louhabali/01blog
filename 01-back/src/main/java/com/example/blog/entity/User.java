@@ -17,7 +17,7 @@
         @Column(nullable = false)
         private String role = "USER"; // USER or ADMIN
         @Column(nullable=false ,columnDefinition = "BOOLEAN DEFAULT TRUE")
-        private boolean enabled= true;; // if the user is active or blocked
+        private boolean enabled= true;// if the user is active or blocked
         // getters & setters
         public Long getId() { return id; }
         public void setId(Long id) { this.id = id; }

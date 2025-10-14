@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.blog.entity.Post;
 import com.example.blog.entity.Report;
 import com.example.blog.entity.User;
-import com.example.blog.repository.PostRepository;
-import com.example.blog.repository.ReportRepository;
-import com.example.blog.repository.UserRepository;
+import com.example.blog.repository.*;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/admin")
@@ -24,12 +24,20 @@ public class AdminController {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
-
+     private final CommentRepository commentRepository;
+     private final InteractionRepository interactionRepository;
+     private final SubscriptionRepository subscriptionRepository;
+     private final NotificationRepository notificationRepository;
     public AdminController(UserRepository userRepository, PostRepository postRepository,
-            ReportRepository reportRepository) {
+            ReportRepository reportRepository , CommentRepository commentRepository , InteractionRepository interactionRepository,
+            SubscriptionRepository subscriptionRepository, NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.reportRepository = reportRepository;
+        this.commentRepository = commentRepository;
+        this.interactionRepository = interactionRepository;
+        this.notificationRepository = notificationRepository;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     // ------------------- STATS -------------------
@@ -68,9 +76,17 @@ public class AdminController {
         userRepository.save(user);
         return ResponseEntity.ok(user);
     }
-
+    @Transactional
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        interactionRepository.deleteByUserId(id);
+        commentRepository.deleteByUserId(id);
+        postRepository.deleteByUserId(id);
+        subscriptionRepository.deleteByFollowerId(id);
+        subscriptionRepository.deleteByFollowedId(id);
+        notificationRepository.deleteByRecipientId(id);
+        notificationRepository.deleteByActorId(id);
+         // Then delete the user
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
@@ -84,6 +100,7 @@ public class AdminController {
 
     @PutMapping("/posts/{id}/hide")
     public ResponseEntity<Post> toggleHidePost(@PathVariable Long id) {
+        System.out.println("Toggling hide for post ID:********************************* " + id);
         Post post = postRepository.findById(id).orElseThrow();
         post.setisAppropriate(!post.isAppropriate()); // assuming you have a 'hidden' boolean field in Post
         postRepository.save(post);
@@ -92,8 +109,20 @@ public class AdminController {
 
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        try {
+        // First, delete interactions related to the post
+        interactionRepository.deleteByPostId(id);
+        // 
+        commentRepository.deleteByPostId(id);
+        
+        //
         postRepository.deleteById(id);
+
         return ResponseEntity.ok().build();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().build();
+    }
     }
 
     // ------------------- REPORTS -------------------

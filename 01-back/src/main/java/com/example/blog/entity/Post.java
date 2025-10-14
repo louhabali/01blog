@@ -15,6 +15,7 @@ public class Post {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+     @Column(nullable=false ,columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isAppropriate = true;
 
 @ManyToOne
