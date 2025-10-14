@@ -2,7 +2,10 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable ,map} from 'rxjs';
-
+interface LoginResponse {
+  message: string;
+  banned: boolean;
+}
 @Injectable({ providedIn: 'root' })
 // changing state 
 export class AuthService {
@@ -27,7 +30,7 @@ export class AuthService {
 
   login(data: { email: string; password: string }) {
     return this.http
-      .post('http://localhost:8087/auth/login', data, { withCredentials: true })
+      .post<LoginResponse>('http://localhost:8087/auth/login', data, { withCredentials: true })
       .pipe(
         tap(() => this.isLoggedIn.set(true))
       );

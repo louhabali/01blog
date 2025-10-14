@@ -23,7 +23,11 @@ export class LoginComponent {
   onSubmit() {
     this.errorMessage = '';
     this.auth.login(this.formData).subscribe({
-      next: () => {
+      next: (t) => {
+        if (t.banned == true) {
+          this.errorMessage = 'Your account has been banned. Please contact support.';
+          return;
+        }
         // header will update because the signal was set in AuthService
         this.router.navigate(['/home']);
       },
