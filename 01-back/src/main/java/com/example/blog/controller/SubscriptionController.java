@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 @RestController
 @RequestMapping("/subscriptions")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;

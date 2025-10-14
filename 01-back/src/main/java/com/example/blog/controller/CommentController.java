@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/posts/{postId}/comments")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class CommentController {
 
     private final CommentService commentService;
