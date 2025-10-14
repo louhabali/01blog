@@ -129,7 +129,10 @@ export class AdmindashboardComponent implements OnInit {
 
   hidePost(post: any) {
     this.adminService.toggleHidePost(post.id).subscribe({
-      next: updated => post.isAppropriate = updated.isAppropriate,
+      next: updated =>{
+        console.log("Post updated:", updated);
+post.appropriate = updated.appropriate
+      } ,
       error: () => this.error = 'Failed to toggle hide'
     });
   }
@@ -137,7 +140,10 @@ export class AdmindashboardComponent implements OnInit {
   deletePost(post: any) {
     if (!confirm(`Delete post "${post.title}"?`)) return;
     this.adminService.deletePost(post.id).subscribe({
-      next: () => this.posts = this.posts.filter(p => p.id !== post.id),
+      next: () =>{
+        console.log("Post deleted:", post.id);
+        this.posts = this.posts.filter(p => p.id !== post.id)
+      } ,
       error: () => this.error = 'Failed to delete post'
     });
   }

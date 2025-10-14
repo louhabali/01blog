@@ -52,32 +52,16 @@
             <tbody>
               <ng-container *ngFor="let u of users">
                 <tr *ngIf="u.role !== 'ADMIN'">
-                  <td>
-                    <a [routerLink]="['/profile', u.id]" class="link">{{
-                      u.id
-                    }}</a>
-                  </td>
-                  <td>
-                    <a [routerLink]="['/profile', u.id]" class="link">{{
-                      u.username
-                    }}</a>
-                  </td>
+                  <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.id }}</a></td>
+                  <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.username }}</a></td>
                   <td class="email">{{ u.email }}</td>
                   <td [class.active]="u.enabled" [class.banned]="!u.enabled">
                     {{ u.enabled ? 'Active' : 'Banned' }}
                   </td>
                   <td class="actions">
-                    <i
-                      class="fas"
-                      [ngClass]="u.enabled ? 'fa-user-slash' : 'fa-user-check'"
-                      (click)="toggleBan(u)"
-                      title="Toggle ban"
-                    ></i>
-                    <i
-                      class="fas fa-trash"
-                      (click)="deleteUser(u)"
-                      title="Delete user"
-                    ></i>
+                    <i class="fas" [ngClass]="u.enabled ? 'fa-user-slash' : 'fa-user-check'"
+                       (click)="toggleBan(u)" title="Toggle ban"></i>
+                    <i class="fas fa-trash" (click)="deleteUser(u)" title="Delete user"></i>
                   </td>
                 </tr>
               </ng-container>
@@ -107,25 +91,21 @@
               <tr *ngFor="let p of posts">
                 <td>{{ p.id }}</td>
                 <td>
-                  <a [routerLink]="['/profile', p.user.id]" class="link">{{
-                    p.user.username
-                  }}</a>
+                  <a [routerLink]="['/profile', p.user.id]" class="link">{{ p.user.username }}</a>
                 </td>
                 <td class="title">{{ p.title }}</td>
-                <td [class.hidden]="!p.isAppropriate">
-                  {{ p.isAppropriate ? 'Hidden' : 'Visible' }}
+                <td [class.hidden]="!p.appropriate">
+                  {{ p.appropriate ? 'Visible' : 'Hidden' }}
                 </td>
                 <td class="actions">
-                  <i
-                    class="fas fa-eye"
-                    (click)="navigateToPost(p.id)"
-                    title="View post"
-                  ></i>
-                  <i
-                    class="fas fa-trash"
-                    (click)="deletePost(p)"
-                    title="Delete post"
-                  ></i>
+                  <!-- View post -->
+                  <i class="fas fa-up-right-from-square" (click)="navigateToPost(p.id)" title="View post"></i>
+                  <!-- Hide / Unhide -->  
+                  <i class="fas"
+                     [ngClass]="p.appropriate ? 'fa-eye-slash' : 'fa-eye'"
+                     (click)="hidePost(p)" title="Hide / Unhide post"></i>
+                  <!-- Delete -->
+                  <i class="fas fa-trash" (click)="deletePost(p)" title="Delete post"></i>
                 </td>
               </tr>
             </tbody>
@@ -154,27 +134,15 @@
               <tr *ngFor="let r of reports">
                 <td>{{ r.id }}</td>
                 <td>
-                  <a [routerLink]="['/posts', r.postId]" class="link">{{
-                    r.postId
-                  }}</a>
+                  <a [routerLink]="['/posts', r.postId]" class="link">{{ r.postId }}</a>
                 </td>
                 <td>
-                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{
-                    r.reporterName
-                  }}</a>
+                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{ r.reporterName }}</a>
                 </td>
                 <td class="reason">{{ r.reason }}</td>
                 <td class="actions">
-                  <i
-                    class="fas fa-check"
-                    (click)="resolveReport(r)"
-                    title="Resolve report"
-                  ></i>
-                  <i
-                    class="fas fa-trash"
-                    (click)="deletePostFromReport(r.postId)"
-                    title="Delete post"
-                  ></i>
+                  <i class="fas fa-check" (click)="resolveReport(r)" title="Resolve report"></i>
+                  <i class="fas fa-trash" (click)="deletePostFromReport(r.postId)" title="Delete post"></i>
                 </td>
               </tr>
             </tbody>
