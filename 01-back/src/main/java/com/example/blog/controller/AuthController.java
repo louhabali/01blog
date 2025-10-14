@@ -57,17 +57,18 @@ public ResponseEntity<?> register(@RequestBody User user) {
         if (optionalUser.isPresent()) {
             boolean success = userService.login(optionalUser.get().getEmail(), user.getPassword());
             if (success) {
-                String token = jwtUtil.generateToken(optionalUser.get().getEmail());
-
-                Cookie cookie = new Cookie("jwt", token);
-                cookie.setHttpOnly(true);
-                cookie.setPath("/");
-                cookie.setMaxAge(24 * 60 * 60);
-                response.addCookie(cookie);
-                // send is the user banned or not
                 Map<String, Object> res = new HashMap<>();
                 res.put("message", "Login successful");
                 res.put("banned", !optionalUser.get().isEnabled()); // إذا أردت banned، فنعكس enabled
+                if (optionalUser.get().isEnabled() == true) {
+                    String token = jwtUtil.generateToken(optionalUser.get().getEmail());
+                    Cookie cookie = new Cookie("jwt", token);
+                    cookie.setHttpOnly(true);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(24 * 60 * 60);
+                    response.addCookie(cookie);
+                }
+                // send is the user banned or not
                 return ResponseEntity.ok(res);
                 //return ResponseEntity.ok().body("{\"message\":\"Login successful\"}");
             }
