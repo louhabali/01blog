@@ -64,8 +64,12 @@ public ResponseEntity<?> register(@RequestBody User user) {
                 cookie.setPath("/");
                 cookie.setMaxAge(24 * 60 * 60);
                 response.addCookie(cookie);
-
-                return ResponseEntity.ok().body("{\"message\":\"Login successful\"}");
+                // send is the user banned or not
+                Map<String, Object> res = new HashMap<>();
+                res.put("message", "Login successful");
+                res.put("banned", !optionalUser.get().isEnabled()); // إذا أردت banned، فنعكس enabled
+                return ResponseEntity.ok(res);
+                //return ResponseEntity.ok().body("{\"message\":\"Login successful\"}");
             }
         }
 
