@@ -14,7 +14,7 @@
 .users-panel {
   border-right: 1px solid #e6e6e6;
   padding: 24px;
-  overflow-y: auto;
+  overflow-y: hidden;
   background: #fafafa;
 }
 
@@ -294,7 +294,7 @@
   transition: 0.3s ease;
 }
 .follow-btn {
-  background-color: #1a8917;
+  background-color: #000000;
   color: white;
 }
 .follow-btn:hover {
