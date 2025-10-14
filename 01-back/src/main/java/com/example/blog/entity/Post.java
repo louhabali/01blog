@@ -15,9 +15,7 @@ public class Post {
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-   @Column(nullable = false)
-private boolean hidden = false;
+    private Boolean isAppropriate = true;
 
 @ManyToOne
 @JoinColumn(name = "user_id",referencedColumnName = "id")
@@ -50,6 +48,6 @@ public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
 public String getVideoUrl() { return videoUrl; }
 public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
-public boolean isHidden() { return hidden; }
-public void setHidden(boolean hidden) { this.hidden = hidden; }
+public boolean isAppropriate() { return isAppropriate; }
+public void setisAppropriate(boolean hidden) { this.isAppropriate = hidden; }
 }

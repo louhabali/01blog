@@ -68,7 +68,7 @@ public class PostController {
 
    @GetMapping("/all")
 public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
-    
+    System.out.println("Current User ID: 999999999999 -------9999999999999999999999999 ----" + currentUserId);
     return postService.getAllPosts().stream()
             .map(post -> {
                 boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
@@ -77,7 +77,7 @@ public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
             })
             .toList();
 }
-  @GetMapping("/all/{id}")
+    @GetMapping("/all/{id}")
 public List<PostResponse> getAllPostsOfUser(@PathVariable Long id,@RequestParam Long currentUserId) {
     User currentuser= userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));;
     return postService.getPostsByUser(currentuser).stream()

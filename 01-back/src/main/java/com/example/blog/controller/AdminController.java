@@ -25,7 +25,8 @@ public class AdminController {
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
 
-    public AdminController(UserRepository userRepository, PostRepository postRepository, ReportRepository reportRepository) {
+    public AdminController(UserRepository userRepository, PostRepository postRepository,
+            ReportRepository reportRepository) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.reportRepository = reportRepository;
@@ -35,16 +36,29 @@ public class AdminController {
     @GetMapping("/stats")
     public Map<String, Object> getStats() {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("users", userRepository.count());
-        stats.put("posts", postRepository.count());
-        stats.put("reports", reportRepository.count());
+
+        // Total users
+        long totalUsers = userRepository.count();
+
+        // Banned users = enabled = false
+        long bannedUsers = userRepository.countByEnabledFalse(); // you need this method in UserRepository
+
+        // Total posts
+        long totalPosts = postRepository.count();
+
+        stats.put("usersCount", totalUsers);
+        stats.put("bannedUsersCount", bannedUsers);
+        stats.put("postsCount", totalPosts);
+        stats.put("hiddenPostsCount", postRepository.countByIsAppropriateFalse());
+
         return stats;
     }
 
     // ------------------- USERS -------------------
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getUsers(@RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+        return userRepository.findWithOffsetLimit(offset, limit);
     }
 
     @PutMapping("/users/{id}/ban")
@@ -63,14 +77,15 @@ public class AdminController {
 
     // ------------------- POSTS -------------------
     @GetMapping("/posts")
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<Post> getPosts(@RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+        return postRepository.findWithOffsetLimit(offset, limit);
     }
 
     @PutMapping("/posts/{id}/hide")
     public ResponseEntity<Post> toggleHidePost(@PathVariable Long id) {
         Post post = postRepository.findById(id).orElseThrow();
-        post.setHidden(!post.isHidden()); // assuming you have a 'hidden' boolean field in Post
+        post.setisAppropriate(!post.isAppropriate()); // assuming you have a 'hidden' boolean field in Post
         postRepository.save(post);
         return ResponseEntity.ok(post);
     }
@@ -83,8 +98,9 @@ public class AdminController {
 
     // ------------------- REPORTS -------------------
     @GetMapping("/reports")
-    public List<Report> getAllReports() {
-        return reportRepository.findAll();
+    public List<Report> getReports(@RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+        return reportRepository.findWithOffsetLimit(offset, limit);
     }
 
     @DeleteMapping("/reports/{id}")

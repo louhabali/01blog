@@ -16,8 +16,8 @@
         private LocalDateTime createdAt = LocalDateTime.now();
         @Column(nullable = false)
         private String role = "USER"; // USER or ADMIN
-
-        private boolean enabled = true; // if the user is active or blocked
+        @Column(nullable=false ,columnDefinition = "BOOLEAN DEFAULT TRUE")
+        private boolean enabled= true;; // if the user is active or blocked
         // getters & setters
         public Long getId() { return id; }
         public void setId(Long id) { this.id = id; }
@@ -38,6 +38,10 @@
         public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
         public String getAvatar() { return avatar; }
         public void setAvatar(String avatar) { this.avatar = avatar; }
-        public boolean isEnabled() { return enabled; }
-        public void setEnabled(boolean enabled) { this.enabled = enabled; }
+        public boolean isEnabled() { 
+         return enabled; 
+            }
+        public void setEnabled(boolean enabled) { 
+        this.enabled = enabled; 
+        }
     }

@@ -25,7 +25,7 @@ public class DataInitializer {
                 admin.setUsername("Admin");
                 admin.setPassword(encoder.encode("admin123")); // bcrypt password
                 admin.setRole("ADMIN"); // just "ADMIN"
-                admin.setEnabled(true);
+                admin.setEnabled(true);;
                 userRepository.save(admin);
                 System.out.println("✅ Admin created: admin@blog.com / admin123");
             }

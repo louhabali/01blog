@@ -76,10 +76,14 @@ public ResponseEntity<?> register(@RequestBody User user) {
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
         String email = (String) request.getAttribute("userEmail");
+        String role = "USER";
         if (email != null) {
-            return ResponseEntity.ok("{\"loggedIn\":true, \"email\":\"" + email + "\"}");
+            // return role and isloggedIn
+            User u = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            role = u.getRole();
+            return ResponseEntity.ok("{\"loggedIn\":true,\"role\":\"" + role + "\"}");
         }
-        return ResponseEntity.ok("{\"loggedIn\":false}");
+        return ResponseEntity.ok("{\"loggedIn\":false,\"role\":\"" + role + "\" }");
     }
 
 @PostMapping("/logout")
