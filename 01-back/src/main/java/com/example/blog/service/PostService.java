@@ -24,7 +24,8 @@ public class PostService {
     }
 
     public Post createPost(Post post) {
-    User author = post.getUser(); 
+        User author = post.getUser(); 
+        Post savedPost = postRepository.save(post);
     List<User> followers = subrepo.findFollowersByFollowed(author);
     
     // 2️⃣ Loop through followers and create a notification for each
@@ -33,8 +34,9 @@ public class PostService {
         n.setRecipientId(follower.getId()); // the follower
         n.setActorId(author.getId());              // the one who posted
         n.setType("POST");
-        n.setPostId(post.getId());
-        n.setMessage(post.getUser().getUsername() + " has posted a new update!");
+      
+        n.setPostId(savedPost.getId());
+        n.setMessage(savedPost.getUser().getUsername() + " has posted a new update!");
 
         // Save to DB
         n = notifrepo.save(n);
@@ -43,7 +45,7 @@ public class PostService {
        
         notifservice.pushNotification(n);
     }
-        return postRepository.save(post);
+        return savedPost;
     }
 
     public List<Post> getAllPosts() {

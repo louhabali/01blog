@@ -82,13 +82,18 @@ public ResponseEntity<?> register(@RequestBody User user) {
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
         String email = (String) request.getAttribute("userEmail");
         String role = "USER";
+        
         if (email != null) {
             // return role and isloggedIn
             User u = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
             role = u.getRole();
-            return ResponseEntity.ok("{\"loggedIn\":true,\"role\":\"" + role + "\"}");
+            HashMap<String, Object> res = new HashMap<>();
+            res.put("loggedIn", true);
+            res.put("role", role);
+            res.put("currentUserId", u.getId());
+            return ResponseEntity.ok(res);
         }
-        return ResponseEntity.ok("{\"loggedIn\":false,\"role\":\"" + role + "\" }");
+        return ResponseEntity.ok(Map.of("loggedIn", false));
     }
 
 @PostMapping("/logout")
