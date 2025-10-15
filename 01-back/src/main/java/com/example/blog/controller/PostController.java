@@ -29,15 +29,17 @@ public class PostController {
     private final UserRepository userRepository;
     private final InteractionRepository interactionRepository;
     private final InteractionService interactionService;
+    private final CommentRepository commentRepository;
 
     public PostController(PostService postService, UserRepository userRepository,
             InteractionRepository interactionRepository, PostRepository postrepo,
-            InteractionService interactionService) {
+            InteractionService interactionService , CommentRepository commentRepository) {
         this.postService = postService;
         this.userRepository = userRepository;
         this.interactionRepository = interactionRepository;
         this.postrepo = postrepo;
         this.interactionService = interactionService;
+        this.commentRepository = commentRepository;
 
     }
 
@@ -125,8 +127,9 @@ public class PostController {
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
         // 1. Delete all interactions related to the post
+        System.out.println("2222222222222222222222222222222222222222222222222 :  " + postId);
         interactionRepository.deleteByPostId(postId);
-
+        commentRepository.deleteByPostId(postId);
         // 2. Delete the post itself
         postrepo.deleteById(postId);
 

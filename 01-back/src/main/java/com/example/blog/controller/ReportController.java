@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/reports")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class ReportController {
 
@@ -24,7 +24,7 @@ public class ReportController {
     }
 
     // Create a report
-    @PostMapping
+    @PostMapping("/create")
     public Report createReport(@RequestBody Report report) {
         return reportRepository.save(report);
     }
