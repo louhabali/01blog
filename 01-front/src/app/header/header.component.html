@@ -15,7 +15,12 @@
 
     <ng-container *ngIf="auth.isLoggedIn()">
       <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-
+      <a *ngIf="role === 'ADMIN'" 
+      routerLink="/dashboard" 
+      class="nav-link" 
+      routerLinkActive="active">
+      <i class="fa-solid fa-gauge"></i>
+</a>
       <!-- 🔔 Notifications -->
       <a routerLink="/notifications" class="nav-link notif-link"(click)="hideBadge()" (click)="closeMenu()">
         <i class="fa-regular fa-bell"></i>

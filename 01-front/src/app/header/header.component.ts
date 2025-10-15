@@ -21,6 +21,7 @@
     theme!: Theme;
     currentUserId!: number;
     avatarUrl: string = '';
+    role: string = '';
     constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
 
     ngOnInit() {
@@ -29,6 +30,7 @@
           console.log("user in header",user);
           this.currentUserId = user.id;
           this.avatarUrl = user.avatar || 'default-avatar.png';
+          this.role = user.role;
 
              this.wsService.connect(this.currentUserId);
 

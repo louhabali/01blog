@@ -200,11 +200,12 @@ submitPost() {
 
   ///// REPORT 
   isReportModalOpen = false;
-reportData = {
+  reportData = {
   reason: '',
   description: '',
   postId: 0,
-  reportedUserId: 0
+  reportedUserId: 0,
+  reporterUserId: this.currentUserId
 };
 
 // Open the modal and store post info
@@ -214,7 +215,8 @@ reportPost(post: Post) {
     reason: '',
     description: '',
     postId: post.id,
-    reportedUserId: post.authorId
+    reportedUserId: post.authorId,
+    reporterUserId: this.currentUserId
   };
 }
 
@@ -227,13 +229,14 @@ closeReportModal() {
 submitReport(event: Event) {
   event.preventDefault();
 
-  const payload = {
-    reporterId: this.currentUserId,
-    reportedUserId: this.reportData.reportedUserId,
-    postId: this.reportData.postId,
-    reason: this.reportData.reason,
-    description: this.reportData.description
-  };
+ const payload = {
+  reporterUser: { id: this.currentUserId },
+  reportedUser: { id: this.reportData.reportedUserId },
+  post: { id: this.reportData.postId },
+  reason: this.reportData.reason,
+  description: this.reportData.description
+};
+
 
   this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
     .subscribe({
