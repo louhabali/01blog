@@ -5,7 +5,7 @@
   <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
   <!-- Posts Panel -->
-  <div class="posts-panel" [ngClass]="{'dark-mode': isDarkMode}">
+  <div class="posts-panel" #postsPanel [ngClass]="{'dark-mode': isDarkMode}">
     
     <!-- Theme Toggle -->
     <i (click)="toggleTheme()" class="fa-solid fa-circle-half-stroke theme-icon"></i>
@@ -69,7 +69,9 @@
 
       </article>
     </div>
-
+    <div *ngIf="loading" class="loading">
+  <i class="fa fa-spinner fa-spin"></i> Loading posts...
+</div>
   </div>
   <div class="modal-backdrop" *ngIf="isReportModalOpen" (click)="closeReportModal()"></div>
 

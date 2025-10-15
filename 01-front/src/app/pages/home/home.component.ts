@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener,ViewChild,ElementRef,AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,8 @@ interface Post {
   videoUrl :string | null;
   authorName: string;
   authorId : number;
-  createdAT : string | Date;
+  createdAT : string | Date ;
+  user: any ;
   likes : number; 
   avatar: string; 
   liked?: boolean;
@@ -32,11 +33,15 @@ interface Post {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  
+  @ViewChild('postsPanel') postsPanel!: ElementRef;
   currentUserId!: number;
   isDarkMode: boolean = false;
   posts: Post[] = [];
   newPost: Partial<Post> = { title: '', content: '', likes: 0 };
+  currentOffset = 0;
+  limit = 10;
+  loading = false;
+  noMorePosts = false;
 
   constructor(
     private http: HttpClient,
@@ -61,19 +66,59 @@ export class HomeComponent implements OnInit {
   this.isDarkMode = !this.isDarkMode;
 }
   fetchPosts() {
-    this.http
-      .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
-      .subscribe(posts =>{
-         this.posts = posts.map(p => ({
-        ...p,
-        imageUrl: p.imageUrl ? `http://localhost:8087/uploads/${p.imageUrl}` : null,
-        videoUrl: p.videoUrl ? `http://localhost:8087/uploads/${p.videoUrl}` : null,
-      }));
-        console.log("++++ posts are : ",posts);
-        
-this.posts = posts;
-      } );
+  if (this.loading || this.noMorePosts) return;
+
+  this.loading = true;
+
+  this.http
+    .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}&offset=${this.currentOffset}&limit=${this.limit}`, 
+      { withCredentials: true }
+    )
+    .subscribe({
+      next: (posts) => {
+        const formatted = posts.map(p => ({
+          ...p,
+          imageUrl: p.imageUrl ? `${p.imageUrl}` : null,
+          videoUrl: p.videoUrl ? `${p.videoUrl}` : null,
+        }));
+
+        // Append to existing posts
+        this.posts = [...this.posts, ...formatted];
+        console.log("Fetched posts:", formatted);
+        // If fewer than limit → no more posts
+        if (posts.length < this.limit) {
+          this.noMorePosts = true;
+        } else {
+          this.currentOffset += this.limit;
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading posts:', err);
+        this.loading = false;
+      }
+    });
+}
+ngAfterViewInit() {
+  this.postsPanel.nativeElement.addEventListener('scroll', () => {
+    this.handleScroll();
+  });
+}
+
+handleScroll() {
+  const element = this.postsPanel.nativeElement;
+  const threshold = 200; // pixels before reaching bottom
+
+  const scrollTop = element.scrollTop;
+  const scrollHeight = element.scrollHeight;
+  const clientHeight = element.clientHeight;
+
+  // when near bottom:
+  if (scrollTop + clientHeight >= scrollHeight - threshold && !this.loading && !this.noMorePosts) {
+    this.fetchPosts();
   }
+}
 newMedia: File | null = null;
 
 onFileSelected(event: any) {
@@ -114,6 +159,7 @@ submitPost() {
     .subscribe({
       next: post => {
         post.authorId = this.currentUserId;
+        post.authorName = post.user.username;
         this.posts.unshift(post);
         
         this.newPost = { title: '', content: '' };
@@ -135,54 +181,6 @@ submitPost() {
       },
       error: (err) => console.error('Error toggling like', err)
     });
-  }
-
-  enableEdit(post: Post, event?: MouseEvent) {
-    if (event) event.stopPropagation();
-    // Cancel other edits
-    this.posts.forEach(p => p.isEditing = false);
-    // Save original values
-    post.originalTitle = post.title;
-    post.originalContent = post.content;
-    post.isEditing = true;
-  }
-
-  savePost(post: Post, event?: MouseEvent) {
-    if (event) event.stopPropagation();
-    this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
-      title: post.title,
-      content: post.content
-    }, { withCredentials: true })
-    .subscribe({
-      next: (updated) => {
-        post.title = updated.title;
-        post.content = updated.content;
-        post.isEditing = false;
-        post.originalTitle = undefined;
-        post.originalContent = undefined;
-      },
-      error: (err) => console.error("Error updating post", err)
-    });
-  }
-
-  // Cancel editing if clicking outside and restore original content
-  @HostListener('document:click', ['$event'])
-  handleClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.post-card')) {
-      this.posts.forEach(p => {
-        if (p.isEditing) {
-          p.title = p.originalTitle || p.title;
-          p.content = p.originalContent || p.content;
-          p.isEditing = false;
-        }
-      });
-    }
-  }
-
-  // Prevent outside click while interacting inside post
-  stopEvent(event: MouseEvent) {
-    event.stopPropagation();
   }
 
   deletePost(post: Post) {

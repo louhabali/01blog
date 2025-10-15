@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TimeAgoPipe implements PipeTransform {
 
   transform(value: string | Date): string {
-    if (!value) return '';
+    if (!value) return 'just now';
 
     const date = new Date(value);
     const now = new Date();

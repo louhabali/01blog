@@ -16,16 +16,20 @@
   // this is my header component
   export class HeaderComponent implements OnInit {
     menuActive = false;
-     showBadge = true; // <- control visibility
+    showBadge = true; // <- control visibility
     notifsnumber: number = 0; // initialize with 0
     theme!: Theme;
     currentUserId!: number;
+    avatarUrl: string = '';
     constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
 
     ngOnInit() {
       this.userService.getCurrentUser().subscribe({
         next: (user) => {
+          console.log("user in header",user);
           this.currentUserId = user.id;
+          this.avatarUrl = user.avatar || 'default-avatar.png';
+
              this.wsService.connect(this.currentUserId);
 
         // Subscribe to notifications to update the count live
