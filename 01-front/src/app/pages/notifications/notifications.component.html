@@ -2,9 +2,9 @@
   <h2 class="notifications-title">Notifications</h2>
 
   <div class="notifications-list">
-    <div class="notification-item" *ngFor="let n of (notifications$ | async)">
+    <div class="notification-item" style="cursor: pointer;"*ngFor="let n of (notifications$ | async)" (click)="handleNotificationClick(n)">
       <div class="notification-header">
-        <span class="notification-type">{{ n.type }}</span>
+        <span  class="notification-type">{{ n.type }}</span>
         <span class="notification-date">{{ n.createdAt | date:'short' }}</span>
       </div>
       <p class="notification-message">{{ n.message }}</p>

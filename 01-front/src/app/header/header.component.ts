@@ -32,7 +32,7 @@
           this.avatarUrl = user.avatar || 'default-avatar.png';
           this.role = user.role;
 
-             this.wsService.connect(this.currentUserId);
+             //this.wsService.connect(this.currentUserId);
 
         // Subscribe to notifications to update the count live
         this.wsService.getNotifications().subscribe(notifs => {

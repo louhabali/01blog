@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 
 import { AuthService } from './services/auth.service';
-
+import { WebsocketService } from './services/websocket.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,10 +16,12 @@ export class AppComponent {
   isLoggedIn = false;
   email = '';
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService , private wsService :WebsocketService ) {}
 
   ngOnInit() {
     this.auth.checkAuth().subscribe((res: any) => {
+
+      this.wsService.connect(res.currentUserId);
       this.isLoggedIn = res.loggedIn;
       this.email = res.email || '';
     });
