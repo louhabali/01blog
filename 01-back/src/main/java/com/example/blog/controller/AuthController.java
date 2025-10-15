@@ -59,7 +59,7 @@ public ResponseEntity<?> register(@RequestBody User user) {
             if (success) {
                 Map<String, Object> res = new HashMap<>();
                 res.put("message", "Login successful");
-                res.put("banned", !optionalUser.get().isEnabled()); // إذا أردت banned، فنعكس enabled
+                res.put("banned", !optionalUser.get().isEnabled()); 
                 if (optionalUser.get().isEnabled() == true) {
                     String token = jwtUtil.generateToken(optionalUser.get().getEmail());
                     Cookie cookie = new Cookie("jwt", token);

@@ -25,29 +25,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostController {
 
     private final PostService postService;
-     private final PostRepository postrepo;
+    private final PostRepository postrepo;
     private final UserRepository userRepository;
-  private final InteractionRepository interactionRepository;
+    private final InteractionRepository interactionRepository;
     private final InteractionService interactionService;
-    public PostController(PostService postService, UserRepository userRepository,InteractionRepository interactionRepository,PostRepository postrepo,InteractionService interactionService) {
+
+    public PostController(PostService postService, UserRepository userRepository,
+            InteractionRepository interactionRepository, PostRepository postrepo,
+            InteractionService interactionService) {
         this.postService = postService;
         this.userRepository = userRepository;
         this.interactionRepository = interactionRepository;
         this.postrepo = postrepo;
         this.interactionService = interactionService;
-       
+
     }
 
     @PostMapping("/create")
     public Post createPost(@RequestBody Map<String, Object> body) {
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+        System.out.println(
+                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
         String title = (String) body.get("title");
         String content = (String) body.get("content");
         String imageUrl = (String) body.get("imageUrl");
         String videoUrl = (String) body.get("videoUrl");
         String createdAtStr = (String) body.get("createdAt");
-         OffsetDateTime offsetDateTime = OffsetDateTime.parse(createdAtStr);
-    LocalDateTime createdAt = offsetDateTime.toLocalDateTime();
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(createdAtStr);
+        LocalDateTime createdAt = offsetDateTime.toLocalDateTime();
         Number authorIdNumber = (Number) body.get("authorId");
         Long authorId = authorIdNumber.longValue();
 
@@ -62,33 +66,37 @@ public class PostController {
         post.setVideoUrl(videoUrl);
         post.setUser(author); // updated
 
-        
         return postService.createPost(post);
     }
 
-   @GetMapping("/all")
-public List<PostResponse> getAllPosts(@RequestParam Long currentUserId) {
-    System.out.println("Current User ID: 999999999999 -------9999999999999999999999999 ----" + currentUserId);
-    return postService.getAllPosts().stream()
-            .map(post -> {
-                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                Long likes = interactionService.getLikesCount(post.getId());
-                return new PostResponse(post, liked,likes);
-            })
-            .toList();
-}
+    @GetMapping("/all")
+    public List<PostResponse> getAllPosts(@RequestParam Long currentUserId,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+        List<Post> posts = postrepo.findWithOffsetLimit(offset, limit);
+        return posts.stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
+    }
+
     @GetMapping("/all/{id}")
-public List<PostResponse> getAllPostsOfUser(@PathVariable Long id,@RequestParam Long currentUserId) {
-    User currentuser= userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));;
-    return postService.getPostsByUser(currentuser).stream()
-            .map(post -> {
-                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                Long likes = interactionService.getLikesCount(post.getId());
-                return new PostResponse(post, liked,likes);
-            })
-            .toList();
-}
- @PutMapping("/edit/{id}")
+    public List<PostResponse> getAllPostsOfUser(@PathVariable Long id, @RequestParam Long currentUserId) {
+        User currentuser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        ;
+        return postService.getPostsByUser(currentuser).stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
+    }
+
+    @PutMapping("/edit/{id}")
     public ResponseEntity<Post> editPost(@PathVariable Long id, @RequestBody Post updatedPost) {
         try {
             Post post = postService.getPostById(id);
@@ -97,7 +105,8 @@ public List<PostResponse> getAllPostsOfUser(@PathVariable Long id,@RequestParam 
             }
 
             // Update fields
-            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "  + updatedPost.getImageUrl());
+            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "
+                    + updatedPost.getImageUrl());
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
             post.setImageUrl(updatedPost.getImageUrl());
@@ -112,19 +121,20 @@ public List<PostResponse> getAllPostsOfUser(@PathVariable Long id,@RequestParam 
         }
     }
 
-@Transactional
-@DeleteMapping("/delete/{postId}")
-public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
-    // 1. Delete all interactions related to the post
-    interactionRepository.deleteByPostId(postId);
+    @Transactional
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
+        // 1. Delete all interactions related to the post
+        interactionRepository.deleteByPostId(postId);
 
-    // 2. Delete the post itself
-    postrepo.deleteById(postId);
+        // 2. Delete the post itself
+        postrepo.deleteById(postId);
 
-    // 3. Return updated posts list (optional)
-    List<Post> posts = postrepo.findAll();
-    return ResponseEntity.ok(posts);
-}
+        // 3. Return updated posts list (optional)
+        List<Post> posts = postrepo.findAll();
+        return ResponseEntity.ok(posts);
+    }
+
     @GetMapping("/user/{userId}")
     public List<Post> getPostsByUser(@PathVariable Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
