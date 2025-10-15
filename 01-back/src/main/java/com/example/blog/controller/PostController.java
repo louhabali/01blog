@@ -128,6 +128,7 @@ public class PostController {
     public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
         // 1. Delete all interactions related to the post
         System.out.println("2222222222222222222222222222222222222222222222222 :  " + postId);
+        
         interactionRepository.deleteByPostId(postId);
         commentRepository.deleteByPostId(postId);
         // 2. Delete the post itself

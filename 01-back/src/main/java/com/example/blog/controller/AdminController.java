@@ -110,7 +110,9 @@ public class AdminController {
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         try {
+
         // First, delete interactions related to the post
+        reportRepository.deleteByPostId(id);
         interactionRepository.deleteByPostId(id);
         // 
         commentRepository.deleteByPostId(id);
