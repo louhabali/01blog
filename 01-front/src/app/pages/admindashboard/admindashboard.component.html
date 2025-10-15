@@ -124,8 +124,8 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Post ID</th>
-                <th>Reporter</th>
+                <th>Post content</th>
+                <th>reported user</th>
                 <th>Reason</th>
                 <th>Actions</th>
               </tr>
@@ -134,15 +134,15 @@
               <tr *ngFor="let r of reports">
                 <td>{{ r.id }}</td>
                 <td>
-                  <a [routerLink]="['/posts', r.postId]" class="link">{{ r.postId }}</a>
+                  <a [routerLink]="['/posts', r.postId]" class="link">{{ r.post.content }}</a>
                 </td>
                 <td>
-                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{ r.reporterName }}</a>
+                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{ r.post.user.username }}</a>
                 </td>
                 <td class="reason">{{ r.reason }}</td>
                 <td class="actions">
                   <i class="fas fa-check" (click)="resolveReport(r)" title="Resolve report"></i>
-                  <i class="fas fa-trash" (click)="deletePostFromReport(r.postId)" title="Delete post"></i>
+                  <i class="fas fa-trash" (click)="deletePostFromReport(r.post.id)" title="Delete post"></i>
                 </td>
               </tr>
             </tbody>

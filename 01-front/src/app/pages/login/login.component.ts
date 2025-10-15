@@ -30,6 +30,7 @@ export class LoginComponent {
         }
         // header will update because the signal was set in AuthService
         this.router.navigate(['/home']);
+        window.location.reload();
       },
       error: err => {
         this.errorMessage = err.status === 401 ? err.error?.message || 'Invalid credentials' : 'Something went wrong';

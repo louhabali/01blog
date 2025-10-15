@@ -154,6 +154,7 @@ post.appropriate = updated.appropriate
     this.loadingReports = true;
     this.adminService.getReports(this.reportsOffset, this.reportsLimit).subscribe({
       next: newReports => {
+        console.log("Loaded reports:", newReports);
         if (newReports.length < this.reportsLimit) this.allReportsLoaded = true;
         this.reports.push(...newReports);
         this.reportsOffset += newReports.length;
@@ -182,7 +183,7 @@ post.appropriate = updated.appropriate
     this.adminService.deletePost(postId).subscribe({
       next: () => {
         this.posts = this.posts.filter(p => p.id !== postId);
-        this.reports = this.reports.filter(r => r.postId !== postId);
+        this.reports = this.reports.filter(r => r.post.id !== postId);
       },
       error: () => this.error = 'Failed to delete post'
     });

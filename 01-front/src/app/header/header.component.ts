@@ -73,6 +73,7 @@
 
     logout() {
       this.auth.logout().subscribe(() => {
+        
         this.router.navigate(['/']);
         this.menuActive = false;
       });
