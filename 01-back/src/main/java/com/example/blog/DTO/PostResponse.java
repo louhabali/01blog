@@ -14,9 +14,12 @@ public class PostResponse {
     private String imageUrl;
      private String videoUrl;
      private LocalDateTime createdAt; 
+     private boolean isAppropriate;
+
     // Constructor
     public PostResponse(Post post, boolean liked,Long likes) {
         this.id = post.getId();
+        this.isAppropriate = post.isAppropriate();
         this.createdAt = post.getCreatedAt();
         this.likes =likes;
         this.title = post.getTitle();
@@ -39,5 +42,6 @@ public class PostResponse {
     public String getImageUrl() { return imageUrl;}
     public String getVideoUrl() { return videoUrl;} 
     public LocalDateTime getCreatedAT() { return createdAt ; }
+    public boolean getAppropriate() { return isAppropriate ; }
     
 }

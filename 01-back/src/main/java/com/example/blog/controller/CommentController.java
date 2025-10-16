@@ -33,6 +33,7 @@ public class CommentController {
     @PostMapping
     public Comment addComment(@RequestBody CommentDTO dto) {
         User user = userService.getUserById(dto.userId);
+        System.out.println("User is : "+ user.getUsername());
         Post post = postService.getPostById(dto.postId);
 
         Comment comment = new Comment();
