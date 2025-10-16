@@ -36,8 +36,20 @@ export class ThemeService {
   private themeSubject = new BehaviorSubject<Theme>(this.defaultTheme);
   theme$ = this.themeSubject.asObservable();
 
-  toggleTheme() {
-    const current = this.themeSubject.value;
-    this.themeSubject.next(current === this.defaultTheme ? this.altTheme : this.defaultTheme);
+ toggleTheme() {
+ const body = document.body;
+  const isDark = body.style.backgroundColor === 'black';
+
+  if (isDark) {
+    // Switch to light mode
+    body.style.backgroundColor = 'white';
+    body.style.color = 'black';
+    localStorage.setItem('theme', 'light');
+  } else {
+    // Switch to dark mode
+    body.style.backgroundColor = 'black';
+    body.style.color = 'white';
+    localStorage.setItem('theme', 'dark');
   }
+}
 }

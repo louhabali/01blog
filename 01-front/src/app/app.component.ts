@@ -19,6 +19,10 @@ export class AppComponent {
   constructor(private auth: AuthService , private wsService :WebsocketService ) {}
 
   ngOnInit() {
+    const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
     this.auth.checkAuth().subscribe((res: any) => {
 
       this.wsService.connect(res.currentUserId);

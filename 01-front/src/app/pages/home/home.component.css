@@ -3,7 +3,8 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+
+  
   z-index: 100;
 }
 
@@ -12,8 +13,8 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
+
+  
   color: #000;
   padding: 20px;
   border-radius: 10px;
@@ -22,10 +23,6 @@
   box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
-.modal.dark-mode {
-  background: #222;
-  color: #fff;
-}
 
 .modal h2 {
   margin-top: 0;
@@ -54,12 +51,12 @@
 }
 
 .modal-actions button:first-child {
-  background: #000000;
+
   color: white;
 }
 
 .modal-actions button:last-child {
-  background: #ccc;
+
 }
 
 /* Container */
@@ -77,15 +74,10 @@
   width: 280px;
   padding: 24px;
   color: #242424;
-  background-color: #ffffff;
+
   box-sizing: border-box;
   border-right: 1px solid #f2f2f2;
   overflow-y: hidden;
-}
-.users-panel.dark-mode {
-  background-color: #0d0d0d;
-  color: rgba(255, 255, 255, 0.9);
-  border-right: 1px solid #2d2d2d;
 }
 
 /* Posts Panel */
@@ -94,15 +86,11 @@
   padding: 40px 24px;
   height: calc(100vh - 64px);
   overflow-y: auto;
-  background-color: #fff;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-}
-.posts-panel.dark-mode {
-  background-color: #0d0d0d;
-  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Theme Toggle */
@@ -119,12 +107,8 @@
 .theme-icon:hover {
   color: rgba(0, 0, 0, 0.9);
 }
-.posts-panel.dark-mode .theme-icon {
-  color: rgba(255, 255, 255, 0.6);
-}
-.posts-panel.dark-mode .theme-icon:hover {
-  color: rgba(255, 255, 255, 0.9);
-}
+
+
 
 /* Post Form */
 .post-form {
@@ -138,9 +122,7 @@
   gap: 20px;
   border-bottom: 1px solid #f2f2f2;
 }
-.posts-panel.dark-mode .post-form {
-  border-bottom: 1px solid #2d2d2d;
-}
+
 
 .title-input {
   border: none;
@@ -153,15 +135,11 @@
   background: transparent;
   color: #242424;
 }
-.posts-panel.dark-mode .title-input {
-  color: rgba(255, 255, 255, 0.9);
-}
+
 .title-input::placeholder {
   color: rgba(0, 0, 0, 0.3);
 }
-.posts-panel.dark-mode .title-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
+
 
 .content-input {
   border: none;
@@ -176,15 +154,11 @@
   background: transparent;
   color: #242424;
 }
-.posts-panel.dark-mode .content-input {
-  color: rgba(255, 255, 255, 0.9);
-}
+
 .content-input::placeholder {
   color: rgba(0, 0, 0, 0.4);
 }
-.posts-panel.dark-mode .content-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
+
 
 .form-actions {
   display: flex;
@@ -208,16 +182,10 @@
   transition: background 0.2s, color 0.2s;
 }
 .file-label:hover {
-  background: rgba(0, 0, 0, 0.05);
+  
   color: rgba(0, 0, 0, 0.9);
 }
-.posts-panel.dark-mode .file-label {
-  color: rgba(255, 255, 255, 0.6);
-}
-.posts-panel.dark-mode .file-label:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-}
+
 
 .publish-btn {
   margin-left: auto;
@@ -251,9 +219,7 @@
   border-bottom: 1px solid #f2f2f2;
   transition: opacity 0.2s;
 }
-.posts-panel.dark-mode .post-card {
-  border-bottom: 1px solid #2d2d2d;
-}
+
 
 /* Post Header */
 .post-header {
@@ -276,9 +242,6 @@
   font-weight: 500;
   color: #242424;
 }
-.posts-panel.dark-mode .author-name {
-  color: rgba(255, 255, 255, 0.9);
-}
 
 .post-actions-menu {
   display: flex;
@@ -294,12 +257,7 @@
 .post-actions-menu i:hover {
   color: rgba(0, 0, 0, 0.8);
 }
-.posts-panel.dark-mode .post-actions-menu i {
-  color: rgba(255, 255, 255, 0.4);
-}
-.posts-panel.dark-mode .post-actions-menu i:hover {
-  color: rgba(255, 255, 255, 0.8);
-}
+
 
 /* Post Body */
 .post-body {
@@ -323,9 +281,7 @@
   color: #242424;
   cursor: pointer;
 }
-.posts-panel.dark-mode .post-title {
-  color: rgba(255, 255, 255, 0.9);
-}
+
 
 .post-content {
   font-size: 1rem;
@@ -334,9 +290,6 @@
   margin: 0;
  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Helvetica Neue', sans-serif;
   font-weight: 500; /* medium weight */
-}
-.posts-panel.dark-mode .post-content {
-  color: rgba(255, 255, 255, 0.6);
 }
 
 .read-more {
@@ -347,12 +300,7 @@
 .read-more:hover {
   color: rgba(0, 0, 0, 0.9);
 }
-.posts-panel.dark-mode .read-more {
-  color: rgba(255, 255, 255, 0.6);
-}
-.posts-panel.dark-mode .read-more:hover {
-  color: rgba(255, 255, 255, 0.9);
-}
+
 
 /* Post Thumbnail */
 .post-thumbnail {
@@ -397,20 +345,12 @@
   background: rgba(0, 0, 0, 0.05);
   color: rgba(0, 0, 0, 0.9);
 }
-.posts-panel.dark-mode .action-btn {
-  color: rgba(255, 255, 255, 0.6);
-}
-.posts-panel.dark-mode .action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-}
+
 
 .action-btn i.fa-solid {
   color: rgba(0, 0, 0, 0.8);
 }
-.posts-panel.dark-mode .action-btn i.fa-solid {
-  color: rgba(255, 255, 255, 0.8);
-}
+
 
 /* Responsive Design */
 @media (max-width: 1024px) {
@@ -432,9 +372,7 @@
     border-right: none;
     border-bottom: 1px solid #f2f2f2;
   }
-  .posts-panel.dark-mode .users-panel {
-    border-bottom: 1px solid #2d2d2d;
-  }
+
   .posts-panel {
     width: 100%;
     padding: 24px 16px;

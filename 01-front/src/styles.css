@@ -4,3 +4,8 @@ html, body {
   padding: 0;
  overflow: hidden;
 }
+/* 🌙 Dark mode: affects the entire app */
+
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
