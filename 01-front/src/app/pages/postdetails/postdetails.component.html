@@ -26,16 +26,16 @@
             <div class="author-details">
               <span class="author-name">{{ post.author }}</span>
               <div class="article-meta">
-                <span class="read-time">6 min read</span>
+                <span class="read-time">{{ post.createdAT | timeAgo }}  </span>
                 <span class="separator">·</span>
-                <span class="publish-date">{{ 'Jul 28, 2025' }}</span>
+                <span class="publish-date">{{ post.createdAT | date:'yyyy-MM-dd' }}</span>
               </div>
             </div>
           </div>
 
           <!-- Action Buttons -->
           <div class="header-actions">
-            <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+            <ng-container *ngIf="post.authorId === currentUserId; ">
               <button class="icon-btn" *ngIf="!post.isEditing" (click)="editPost(post, $event)" title="Edit">
                 <i class="fa-solid fa-pen"></i>
               </button>
@@ -51,27 +51,11 @@
                 <i class="fa-solid fa-image"></i>
               </button>
             </ng-container>
-            <ng-template #reportOnly>
-              <button class="icon-btn" (click)="reportPost(post)" title="Report">
-                <i class="fa-solid fa-flag"></i>
-              </button>
-            </ng-template>
+           
           </div>
         </div>
 
-        <!-- Engagement Bar -->
-        <div class="engagement-bar">
-          <div class="engagement-actions">
-            <button class="engagement-btn" (click)="toggleLike(post)">
-              <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'"></i>
-              <span>{{ post.likes || 0 }}</span>
-            </button>
-            <button class="engagement-btn" (click)="goToComments(post.id)">
-              <i class="fa-solid fa-comment"></i>
-              <span>{{ 0 }}</span>
-            </button>
-          </div>
-        </div>
+     
       </header>
 
       <!-- Featured Media -->

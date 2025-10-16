@@ -5,6 +5,7 @@ import { UsersComponent } from '../users/users.component';
 import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 interface Comment {
   id?: number;
   user: { id: number; username: string; avatar?: string };
@@ -21,13 +22,21 @@ interface Comment {
 export class CommentsComponent implements OnInit {
   comments: Comment[] = [];
   newComment = '';
-  currentUserId = 1; // example
+  currentUserId!:number ; // example
   postId!: number;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     // get postId from route
+    this.userService.getCurrentUser().subscribe(user => {
+      
+      this.currentUserId = user.id;
+      console.log("Current user id is : ",this.currentUserId);
+      
+    });
     this.route.paramMap.subscribe(params => {
       this.postId = Number(params.get('id'));
       console.log(this.postId);
@@ -36,13 +45,14 @@ export class CommentsComponent implements OnInit {
       
       
     });
+
   }
 
   loadComments() {
     this.http.get<Comment[]>(`http://localhost:8087/posts/${this.postId}/comments`)
       .subscribe(res =>{
         this.comments = res
-        console.log(this.comments);
+        console.log("comments are : ",this.comments);
       } );
   }
 
@@ -50,7 +60,7 @@ export class CommentsComponent implements OnInit {
     if (!this.newComment.trim()) return;
 
     const dto = { userId: this.currentUserId, postId: this.postId , content: this.newComment };
-
+    console.log("DTO is : ",dto);
     this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto)
       .subscribe(() => {
         this.newComment = '';

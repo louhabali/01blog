@@ -6,7 +6,7 @@ import { UsersComponent } from '../users/users.component';
 import { PostService } from '../../services/post.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
-
+import { TimeAgoPipe } from '../../services/time-ago.pipe';
 interface Post { 
   id: number; 
   title: string; 
@@ -18,6 +18,7 @@ interface Post {
   likes : number; 
   avatar?: string; 
   liked?: boolean;
+    createdAT : string | Date ;
   isEditing?: boolean; 
   originalTitle?: string;
   originalContent?: string;
@@ -28,7 +29,7 @@ interface Post {
 @Component({
   selector: 'app-postdetails',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent],
+  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe],
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css']
 })

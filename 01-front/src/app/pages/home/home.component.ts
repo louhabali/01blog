@@ -17,6 +17,7 @@ interface Post {
   authorId : number;
   createdAT : string | Date ;
   user: any ;
+  appropriate: boolean;
   likes : number; 
   avatar: string; 
   liked?: boolean;
@@ -55,7 +56,12 @@ export class HomeComponent implements OnInit {
       next: (user) => {
         this.currentUserId = user.id;
         console.log("Logged-in user:", user);
-        this.fetchPosts();
+        this.loading = true;
+        setTimeout(() => {
+
+          this.loading = false;
+          this.fetchPosts();
+        }, 1000);
       },
       error: (err) => {
         console.error("Failed to fetch user:", err);
