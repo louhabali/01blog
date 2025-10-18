@@ -2,6 +2,9 @@ package com.example.blog.controller;
 
 import com.example.blog.entity.*;
 import com.example.blog.repository.ReportRepository;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +26,17 @@ public class ReportController {
         return reportRepository.findAll();
     }
 
-    // Create a report
     @PostMapping("/create")
-    public Report createReport(@RequestBody Report report) {
-        return reportRepository.save(report);
+public ResponseEntity<?> createReport(@RequestBody Report report) {
+    if (report.getId() == null || report.getId() == 0) {
+        // user not logged in or invalid report → 401 Unauthorized
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body("You must log in to submit a report");
     }
+
+    Report savedReport = reportRepository.save(report);
+    return ResponseEntity.ok(savedReport);
+}
 
     // Delete a report
     @DeleteMapping("/{id}")

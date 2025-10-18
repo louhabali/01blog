@@ -29,113 +29,113 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postrepo;
+    private final PostRepository postRepo;
     private final UserRepository userRepository;
-    private final InteractionRepository interactionRepository;
     private final InteractionService interactionService;
     private final CommentRepository commentRepository;
+    private final InteractionRepository interactionRepository;
 
     public PostController(PostService postService, UserRepository userRepository,
-            InteractionRepository interactionRepository, PostRepository postrepo,
-            InteractionService interactionService , CommentRepository commentRepository) {
+                          PostRepository postRepo, InteractionService interactionService,
+                          CommentRepository commentRepository, InteractionRepository interactionRepository) {
         this.postService = postService;
         this.userRepository = userRepository;
-        this.interactionRepository = interactionRepository;
-        this.postrepo = postrepo;
+        this.postRepo = postRepo;
         this.interactionService = interactionService;
         this.commentRepository = commentRepository;
-
+        this.interactionRepository = interactionRepository;
     }
 
- @PostMapping("/create")
-public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
-    // find author safely
-    User author = userRepository.findById(request.getAuthorId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    @PostMapping("/create")
+    public ResponseEntity<?> createPost(@RequestBody PostRequest request) {
+        User author = userRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
-    // create new Post entity
-    Post post = new Post();
-    post.setTitle(request.getTitle());
-    post.setContent(request.getContent());
-    post.setImageUrl(request.getImageUrl());
-    post.setVideoUrl(request.getVideoUrl());
-    post.setCreatedAt(request.getCreatedAt() != null ? request.getCreatedAt() : LocalDateTime.now());
-    post.setUser(author);
+        Post post = new Post();
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
+        post.setImageUrl(request.getImageUrl());
+        post.setVideoUrl(request.getVideoUrl());
+        post.setCreatedAt(request.getCreatedAt() != null ? request.getCreatedAt() : LocalDateTime.now());
+        post.setUser(author);
 
-    // save post
-    Post savedPost = postService.createPost(post);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
-}
-
-    @GetMapping("/all")
-    public List<PostResponse> getAllPosts(@RequestParam Long currentUserId,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit) {
-        List<Post> posts = postrepo.findWithOffsetLimit(offset, limit);
-        return posts.stream()
-                .map(post -> {
-                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                    Long likes = interactionService.getLikesCount(post.getId());
-                    return new PostResponse(post, liked, likes);
-                })
-                .toList();
-    }
-
-    @GetMapping("/all/{id}")
-    public List<PostResponse> getAllPostsOfUser(@PathVariable Long id, @RequestParam Long currentUserId) {
-        User currentuser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        ;
-        return postService.getPostsByUser(currentuser).stream()
-                .map(post -> {
-                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                    Long likes = interactionService.getLikesCount(post.getId());
-                    return new PostResponse(post, liked, likes);
-                })
-                .toList();
-    }
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Post> editPost(@PathVariable Long id,@Valid @RequestBody PostRequest updatedPost) {
-        try {
-            Post post = postService.getPostById(id);
-            if (post == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            post.setTitle(updatedPost.getTitle());
-            post.setContent(updatedPost.getContent());
-            post.setImageUrl(updatedPost.getImageUrl());
-            post.setVideoUrl(updatedPost.getVideoUrl());
-
-            Post savedPost = postService.savePost(post);
-
-            return ResponseEntity.ok(savedPost);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @Transactional
-    @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<List<Post>> deletePost(@PathVariable Long postId) {
-        // 1. Delete all interactions related to the post
-        System.out.println("2222222222222222222222222222222222222222222222222 :  " + postId);
-        
-        interactionRepository.deleteByPostId(postId);
-        commentRepository.deleteByPostId(postId);
-        // 2. Delete the post itself
-        postrepo.deleteById(postId);
-
-        // 3. Return updated posts list (optional)
-        List<Post> posts = postrepo.findAll();
-        return ResponseEntity.ok(posts);
+        Post savedPost = postService.createPost(post);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Post> getPostsByUser(@PathVariable Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        return postService.getPostsByUser(user);
+    public ResponseEntity<List<PostResponse>> getPostsByUser(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Long currentUserId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        List<PostResponse> responses = postService.getPostsByUser(user).stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
+
+        return ResponseEntity.ok(responses);
     }
+    @GetMapping("/{id}")
+public ResponseEntity<PostResponse> getPostById(
+        @PathVariable Long id,
+        @RequestParam(required = false) Long currentUserId) {
+
+    Post post = postRepo.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+
+    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+    Long likes = interactionService.getLikesCount(post.getId());
+
+    return ResponseEntity.ok(new PostResponse(post, liked, likes));
 }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Boolean> toggleLike(@PathVariable Long postId,
+                                              @RequestParam(required = false) Long userId) {
+        if (userId == null || userId == 0)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login required to like");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+
+        boolean liked = interactionService.toggleLike(user, post);
+        return ResponseEntity.ok(liked);
+    }
+
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        interactionRepository.deleteByPostId(postId);
+        commentRepository.deleteByPostId(postId);
+        postRepo.deleteById(postId);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/all")
+public ResponseEntity<List<PostResponse>> getAllPosts(
+        @RequestParam(required = false) Long currentUserId,
+        @RequestParam(defaultValue = "0") int offset,
+        @RequestParam(defaultValue = "10") int limit) {
+
+    List<Post> posts = postRepo.findWithOffsetLimit(offset, limit);
+
+    List<PostResponse> responses = posts.stream()
+            .map(post -> {
+                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                Long likes = interactionService.getLikesCount(post.getId());
+                return new PostResponse(post, liked, likes);
+            })
+            .toList();
+
+    return ResponseEntity.ok(responses);
+}
+
+}
+

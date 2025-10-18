@@ -4,6 +4,8 @@ import com.example.blog.entity.*;
 
 import com.example.blog.service.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,17 +33,21 @@ public class CommentController {
     }
 
     @PostMapping
-    public Comment addComment(@RequestBody CommentDTO dto) {
+    public ResponseEntity<?> addComment(@RequestBody CommentDTO dto) {
+        if (dto.userId == null || dto.userId == 0) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body("You must log in to submit a report");
+        }
         User user = userService.getUserById(dto.userId);
-        System.out.println("User is : "+ user.getUsername());
         Post post = postService.getPostById(dto.postId);
 
         Comment comment = new Comment();
         comment.setContent(dto.content);
         comment.setUser(user);
         comment.setPost(post);
-
-        return commentService.addComment(comment);
+        
+        commentService.addComment(comment);
+        return ResponseEntity.ok(comment);
     }
 
     public static class CommentDTO {

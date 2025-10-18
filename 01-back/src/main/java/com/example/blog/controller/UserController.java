@@ -6,6 +6,7 @@ import com.example.blog.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,16 +42,27 @@ public class UserController {
         User adminUser = userService.makeAdmin(id);
         return ResponseEntity.ok(adminUser);
     }
-    @GetMapping("/me")
-public User getCurrentUser(HttpServletRequest request) {
+   @GetMapping("/me")
+public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
     String email = (String) request.getAttribute("userEmail");
-    return userRepository.findByUsernameOrEmail(email, email).orElseThrow();
+
+    // 🧠 No email = not logged in
+    if (email == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("User not logged in");
+    }
+
+    return userRepository.findByUsernameOrEmail(email, email)
+            .<ResponseEntity<?>>map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found"));
 }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
         System.out.println("yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyyy"+id);
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")    );
         
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
