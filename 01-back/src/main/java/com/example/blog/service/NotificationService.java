@@ -62,4 +62,11 @@ public class NotificationService {
             repo.save(n);
         });
     }
+    public void markAllAsSeen() {
+        List<Notification> notifs = repo.findAll();
+        for (Notification n : notifs) {
+            n.setSeen(true);
+        }
+        repo.saveAll(notifs);
+    }
 }

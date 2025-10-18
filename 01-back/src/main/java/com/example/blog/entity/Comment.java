@@ -3,6 +3,8 @@ package com.example.blog.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Comment {
 
@@ -19,6 +21,7 @@ public class Comment {
     private User user; // assume you have User entity
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "post_id")
     private Post post; // assume you have Post entity
 

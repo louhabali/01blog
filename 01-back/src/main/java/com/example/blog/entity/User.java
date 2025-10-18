@@ -2,6 +2,8 @@
 
     import jakarta.persistence.*;
     import java.time.LocalDateTime;
+    
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     @Entity
     @Table(name = "users")
     public class User {
@@ -11,6 +13,7 @@
 
         private String username;
         private String email;
+        @JsonIgnore
         private String password;
         private String avatar; // URL or path to avatar image
         private LocalDateTime createdAt = LocalDateTime.now();

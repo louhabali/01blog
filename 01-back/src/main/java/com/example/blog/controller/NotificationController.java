@@ -22,8 +22,8 @@ public class NotificationController {
         System.out.println("+++++++++++++++++++++++++++++USEEERIDDDD "+ userId);
         return svc.getNotificationsFor(userId);
     }
-    @PostMapping("/mark-seen/{id}")
-    public void markSeen(@PathVariable Long id) {
-        svc.markAsSeen(id);
+    @PostMapping("/mark-as-seen")
+    public void markSeen() {
+        svc.markAllAsSeen();
     }
 }
