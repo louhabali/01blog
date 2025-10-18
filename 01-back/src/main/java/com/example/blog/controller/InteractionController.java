@@ -42,7 +42,7 @@ public ResponseEntity<?> toggleLike(
 
     boolean liked = interactionService.toggleLike(user, post);
 
-    return ResponseEntity.ok(Map.of("liked", liked));
+    return ResponseEntity.ok(liked);
 }
   
 }
