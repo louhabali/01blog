@@ -49,7 +49,9 @@ export class ProfileComponent implements OnInit {
   numberOfposts!: number;
   user: User = { id: 0, username: '', email: '' , avatar: '' };
   newPost: Partial<Post> = { title: '', content: '' };
-
+   errorResponse: any = {};
+errorMessage: string = '';
+showError: boolean = false;
   constructor(
     private http: HttpClient,
     private postService: PostService,
@@ -203,7 +205,26 @@ onFileSelected(event: any) {
         this.newPost = { title: '', content: '' };
         this.newMedia = null;
       },
-      error: err => console.error('Error creating post', err)
+      error: err =>{
+        if (err.status === 400) {
+          console.log("errror response is ",err.error);
+           this.errorResponse = err.error;
+        // 🧠 combine messages
+        if (this.errorResponse.title && this.errorResponse.content) {
+          this.errorMessage = 'Title and content are required';
+        }else if (this.errorResponse.title) {
+          this.errorMessage = this.errorResponse.title;
+        }else if (this.errorResponse.content) {
+          this.errorMessage = this.errorResponse.content;
+        } 
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 2000);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      } 
     });
 }
   toggleLike(post: Post) {

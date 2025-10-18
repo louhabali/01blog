@@ -6,7 +6,9 @@
     </div>
 
     <h2>Create an Account</h2>
-
+    <div *ngIf="showError" class="error-box">
+      <span>{{ errorMessage }}</span>
+    </div>
     <form (ngSubmit)="onSubmit()">
       <label>Username</label>
       <input type="text" [(ngModel)]="formData.username" name="username" required>

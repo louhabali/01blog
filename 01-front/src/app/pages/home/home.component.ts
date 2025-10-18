@@ -26,6 +26,7 @@ interface Post {
   originalContent?: string;
 }
 
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -43,6 +44,11 @@ export class HomeComponent implements OnInit {
   limit = 10;
   loading = false;
   noMorePosts = false;
+  // Error handling
+  errorResponse: any = {};
+errorMessage: string = '';
+showError: boolean = false;
+
 
   constructor(
     private http: HttpClient,
@@ -164,6 +170,7 @@ submitPost() {
   this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
     .subscribe({
       next: post => {
+
         post.authorId = this.currentUserId;
         post.authorName = post.user.username;
         this.posts.unshift(post);
@@ -172,7 +179,30 @@ submitPost() {
         this.newMedia = null;
     
       },
-      error: err => console.error('Error creating post', err)
+      error: err =>{
+        if (err.status === 400) {
+           this.errorResponse = err.error;
+
+        // 🧠 combine messages
+        if (this.errorResponse.title && this.errorResponse.content) {
+          this.errorMessage = 'Title and content are required';
+        } else if (this.errorResponse.title) {
+          this.errorMessage = this.errorResponse.title;
+        } else if (this.errorResponse.content) {
+          this.errorMessage = this.errorResponse.content;
+        }
+
+        // ✅ Show it
+        this.showError = true;
+
+        // ⏳ Hide after 2 seconds
+        setTimeout(() => {
+          this.showError = false;
+        }, 2000);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      } 
     });
 }
   toggleLike(post: Post): void {

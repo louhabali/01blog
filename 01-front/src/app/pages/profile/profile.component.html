@@ -8,7 +8,11 @@
       
 
       <!-- Post Creation Form -->
+        
       <div class="post-form" *ngIf="user?.id === currentUserId">
+         <div *ngIf="showError" class="error-box">
+        <span>{{ errorMessage }}</span>
+      </div>
         <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
         <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
             <div class="form-actions">
@@ -21,6 +25,7 @@
       </div>
 
       <!-- Posts Feed -->
+      
       <div class="posts-grid">
         <div class="post-card" *ngFor="let post of posts">
     <!-- Top-right actions -->

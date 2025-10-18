@@ -39,6 +39,9 @@ export class PostdetailsComponent {
   currentUserId!: number;
   isDarkMode = false;
   selectedMedia: File | null = null;
+   errorResponse: any = {};
+errorMessage: string = '';
+showError: boolean = false;
   constructor(
     private userService: UserService,
     private http: HttpClient,
@@ -172,7 +175,26 @@ savePost(post: Post, event?: MouseEvent) {
         post.originalTitle = undefined;
         post.originalContent = undefined;
       },
-      error: (err) => console.error("Error updating post", err)
+      error: (err) =>{
+         if (err.status === 400) {
+          console.log("errror response is ",err.error);
+           this.errorResponse = err.error;
+        // 🧠 combine messages
+        if (this.errorResponse.title && this.errorResponse.content) {
+          this.errorMessage = 'Title and content are required';
+        }else if (this.errorResponse.title) {
+          this.errorMessage = this.errorResponse.title;
+        }else if (this.errorResponse.content) {
+          this.errorMessage = this.errorResponse.content;
+        } 
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 2000);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      }
     });
   }
 

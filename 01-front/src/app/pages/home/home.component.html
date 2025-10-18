@@ -11,7 +11,11 @@
   
 
     <!-- Post Creation Form -->
+     
     <div class="post-form">
+      <div *ngIf="showError" class="error-box">
+      <span>{{ errorMessage }}</span>
+    </div>
       <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
       <div class="form-actions">

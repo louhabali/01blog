@@ -15,6 +15,9 @@ import { HttpClient } from '@angular/common/http';
 // my register cmp
 export class RegisterComponent {
   formData = { username: '', email: '', password: '' };
+    errorMessage: string = '';
+    showError: boolean = false;
+
  constructor(private http: HttpClient, private router: Router) {}
   onSubmit() {
      this.http.post('http://localhost:8087/auth/register', this.formData)
@@ -25,8 +28,25 @@ export class RegisterComponent {
          console.log("rani jit mn spring");
         },
         error: err => {
-          console.error('register failed', err);
-        }
+          if (err.status === 400) {
+            console.error('Registration failed:', err.error);
+    const errors = err.error;
+    if (errors.username && errors.email) {
+      this.errorMessage = errors.username;
+    } else if (errors.username) {
+      this.errorMessage = errors.username;
+    } else if (errors.email) {
+      this.errorMessage = errors.email;
+    } else if (errors.password) {
+      this.errorMessage = errors.password;
+    } else {
+      this.errorMessage = 'Registration failed due to unknown error.';
+    }
+
+    this.showError = true;
+    setTimeout(() => this.showError = false, 3000);
+  }
+  }
       });
   }
 }
