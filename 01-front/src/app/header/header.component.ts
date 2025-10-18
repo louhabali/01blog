@@ -3,7 +3,7 @@
   import { AuthService } from '../services/auth.service';
   import { filter } from 'rxjs/operators';
   import { CommonModule } from '@angular/common';
-  import { ThemeService, Theme } from '../services/theme.service';
+
   import { UserService } from '../services/user.service';
   import { WebsocketService,  } from '../services/websocket.service';
   @Component({
@@ -18,11 +18,11 @@
     menuActive = false;
     showBadge = true; // <- control visibility
     notifsnumber: number = 0; // initialize with 0
-    theme!: Theme;
+
     currentUserId!: number;
     avatarUrl: string = '';
     role: string = '';
-    constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private themeService: ThemeService , private userService : UserService) {}
+    constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private userService : UserService) {}
 
     ngOnInit() {
       this.userService.getCurrentUser().subscribe({
@@ -58,7 +58,7 @@
         } );
 
       // Subscribe to theme changes
-      this.themeService.theme$.subscribe(t => this.theme = t);
+     
     }
      hideBadge() {
     this.showBadge = false; // hide badge when clicked
@@ -77,9 +77,5 @@
         this.router.navigate(['/']);
         this.menuActive = false;
       });
-    }
-
-    toggleTheme() {
-      this.themeService.toggleTheme();
     }
   }
