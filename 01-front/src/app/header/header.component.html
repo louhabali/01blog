@@ -10,11 +10,13 @@
   <!-- Right: Navigation -->
   <nav class="nav">
     <ng-container *ngIf="!auth.isLoggedIn()">
+      <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="login" class="nav-link">Sign in</a>
     </ng-container>
 
     <ng-container *ngIf="auth.isLoggedIn()">
       <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+
       <a *ngIf="role === 'ADMIN'" 
       routerLink="/dashboard" 
       class="nav-link" 
