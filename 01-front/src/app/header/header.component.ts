@@ -46,7 +46,10 @@
           console.log("Logged-in user:", user);
         },
         error: (err) => {
-          console.error("Failed to fetch user:", err);
+          if (err.status === 401) {
+            this.currentUserId = 0; // not logged in
+            
+          }
         }
       });
       

@@ -24,9 +24,11 @@ export class AppComponent {
     document.body.classList.add('dark-mode');
   }
     this.auth.checkAuth().subscribe((res: any) => {
+      if (res.currentUserId){
 
-      this.wsService.connect(res.currentUserId);
-      this.isLoggedIn = res.loggedIn;
+        this.wsService.connect(res.currentUserId);
+        this.isLoggedIn = res.loggedIn;
+      }
       this.email = res.email || '';
     });
   }

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 interface Comment {
   id?: number;
   user: { id: number; username: string; avatar?: string };
@@ -26,7 +27,7 @@ export class CommentsComponent implements OnInit {
   postId!: number;
 
   constructor(private route: ActivatedRoute, private http: HttpClient,
-    private userService: UserService
+    private userService: UserService, private router: Router,
   ) {}
 
   ngOnInit() {
@@ -61,10 +62,20 @@ export class CommentsComponent implements OnInit {
 
     const dto = { userId: this.currentUserId, postId: this.postId , content: this.newComment };
     console.log("DTO is : ",dto);
-    this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto)
-      .subscribe(() => {
+     this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto, { withCredentials: true })
+    .subscribe({
+      next: () => {
         this.newComment = '';
         this.loadComments();
-      });
-  }
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          // User not logged in → redirect to login
+          this.router.navigate(['/login']);
+        } else {
+         
+        }
+      }
+    });
+}
 }

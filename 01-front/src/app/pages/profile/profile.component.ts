@@ -61,16 +61,35 @@ showError: boolean = false;
   ) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe(user => {
+  this.userService.getCurrentUser().subscribe({
+    next: (user) => {
+      // ✅ Logged-in user
       this.currentUserId = user.id;
 
-      // Listen to profile changes via route params
+      // When user is logged in, load the target profile
       this.route.paramMap.subscribe(params => {
         const id = params.get('id');
         if (id) this.loadProfile(Number(id));
       });
-    });
-  }
+    },
+    error: (err) => {
+      if (err.status === 401) {
+        console.warn('Guest user browsing without login');
+        // 👇 Guest mode — no current user
+        this.currentUserId = 0;
+
+        // Still load profile even as guest
+        this.route.paramMap.subscribe(params => {
+          const id = params.get('id');
+          if (id) this.loadProfile(Number(id));
+        });
+      } else {
+        console.error('Unexpected error fetching user:', err);
+      }
+    }
+  });
+}
+
   triggerAvatarUpload() {
     this.avatarInput.nativeElement.click();
   }
@@ -152,14 +171,15 @@ showError: boolean = false;
     this.userService.getFollowingCount(this.user.id).subscribe(count => this.user.followingCount = count);
   }
 
-  fetchPosts(id: number) {
-    this.http
-      .get<Post[]>(`http://localhost:8087/posts/all/${id}?currentUserId=${this.currentUserId}`, { withCredentials: true })
-      .subscribe(posts => {
-        this.posts = posts;
-        console.log("profil posts",this.posts);
-        
-        this.numberOfposts = posts.length;
+  fetchPosts(userId: number) {
+    const idParam = `currentUserId=${this.currentUserId}`;
+    this.http.get<Post[]>(`http://localhost:8087/posts/user/${userId}?${idParam}`, { withCredentials: true })
+      .subscribe({
+        next: posts => {
+          this.posts = posts;
+          this.numberOfposts = posts.length;
+        },
+        error: err => console.error('Error fetching posts:', err)
       });
   }
 newMedia: File | null = null;
@@ -227,10 +247,24 @@ onFileSelected(event: any) {
       } 
     });
 }
-  toggleLike(post: Post) {
-    this.postService.toggleLike(post.id, this.currentUserId).subscribe(liked => {
-      post.liked = liked;
-      post.likes += liked ? 1 : -1;
+ toggleLike(post: Post): void {
+    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+      next: (liked) => {
+        
+        if (liked == true){
+          post.likes += 1;
+        }else {
+          post.likes -= 1;
+        }
+        post.liked = liked;
+      },
+      error: (err) =>{
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      } 
     });
   }
 

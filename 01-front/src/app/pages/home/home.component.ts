@@ -70,7 +70,12 @@ showError: boolean = false;
         }, 1000);
       },
       error: (err) => {
-        console.error("Failed to fetch user:", err);
+        if (err.status === 401) {
+
+        this.currentUserId = 0; // not logged in
+          this.fetchPosts();
+        }
+        
       }
     });
   }
@@ -81,9 +86,9 @@ showError: boolean = false;
   if (this.loading || this.noMorePosts) return;
 
   this.loading = true;
-
+  const idParam = this.currentUserId ? `currentUserId=${this.currentUserId}&` : '';
   this.http
-    .get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}&offset=${this.currentOffset}&limit=${this.limit}`, 
+    .get<Post[]>(`http://localhost:8087/posts/all?${idParam}offset=${this.currentOffset}&limit=${this.limit}`, 
       { withCredentials: true }
     )
     .subscribe({
@@ -199,7 +204,10 @@ submitPost() {
         setTimeout(() => {
           this.showError = false;
         }, 2000);
-        }else {
+        }else if (err.status === 401) {
+          this.router.navigate(['/login']);
+
+        } else {
           console.error('Unexpected error:', err);
         }
       } 
@@ -208,6 +216,7 @@ submitPost() {
   toggleLike(post: Post): void {
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
+        
         if (liked == true){
           post.likes += 1;
         }else {
@@ -215,7 +224,13 @@ submitPost() {
         }
         post.liked = liked;
       },
-      error: (err) => console.error('Error toggling like', err)
+      error: (err) =>{
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      } 
     });
   }
 
@@ -281,8 +296,11 @@ submitReport(event: Event) {
         this.closeReportModal();
       },
       error: (err) => {
-        console.error('Error submitting report', err);
-        alert('Failed to submit report');
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error submitting report', err);
+        }
       }
     });
 }

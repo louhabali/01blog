@@ -58,8 +58,9 @@ showError: boolean = false;
         this.fetchPost();
       },
       error: (err) => {
-        console.error("Failed to fetch user:", err);
-        this.router.navigate(['/']);
+        this.currentUserId = 0; // not logged in
+        this.fetchPost();
+        
       }
     });
   }
@@ -73,40 +74,38 @@ showError: boolean = false;
 
     const postId = Number(postIdStr);
 
-    // ✅ Fetch single post by ID (if API supports it)
-    // this.http.get<Post>(`http://localhost:8087/posts/${postId}?currentUserId=${this.currentUserId}`, { withCredentials: true })
-    //   .subscribe({
-    //     next: (post) => {
-    //       this.post = post;
-    //     },
-    //     error: (err) => {
-    //       console.error("Failed to fetch post:", err);
-    //       this.router.navigate(['/']);
-    //     }
-    //   });
-
     
-    this.http.get<Post[]>(`http://localhost:8087/posts/all?currentUserId=${this.currentUserId}`, { withCredentials: true })
-      .subscribe({
-        next: posts => {
-          this.post = posts.find(p => p.id === postId)!;
-          if (!this.post) this.router.navigate(['/']);
-        },
-        error: () => this.router.navigate(['/'])
-      });
+   this.http.get<Post>(`http://localhost:8087/posts/${postId}?currentUserId=${this.currentUserId}`, { withCredentials: true })
+  .subscribe({
+    next: post => {
+      this.post = post;
+    },
+    error: () => {} // redirect if not found
+  });
   }
 
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
   }
 
-  toggleLike(post: Post) {
+  toggleLike(post: Post): void {
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
-        post.likes += liked ? 1 : -1;
+        
+        if (liked == true){
+          post.likes += 1;
+        }else {
+          post.likes -= 1;
+        }
         post.liked = liked;
       },
-      error: (err) => console.error('Error toggling like', err)
+      error: (err) =>{
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        }else {
+          console.error('Unexpected error:', err);
+        }
+      } 
     });
   }
   changeMedia(post: Post) {
