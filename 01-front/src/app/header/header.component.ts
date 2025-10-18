@@ -36,8 +36,11 @@
 
         // Subscribe to notifications to update the count live
         this.wsService.getNotifications().subscribe(notifs => {
-
-          this.notifsnumber = notifs.filter(n => n.actorId!==this.currentUserId).length;
+          if (!this.showBadge) {
+            this.notifsnumber = 0;
+            return;
+          }
+          this.notifsnumber = notifs.filter(n => n.actorId!==this.currentUserId && !n.seen).length;
         });
           //this.wsService.connect(this.currentUserId);
           console.log("Logged-in user:", user);
@@ -63,6 +66,17 @@
     }
      hideBadge() {
     this.showBadge = false; // hide badge when clicked
+    this.notifsnumber = 0;
+    // here i want to send request to change seen state of notifs in backend
+    this.wsService.markNotificationsAsSeen().subscribe({
+      next: () => {
+        console.log("Notifications marked as seen");    
+      },
+      error: (err) => {
+        console.error("Failed to mark notifications as seen:", err);
+      }
+    });
+   
   }
     toggleMenu() {
       this.menuActive = !this.menuActive;

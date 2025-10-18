@@ -67,4 +67,7 @@ export class WebsocketService {
         this.notifications$.next([...fetchedNotifs, ...current]); // prepend stored notifications
       });
   }
+  markNotificationsAsSeen() {
+    return this.http.post(`http://localhost:8087/api/notifications/mark-as-seen`, {});
+  }
 }

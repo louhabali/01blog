@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WebsocketService, NotificationDTO } from '../../services/websocket.service';
 import { UserService } from '../../services/user.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Router } from '@angular/router';
+import { not } from 'rxjs/internal/util/not';
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -14,7 +15,7 @@ import { Router } from '@angular/router';
 export class NotificationsComponent implements OnInit {
   notifications$!: Observable<NotificationDTO[]>;
   currentUserId!: number;
-  
+
   constructor(private wsService: WebsocketService, private userService: UserService,private router: Router) {}
 
   ngOnInit() {
@@ -26,7 +27,27 @@ export class NotificationsComponent implements OnInit {
       //this.wsService.connect(this.currentUserId);
 
       // Subscribe to all notifications (stored + live)
-      this.notifications$ = this.wsService.getNotifications();
+      // i want if a notif is duplicated , i want to show the last one wahci has the closest created at to now
+      
+       this.notifications$ = this.wsService.getNotifications().pipe(
+      map((notifications: NotificationDTO[]) => {
+        const map = new Map<string, NotificationDTO>();
+
+        notifications.forEach(n => {
+          const key = `${n.actorId}-${n.type}`;
+          const existing = map.get(key);
+
+          // Keep the latest one
+          if (!existing || new Date(n.createdAt) > new Date(existing.createdAt)) {
+            map.set(key, n);
+          }
+        });
+        return Array.from(map.values())
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); 
+      })
+    );
+     
+
     });
     
   }
