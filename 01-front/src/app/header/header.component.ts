@@ -36,7 +36,8 @@
 
         // Subscribe to notifications to update the count live
         this.wsService.getNotifications().subscribe(notifs => {
-          this.notifsnumber = notifs.length;
+
+          this.notifsnumber = notifs.filter(n => n.actorId!==this.currentUserId).length;
         });
           //this.wsService.connect(this.currentUserId);
           console.log("Logged-in user:", user);

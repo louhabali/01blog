@@ -3,11 +3,13 @@
 
   <div class="notifications-list">
     <div class="notification-item" style="cursor: pointer;"*ngFor="let n of (notifications$ | async)" (click)="handleNotificationClick(n)">
-      <div class="notification-header">
-        <span  class="notification-type">{{ n.type }}</span>
-        <span class="notification-date">{{ n.createdAt | date:'short' }}</span>
+      <div *ngIf="n.actorId !== currentUserId">
+        <div class="notification-header">
+          <span  class="notification-type">{{ n.type }}</span>
+          <span class="notification-date">{{ n.createdAt | date:'short' }}</span>
+          <p class="notification-message">{{ n.message }}</p>
+        </div>
       </div>
-      <p class="notification-message">{{ n.message }}</p>
     </div>
   </div>
 </div>

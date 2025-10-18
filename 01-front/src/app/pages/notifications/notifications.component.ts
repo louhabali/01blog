@@ -14,11 +14,12 @@ import { Router } from '@angular/router';
 export class NotificationsComponent implements OnInit {
   notifications$!: Observable<NotificationDTO[]>;
   currentUserId!: number;
-
+  
   constructor(private wsService: WebsocketService, private userService: UserService,private router: Router) {}
 
   ngOnInit() {
     this.userService.getCurrentUser().subscribe(user => {
+      console.log("user in notifications",user);
       this.currentUserId = user.id;
 
       // Connect WebSocket (fetch stored + listen live)
