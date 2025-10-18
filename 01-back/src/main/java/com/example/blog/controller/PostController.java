@@ -5,11 +5,15 @@ import com.example.blog.DTO.*;
 import com.example.blog.entity.User;
 import com.example.blog.service.InteractionService;
 import com.example.blog.service.PostService;
+
+import jakarta.validation.Valid;
+
 import com.example.blog.repository.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -43,33 +47,26 @@ public class PostController {
 
     }
 
-    @PostMapping("/create")
-    public Post createPost(@RequestBody Map<String, Object> body) {
-        System.out.println(
-                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-        String title = (String) body.get("title");
-        String content = (String) body.get("content");
-        String imageUrl = (String) body.get("imageUrl");
-        String videoUrl = (String) body.get("videoUrl");
-        String createdAtStr = (String) body.get("createdAt");
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(createdAtStr);
-        LocalDateTime createdAt = offsetDateTime.toLocalDateTime();
-        Number authorIdNumber = (Number) body.get("authorId");
-        Long authorId = authorIdNumber.longValue();
+ @PostMapping("/create")
+public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
+    // find author safely
+    User author = userRepository.findById(request.getAuthorId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        User author = userRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    // create new Post entity
+    Post post = new Post();
+    post.setTitle(request.getTitle());
+    post.setContent(request.getContent());
+    post.setImageUrl(request.getImageUrl());
+    post.setVideoUrl(request.getVideoUrl());
+    post.setCreatedAt(request.getCreatedAt() != null ? request.getCreatedAt() : LocalDateTime.now());
+    post.setUser(author);
 
-        Post post = new Post();
-        post.setTitle(title);
-        post.setContent(content);
-        post.setImageUrl(imageUrl);
-        post.setCreatedAt(createdAt);
-        post.setVideoUrl(videoUrl);
-        post.setUser(author); // updated
+    // save post
+    Post savedPost = postService.createPost(post);
 
-        return postService.createPost(post);
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+}
 
     @GetMapping("/all")
     public List<PostResponse> getAllPosts(@RequestParam Long currentUserId,
@@ -99,16 +96,13 @@ public class PostController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Post> editPost(@PathVariable Long id, @RequestBody Post updatedPost) {
+    public ResponseEntity<Post> editPost(@PathVariable Long id,@Valid @RequestBody PostRequest updatedPost) {
         try {
             Post post = postService.getPostById(id);
             if (post == null) {
                 return ResponseEntity.notFound().build();
             }
 
-            // Update fields
-            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "
-                    + updatedPost.getImageUrl());
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
             post.setImageUrl(updatedPost.getImageUrl());

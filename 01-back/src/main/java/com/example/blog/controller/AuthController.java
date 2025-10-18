@@ -1,5 +1,7 @@
 package com.example.blog.controller;
 import java.util.*;
+
+import com.example.blog.DTO.RegisterRequest;
 import com.example.blog.config.*;
 import com.example.blog.entity.User;
 import com.example.blog.repository.UserRepository;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.*;
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
@@ -27,23 +30,25 @@ public class AuthController {
         this.tokenBlacklist = tokenBlacklist;
     }
 
-    @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody User user) {
-    // 1. Check if username or email already exists
-    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+   @PostMapping("/register")
+public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+
+    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", "Username already taken"));
+                .body(Map.of("username", "Username already taken"));
     }
 
-    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+    if (userRepository.findByEmail(request.getEmail()).isPresent()) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", "Email already taken"));
+                .body(Map.of("email", "Email already taken"));
     }
 
-    // 2. Hash password (use your UserService)
+    User user = new User();
+    user.setUsername(request.getUsername());
+    user.setEmail(request.getEmail());
+    user.setPassword(request.getPassword());
     userService.register(user);
 
-    // 3. Save user
     User savedUser = userRepository.save(user);
 
     return ResponseEntity.status(HttpStatus.CREATED)
