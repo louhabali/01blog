@@ -4,6 +4,7 @@
     import java.time.LocalDateTime;
     
     import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonProperty;
     @Entity
     @Table(name = "users")
     public class User {
@@ -13,7 +14,7 @@
 
         private String username;
         private String email;
-        @JsonIgnore
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         private String password;
         private String avatar; // URL or path to avatar image
         private LocalDateTime createdAt = LocalDateTime.now();
