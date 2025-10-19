@@ -95,7 +95,7 @@ public class AdminController {
     @GetMapping("/posts")
     public List<Post> getPosts(@RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit) {
-        return postRepository.findWithOffsetLimit(offset, limit);
+        return postRepository.findWithOffsetLimit(offset, limit, true);
     }
 
     @PutMapping("/posts/{id}/hide")

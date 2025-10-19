@@ -16,17 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/posts")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PostController {
+    
 
     private final PostService postService;
     private final PostRepository postRepo;
@@ -123,8 +121,8 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
         @RequestParam(required = false) Long currentUserId,
         @RequestParam(defaultValue = "0") int offset,
         @RequestParam(defaultValue = "10") int limit) {
-
-    List<Post> posts = postRepo.findWithOffsetLimit(offset, limit);
+ 
+            List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
 
     List<PostResponse> responses = posts.stream()
             .map(post -> {

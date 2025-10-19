@@ -15,7 +15,16 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUserId(Long id);
     Optional<Post> findById(Long id);
     long countByIsAppropriateFalse(); // count hidden posts
-     @Query(value = "SELECT * FROM posts ORDER BY created_at DESC LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<Post> findWithOffsetLimit(@Param("offset") int offset, @Param("limit") int limit);
+    @Query(value = """
+    SELECT * FROM posts
+    WHERE (:showAll = true OR is_appropriate = true)
+    ORDER BY created_at DESC
+    LIMIT :limit OFFSET :offset
+""", nativeQuery = true)
+List<Post> findWithOffsetLimit(
+    @Param("offset") int offset,
+    @Param("limit") int limit,
+    @Param("showAll") boolean showAll
+);
     void deleteByUserId(Long userId);
 }
