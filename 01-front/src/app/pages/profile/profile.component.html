@@ -4,7 +4,7 @@
     <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
 
     <!-- MIDDLE: Posts & Post Form -->
-    <div class="center-panel" [ngClass]="{'dark-mode': isDarkMode}">
+    <div class="center-panel"  #centerPanel [ngClass]="{'dark-mode': isDarkMode}">
       
 
       <!-- Post Creation Form -->
@@ -65,7 +65,13 @@
   </div>
 
       </div>
+      <div class="loading" *ngIf="loading">
+  <i class="fa fa-spinner fa-spin"></i> Loading more posts...
+</div>
 
+<div class="no-more" *ngIf="noMorePosts && posts.length > 0">
+  <p>You've reached the end!</p>
+</div>
       <!-- No Posts -->
       <div *ngIf="posts.length === 0" class="no-posts">
         <p>No posts to display.</p>
