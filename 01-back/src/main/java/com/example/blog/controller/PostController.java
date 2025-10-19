@@ -61,24 +61,29 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PostResponse>> getPostsByUser(
-            @PathVariable Long userId,
-            @RequestParam(required = false) Long currentUserId) {
+   @GetMapping("/user/{userId}")
+public ResponseEntity<List<PostResponse>> getPostsByUser(
+        @PathVariable Long userId,
+        @RequestParam(required = false) Long currentUserId,
+        @RequestParam(defaultValue = "0") int offset,
+        @RequestParam(defaultValue = "10") int limit) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        List<PostResponse> responses = postService.getPostsByUser(user).stream()
-                .map(post -> {
-                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                    Long likes = interactionService.getLikesCount(post.getId());
-                    return new PostResponse(post, liked, likes);
-                })
-                .toList();
+    List<Post> posts = postRepo.findPostsByUserWithPagination(userId, offset, limit);
 
-        return ResponseEntity.ok(responses);
-    }
+    List<PostResponse> responses = posts.stream()
+            .map(post -> {
+                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                Long likes = interactionService.getLikesCount(post.getId());
+                return new PostResponse(post, liked, likes);
+            })
+            .toList();
+
+    return ResponseEntity.ok(responses);
+}
+
     @GetMapping("/{id}")
 public ResponseEntity<PostResponse> getPostById(
         @PathVariable Long id,
@@ -134,6 +139,10 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
 
     return ResponseEntity.ok(responses);
 }
-
+    @GetMapping("/user/{userId}/count")
+public ResponseEntity<Long> countPostsByUser(@PathVariable Long userId) {
+    long count = postRepo.countByAuthorId(userId);
+    return ResponseEntity.ok(count);
+}
 }
 
