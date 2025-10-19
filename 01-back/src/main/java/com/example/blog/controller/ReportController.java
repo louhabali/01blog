@@ -26,17 +26,17 @@ public class ReportController {
         return reportRepository.findAll();
     }
 
-    @PostMapping("/create")
-public ResponseEntity<?> createReport(@RequestBody Report report) {
-    if (report.getId() == null || report.getId() == 0) {
-        // user not logged in or invalid report → 401 Unauthorized
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                             .body("You must log in to submit a report");
+        @PostMapping("/create")
+        public ResponseEntity<?> createReport(@RequestBody Report report) {
+         if (report.getReporterUser() == null || report.getReporterUser().getId() == 0) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must log in to submit a report");
     }
 
-    Report savedReport = reportRepository.save(report);
-    return ResponseEntity.ok(savedReport);
-}
+        Report savedReport = reportRepository.save(report);
+        return ResponseEntity.ok(savedReport);
+        }
 
     // Delete a report
     @DeleteMapping("/{id}")

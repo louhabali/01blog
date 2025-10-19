@@ -57,4 +57,18 @@ public class Report {
     public void setPost(Post post) {
         this.post = post;
     }
+       public User getReporterUser() {
+        return reporterUser;
+    }
+    public void setReporterUser(User reporterUser) {
+        this.reporterUser = reporterUser;
+    }
+
+    public User getReportedUser() {
+        return reportedUser;
+    }
+    public void setReportedUser(User reportedUser) {
+        this.reportedUser = reportedUser;
+    }
+
 }
