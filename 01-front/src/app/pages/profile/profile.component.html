@@ -93,4 +93,11 @@
         <div><strong>{{ user.followingCount || 0 }}</strong><span>Following</span></div>
       </div>
     </div>
+    <app-report-modal
+  [isOpen]="isReportModalOpen"
+  [currentUserId]="currentUserId"
+  [postId]="selectedPostId"
+  [reportedUserId]="selectedReportedUserId"
+  (closed)="closeReportModal()">
+</app-report-modal>
   </div>

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
 interface Post { 
   id: number; 
   title: string; 
@@ -37,7 +38,7 @@ interface User {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, UsersComponent, FormsModule,TimeAgoPipe],
+  imports: [CommonModule, UsersComponent, FormsModule,TimeAgoPipe,ReportModalComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -313,14 +314,23 @@ onFileSelected(event: any) {
       .subscribe(() => this.posts = this.posts.filter(p => p.id !== post.id));
   }
 
-  reportPost(post: Post) {
-    alert('Report post: ' + post.id);
-  }
-
   goToComments(postId: number) {
     this.router.navigate([`/posts/${postId}/comments`]);
   }
    goTopostdetails(post: Post) {
      this.router.navigate([`/posts/${post.id}`], { state: { post } });
   }
+  isReportModalOpen = false;
+selectedPostId = 0;
+selectedReportedUserId = 0;
+
+reportPost(post: Post) {
+  this.isReportModalOpen = true;
+  this.selectedPostId = post.id;
+  this.selectedReportedUserId = post.authorId;
+}
+
+closeReportModal() {
+  this.isReportModalOpen = false;
+}
 }

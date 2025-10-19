@@ -7,6 +7,8 @@ import { UserService } from '../../services/user.service';
 import { UsersComponent } from '../users/users.component';
 import { Router } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
+
 interface Post { 
   id: number; 
   title: string; 
@@ -30,7 +32,7 @@ interface Post {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe],
+  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe,ReportModalComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -249,59 +251,17 @@ submitPost() {
      this.router.navigate([`/posts/${post.id}`]);
   }
 
-  ///// REPORT 
-  isReportModalOpen = false;
-  reportData = {
-  reason: '',
-  description: '',
-  postId: 0,
-  reportedUserId: 0,
-  reporterUserId: this.currentUserId
-};
+ isReportModalOpen = false;
+selectedPostId = 0;
+selectedReportedUserId = 0;
 
-// Open the modal and store post info
 reportPost(post: Post) {
   this.isReportModalOpen = true;
-  this.reportData = {
-    reason: '',
-    description: '',
-    postId: post.id,
-    reportedUserId: post.authorId,
-    reporterUserId: this.currentUserId
-  };
+  this.selectedPostId = post.id;
+  this.selectedReportedUserId = post.authorId;
 }
 
-// Close the modal
 closeReportModal() {
   this.isReportModalOpen = false;
-}
-
-// Handle report submission
-submitReport(event: Event) {
-  event.preventDefault();
-
- const payload = {
-  reporterUser: { id: this.currentUserId },
-  reportedUser: { id: this.reportData.reportedUserId },
-  post: { id: this.reportData.postId },
-  reason: this.reportData.reason,
-  description: this.reportData.description
-};
-
-
-  this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
-    .subscribe({
-      next: () => {
-        alert('Report submitted successfully');
-        this.closeReportModal();
-      },
-      error: (err) => {
-        if (err.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          console.error('Error submitting report', err);
-        }
-      }
-    });
 }
 }
