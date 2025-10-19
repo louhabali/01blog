@@ -144,7 +144,11 @@ showError: boolean = false;
   }
 
   toggleFollow() {
-    if (!this.currentUserId || !this.user.id) return;
+    if (!this.currentUserId || !this.user.id){
+      this.router.navigate(['/login']);
+      return;
+    } 
+      
 
     this.userService.toggleFollow(this.currentUserId, this.user.id).subscribe({
       next: (isNowFollowed) => {
