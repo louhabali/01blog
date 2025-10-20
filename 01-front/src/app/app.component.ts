@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {ActivatedRoute,Router,NavigationError } from '@angular/router';
 
 import { HeaderComponent } from './header/header.component';
 
@@ -16,9 +17,17 @@ export class AppComponent {
   isLoggedIn = false;
   email = '';
 
-  constructor(private auth: AuthService , private wsService :WebsocketService ) {}
+  constructor(private auth: AuthService , private wsService :WebsocketService , private router: Router ) {
+      this.router.events.subscribe(event => {
+      if (event instanceof NavigationError) {
+        // Redirect to not-found page for any navigation errors
+        this.router.navigate(['/404']);
+      }
+    });
+  }
 
   ngOnInit() {
+    
     const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');

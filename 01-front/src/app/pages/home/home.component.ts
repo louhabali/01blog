@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
 import { UsersComponent } from '../users/users.component';
-import { Router } from '@angular/router';
+import { Router ,ActivatedRoute } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
 
@@ -56,10 +56,11 @@ showError: boolean = false;
     private http: HttpClient,
     private postService: PostService,
     private userService: UserService,
-    private router: Router
+    private router: Router ,    private route : ActivatedRoute
   ) {}    
-
   ngOnInit(): void {
+     
+  
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUserId = user.id;
