@@ -121,6 +121,30 @@ public ResponseEntity<PostResponse> getPostById(
         postRepo.deleteById(postId);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Post> editPost(@PathVariable Long id, @RequestBody Post updatedPost) {
+        try {
+            Post post = postService.getPostById(id);
+            if (post == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Update fields
+            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "
+                    + updatedPost.getImageUrl());
+            post.setTitle(updatedPost.getTitle());
+            post.setContent(updatedPost.getContent());
+            post.setImageUrl(updatedPost.getImageUrl());
+            post.setVideoUrl(updatedPost.getVideoUrl());
+
+            Post savedPost = postService.savePost(post);
+
+            return ResponseEntity.ok(savedPost);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @GetMapping("/all")
 public ResponseEntity<List<PostResponse>> getAllPosts(
         @RequestParam(required = false) Long currentUserId,
