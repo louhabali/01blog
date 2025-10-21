@@ -1,99 +1,83 @@
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
- 
-  border-bottom: 1px solid #eaeaea;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 64px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
   z-index: 1000;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.logo-link {
+/* Logo */
+.logo {
   display: flex;
   align-items: center;
-  text-decoration: none;
-  color: black;
-  font-weight: 600;
-  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .logo-img {
   height: 32px;
   width: 32px;
   margin-right: 8px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .logo-text {
+  font-size: 1.2rem;
+  font-weight: bold;
   letter-spacing: 0.5px;
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.nav-link {
+/* Navigation */
+.nav-links a {
   text-decoration: none;
-  color:black;
-  font-size: 0.95rem;
-  transition: color 0.2s ease;
-  position: relative;
-}
-
-.nav-link:hover,
-.nav-link.active {
-
+  color: black;
+  margin-right: 12px;
   font-weight: 500;
+  transition: color 0.2s ease;
 }
 
+.nav-links a:hover {
+  color: #1976d2;
+}
+
+/* Profile */
 .profile-pic {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+  border: 2px solid #ddd;
 }
 
-.profile-pic:hover {
-  transform: scale(1.05);
-}
-
-.theme-switch {
-  margin-left: 10px;
-  cursor: pointer;
-  font-size: 1.2rem;
- 
-  transition: color 0.2s ease;
-}
-
-
-
-/* 🔔 Notification styles */
-.notif-link {
-  position: relative;
-  font-size: 1.2rem;
-
-}
-
+/* Notifications */
 .notif-badge {
   position: absolute;
-  top: -6px;
-  right: -10px;
-  background-color: #ff3b30;
+  top: 4px;
+  right: 4px;
+  background-color: #f44336;
   color: white;
   border-radius: 50%;
   font-size: 0.7rem;
-  padding: 2px 6px;
-  font-weight: 600;
+  padding: 2px 5px;
+  font-weight: bold;
+}
+
+/* Responsive */
+.menu-button {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .nav-links {
+    display: none;
+  }
+
+  .menu-button {
+    display: block;
+  }
 }

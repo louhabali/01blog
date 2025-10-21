@@ -1,41 +1,58 @@
-<header class="header">
+<mat-toolbar color="primary" class="header">
+
   <!-- Left: Logo -->
-  <div class="logo">
-    <a routerLink="/" class="logo-link">
-      <img src="developer.png" alt="Logo" class="logo-img">
-      <span class="logo-text">01BLOG</span>
-    </a>
+  <div class="logo" routerLink="/">
+    <img src="developer.png" alt="Logo" class="logo-img">
+    <span class="logo-text">01BLOG</span>
   </div>
 
-  <!-- Right: Navigation -->
-  <nav class="nav">
+  <!-- Spacer -->
+  <span class="spacer"></span>
+
+  <!-- Desktop Navigation -->
+  <nav class="nav-links" *ngIf="!isMobile">
+    <a mat-button routerLink="/home">Home</a>
+
     <ng-container *ngIf="!auth.isLoggedIn()">
-      <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a routerLink="login" class="nav-link">Sign in</a>
+      <a mat-button routerLink="/login">Sign in</a>
+      <a mat-button routerLink="/register">Register</a>
     </ng-container>
 
     <ng-container *ngIf="auth.isLoggedIn()">
-      <a routerLink="home" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-
-      <a *ngIf="role === 'ADMIN'" 
-      routerLink="/dashboard" 
-      class="nav-link" 
-      routerLinkActive="active">
-      <i class="fa-solid fa-table"></i>
-</a>
-      <!-- 🔔 Notifications -->
-      <a routerLink="/notifications" class="nav-link notif-link"(click)="hideBadge()" (click)="closeMenu()">
-        <i class="fa-regular fa-bell"></i>
-       <span *ngIf="showBadge && notifsnumber > 0" class="notif-badge">{{ notifsnumber }}</span>
+      <a *ngIf="role === 'ADMIN'" mat-icon-button routerLink="/dashboard">
+        <mat-icon>dashboard</mat-icon>
       </a>
 
-      <a (click)="logout()" class="nav-link">Logout</a>
+      <a mat-icon-button routerLink="/notifications" (click)="hideBadge()">
+        <mat-icon>notifications</mat-icon>
+        <span *ngIf="showBadge && notifsnumber > 0" class="notif-badge">{{ notifsnumber }}</span>
+      </a>
 
-      <!-- 👤 Profile -->
+      <a mat-button (click)="logout()">Logout</a>
+
       <a routerLink="/profile/{{ currentUserId }}" class="profile-link">
         <img [src]="avatarUrl" alt="Profile" class="profile-pic">
       </a>
     </ng-container>
-
   </nav>
-</header>
+
+  <!-- Mobile Menu -->
+  <button mat-icon-button class="menu-button" *ngIf="isMobile" [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/home">Home</button>
+    <ng-container *ngIf="!auth.isLoggedIn()">
+      <button mat-menu-item routerLink="/login">Sign in</button>
+      <button mat-menu-item routerLink="/register">Register</button>
+    </ng-container>
+
+    <ng-container *ngIf="auth.isLoggedIn()">
+      <button *ngIf="role === 'ADMIN'" mat-menu-item routerLink="/dashboard">Dashboard</button>
+      <button mat-menu-item routerLink="/notifications">Notifications</button>
+      <button mat-menu-item (click)="logout()">Logout</button>
+      <button mat-menu-item routerLink="/profile/{{ currentUserId }}">Profile</button>
+    </ng-container>
+  </mat-menu>
+</mat-toolbar>

@@ -1,4 +1,4 @@
-  import { Component, OnInit } from '@angular/core';
+  import { Component, OnInit ,HostListener} from '@angular/core';
   import { Router, NavigationEnd, RouterModule } from '@angular/router';
   import { AuthService } from '../services/auth.service';
   import { filter } from 'rxjs/operators';
@@ -6,15 +6,25 @@
 
   import { UserService } from '../services/user.service';
   import { WebsocketService,  } from '../services/websocket.service';
+  import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
   @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule,
+       MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule
+    ],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css']
   })
   // this is my header component
   export class HeaderComponent implements OnInit {
+    isMobile = false;
     menuActive = false;
     showBadge = true; // <- control visibility
     notifsnumber: number = 0; // initialize with 0
@@ -25,6 +35,7 @@
     constructor(public wsService: WebsocketService,public auth: AuthService, private router: Router, private userService : UserService) {}
 
     ngOnInit() {
+      this.checkScreenSize();
       this.userService.getCurrentUser().subscribe({
         next: (user) => {
           console.log("user in header",user);
@@ -67,6 +78,13 @@
       // Subscribe to theme changes
      
     }
+     checkScreenSize() {
+    this.isMobile = window.innerWidth < 768;
+  }
+      @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
      hideBadge() {
     this.showBadge = false; // hide badge when clicked
     this.notifsnumber = 0;

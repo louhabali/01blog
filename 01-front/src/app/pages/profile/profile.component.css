@@ -3,30 +3,57 @@
   display: grid;
   grid-template-columns: 20% 50% 30%;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
- 
   color: #242424;
-  height: 100vh;
+
  
+
 }
 
 /* -------- LEFT: USERS PANEL -------- */
 .users-panel {
   border-right: 1px solid #e6e6e6;
   padding: 24px;
-  overflow-y: hidden;
-  
+  overflow-y: auto;
+  height: 100%;
 }
 
 /* -------- CENTER: FEED -------- */
 .center-panel {
   padding: 48px 72px;
-  height: 100vh;
+  height: calc(100vh);
   overflow-y: auto;
   position: relative;
   border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Theme toggle icon */
+.posts-grid {
+  flex: 1;
+ 
+  padding-right: 8px;
+}
+
+/* Custom scrollbar */
+.posts-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.posts-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.posts-grid::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.posts-grid::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Theme toggle */
 .theme-icon {
   position: absolute;
   top: 24px;
@@ -35,6 +62,7 @@
   color: #666;
   cursor: pointer;
   transition: color 0.3s ease;
+  z-index: 10;
 }
 .theme-icon:hover {
   color: #000;
@@ -45,12 +73,14 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
   border-bottom: 1px solid #eee;
   padding-bottom: 24px;
   max-width: 680px;
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .post-form input,
@@ -79,7 +109,6 @@
   color: #aaa;
 }
 
-/* File upload and publish button */
 .form-actions {
   display: flex;
   align-items: center;
@@ -103,7 +132,6 @@
   transition: background 0.2s ease;
 }
 
-
 .publish-btn {
   margin-left: auto;
   background-color: #000000;
@@ -124,10 +152,10 @@
 .posts-feed {
   display: flex;
   flex-direction: column;
-  gap: 48px;
-
+  gap: 32px;
   max-width: 680px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Post Card */
@@ -137,14 +165,13 @@
   flex-direction: column;
   gap: 12px;
   border-bottom: 1px solid #eee;
-  padding-bottom: 28px;
+  padding: 16px 0 28px 0;
   transition: transform 0.1s ease;
 }
 .post-card:hover {
   transform: translateY(-1px);
 }
 
-/* -------- TOP ACTIONS (delete/report) -------- */
 .post-top-actions {
   position: absolute;
   top: 12px;
@@ -163,7 +190,6 @@
   transform: scale(1.1);
 }
 
-/* -------- CONTENT -------- */
 .post-header {
   display: flex;
   align-items: center;
@@ -194,10 +220,11 @@
   color: #444;
   line-height: 1.7;
   margin-top: 6px;
+  cursor: pointer;
 }
+
 .error-box {
   color: red;
-
   padding: 8px 12px;
   border-radius: 6px;
   margin-top: 10px;
@@ -214,7 +241,7 @@
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(-2px); }
 }
-/* -------- LIKE / REACTIONS -------- */
+
 .post-actions {
   display: flex;
   align-items: center;
@@ -230,14 +257,12 @@
   transform: scale(1.15);
 }
 
-/* -------- MEDIA (BOTTOM IMAGE/VIDEO) -------- */
 .post-media-wrapper {
   position: absolute;
   bottom: 12px;
   right: 0;
   width: 100px;
   height: 100px;
- 
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -248,7 +273,7 @@
 .post-media-wrapper video {
   width: 100%;
   height: 100%;
-  object-fit: contain ;
+  object-fit: contain;
   transition: transform 0.2s ease, opacity 0.2s ease;
   border-radius: 8px;
 }
@@ -257,16 +282,17 @@
   transform: scale(1.05);
   opacity: 0.9;
 }
+
 /* -------- RIGHT: PROFILE PANEL -------- */
 .profile-panel {
- 
   padding: 32px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
+
   text-align: center;
   border-left: 1px solid #eee;
+  height: 100%;
 }
 
 .avatar-wrapper {
@@ -341,10 +367,290 @@
   color: #777;
 }
 
-/* -------- EMPTY STATE -------- */
+.loading, .no-more {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
 .no-posts {
   text-align: center;
   color: #999;
   padding: 50px 0;
   font-style: italic;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  /* CHANGE: Full page scroll instead of internal scroll */
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    overflow-y: auto;
+  }
+  
+  /* Hide side panels on mobile */
+  .users-panel {
+    display: none;
+  }
+  
+  /* PROFILE PANEL - ALWAYS VISIBLE AT TOP IN COLUMN LAYOUT */
+  .profile-panel {
+    order: 0;
+    height: auto;
+    padding: 20px;
+    border-left: none;
+    border-bottom: 1px solid #eee;
+    flex-direction: column; /* CHANGED: Keep column layout */
+    text-align: center; /* CHANGED: Center align */
+    gap: 12px;
+    background: white;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    width: 100%;
+  }
+  
+  /* Compact but still column layout */
+  .profile-panel .avatar-wrapper .avatar {
+    width: 70px; /* Slightly larger than row layout but smaller than desktop */
+    height: 70px;
+  }
+  
+  .edit-avatar-icon {
+    padding: 4px;
+    font-size: 0.8rem;
+  }
+  
+  /* Profile info in column */
+  .profile-panel h2 {
+    margin: 8px 0 2px 0;
+    font-size: 1.2rem;
+  }
+  
+  .profile-panel p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  /* Stats in row but below other content */
+  .profile-panel .stats {
+    margin-top: 12px;
+    margin-left: 0; /* CHANGED: Remove auto margin */
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .profile-panel .stats div {
+    text-align: center;
+  }
+  
+  .profile-panel .stats strong {
+    font-size: 1rem;
+  }
+  
+  .profile-panel .stats span {
+    font-size: 0.8rem;
+  }
+  
+  /* Follow button centered */
+  .profile-panel .follow-btn,
+  .profile-panel .unfollow-btn {
+    margin-top: 8px;
+    margin-left: 0; /* CHANGED: Remove left margin */
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+  
+  /* CENTER PANEL - Full width and natural scroll */
+  .center-panel {
+    order: 1;
+    padding: 20px;
+    border-right: none;
+    height: 100vh; /* CHANGED: Natural height */
+    overflow: auto; /* CHANGED: No internal scroll */
+    flex: none; /* CHANGED: Don't flex, take natural space */
+  }
+  
+  /* Remove internal scroll from posts grid */
+  .posts-grid {
+    overflow: visible;
+    flex: none;
+    padding-right: 0;
+  }
+  
+  .post-form {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+  
+  .post-form input {
+    font-size: 1.1rem;
+  }
+  
+  .post-form textarea {
+    font-size: 0.95rem;
+    min-height: 80px;
+  }
+  
+  .posts-feed {
+    gap: 24px;
+  }
+  
+  .post-card {
+    padding: 12px 0 20px 0;
+  }
+  
+  .post-card h5 {
+    font-size: 1.2rem;
+  }
+  
+  .post-card p {
+    font-size: 1rem;
+  }
+  
+  .post-media-wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-top: 12px;
+  }
+  
+  .post-media-wrapper img,
+  .post-media-wrapper video {
+    max-height: 200px;
+    object-fit: cover;
+  }
+  
+  .theme-icon {
+    position: fixed; /* CHANGED: Fixed so it stays visible */
+    top: 90px;
+    right: 20px;
+    font-size: 1.2rem;
+    background: white;
+    border-radius: 50%;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  /* Profile panel adjustments for small screens */
+  .profile-panel {
+    padding: 16px;
+    gap: 10px;
+  }
+  
+  .profile-panel .avatar-wrapper .avatar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .profile-panel h2 {
+    font-size: 1.1rem;
+  }
+  
+  .profile-panel p {
+    font-size: 0.85rem;
+  }
+  
+  .profile-panel .stats {
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .profile-panel .stats strong {
+    font-size: 0.9rem;
+  }
+  
+  .profile-panel .stats span {
+    font-size: 0.75rem;
+  }
+  
+  .center-panel {
+    padding: 16px;
+  }
+  
+  .post-form {
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
+  
+  .posts-feed {
+    gap: 20px;
+  }
+  
+  .post-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .post-header img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .post-card h5 {
+    font-size: 1.1rem;
+  }
+  
+  .post-card p {
+    font-size: 0.95rem;
+  }
+  
+  .theme-icon {
+    top: 80px;
+    right: 16px;
+    font-size: 1.1rem;
+    padding: 6px;
+  }
+  
+  .publish-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .profile-panel {
+    padding: 14px 12px;
+  }
+  
+  .profile-panel .avatar-wrapper .avatar {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .profile-panel h2 {
+    font-size: 1rem;
+  }
+  
+  .profile-panel .stats {
+    gap: 12px;
+  }
+  
+  .center-panel {
+    padding: 12px;
+  }
+  
+  .post-form input {
+    font-size: 1rem;
+  }
+  
+  .post-form textarea {
+    font-size: 0.9rem;
+  }
+  
+  .post-card h5 {
+    font-size: 1rem;
+  }
 }
