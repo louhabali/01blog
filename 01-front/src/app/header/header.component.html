@@ -2,7 +2,7 @@
 
   <!-- Left: Logo -->
   <div class="logo" routerLink="/">
-    <img src="developer.png" alt="Logo" class="logo-img">
+   
     <span class="logo-text">01BLOG</span>
   </div>
 
@@ -11,7 +11,10 @@
 
   <!-- Desktop Navigation -->
   <nav class="nav-links" *ngIf="!isMobile">
-    <a mat-button routerLink="/home">Home</a>
+    <!-- Home Icon -->
+    <a mat-icon-button routerLink="/home" aria-label="Home">
+      <mat-icon>home</mat-icon>
+    </a>
 
     <ng-container *ngIf="!auth.isLoggedIn()">
       <a mat-button routerLink="/login">Sign in</a>
@@ -28,7 +31,10 @@
         <span *ngIf="showBadge && notifsnumber > 0" class="notif-badge">{{ notifsnumber }}</span>
       </a>
 
-      <a mat-button (click)="logout()">Logout</a>
+      <!-- Logout Icon -->
+      <a mat-icon-button (click)="logout()" aria-label="Logout">
+        <mat-icon>logout</mat-icon>
+      </a>
 
       <a routerLink="/profile/{{ currentUserId }}" class="profile-link">
         <img [src]="avatarUrl" alt="Profile" class="profile-pic">
@@ -42,17 +48,37 @@
   </button>
 
   <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/home">Home</button>
+    <button mat-menu-item routerLink="/home">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </button>
+
     <ng-container *ngIf="!auth.isLoggedIn()">
       <button mat-menu-item routerLink="/login">Sign in</button>
       <button mat-menu-item routerLink="/register">Register</button>
     </ng-container>
 
     <ng-container *ngIf="auth.isLoggedIn()">
-      <button *ngIf="role === 'ADMIN'" mat-menu-item routerLink="/dashboard">Dashboard</button>
-      <button mat-menu-item routerLink="/notifications">Notifications</button>
-      <button mat-menu-item (click)="logout()">Logout</button>
-      <button mat-menu-item routerLink="/profile/{{ currentUserId }}">Profile</button>
+      <button *ngIf="role === 'ADMIN'" mat-menu-item routerLink="/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </button>
+
+      <button mat-menu-item routerLink="/notifications">
+        <mat-icon>notifications</mat-icon>
+        <span>Notifications</span>
+      </button>
+
+      <!-- Logout Icon (mobile) -->
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+
+      <button mat-menu-item routerLink="/profile/{{ currentUserId }}">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
     </ng-container>
   </mat-menu>
 </mat-toolbar>
