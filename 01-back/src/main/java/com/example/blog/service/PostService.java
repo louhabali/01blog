@@ -34,7 +34,6 @@ public class PostService {
         n.setRecipientId(follower.getId()); // the follower
         n.setActorId(author.getId());              // the one who posted
         n.setType("POST");
-      
         n.setPostId(savedPost.getId());
         n.setMessage(savedPost.getUser().getUsername() + " has posted a new update!");
 

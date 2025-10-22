@@ -13,6 +13,7 @@ public class PostResponse {
     private long likes;
     private String imageUrl;
      private String videoUrl;
+     private String avatar;
      private LocalDateTime createdAt; 
      private boolean isAppropriate;
 
@@ -22,6 +23,7 @@ public class PostResponse {
         this.isAppropriate = post.isAppropriate();
         this.createdAt = post.getCreatedAt();
         this.likes =likes;
+        this.avatar = post.getUser().getAvatar();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.authorName = post.getUser().getUsername(); 
@@ -43,5 +45,6 @@ public class PostResponse {
     public String getVideoUrl() { return videoUrl;} 
     public LocalDateTime getCreatedAT() { return createdAt ; }
     public boolean getAppropriate() { return isAppropriate ; }
+    public String getAvatar() { return avatar ; }
     
 }

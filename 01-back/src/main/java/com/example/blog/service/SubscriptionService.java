@@ -41,6 +41,7 @@ public class SubscriptionService {
                     n.setType("FOLLOW");
                     n.setMessage(follower.getUsername() +" has followed you!");
                 //n.setPostId(postId);
+                
                 n = repo.save(n);
                     notificationService.pushNotification(
                      n
