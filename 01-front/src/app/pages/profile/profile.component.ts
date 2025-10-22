@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UsersComponent } from '../users/users.component';
+
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
@@ -39,7 +39,7 @@ interface User {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, UsersComponent, FormsModule, TimeAgoPipe, ReportModalComponent],
+  imports: [CommonModule, FormsModule, TimeAgoPipe, ReportModalComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -183,6 +183,8 @@ export class ProfileComponent implements OnInit {
     this.http.get<Post[]>(`http://localhost:8087/posts/user/${userId}?${params}`, { withCredentials: true })
       .subscribe({
         next: posts => {
+          console.log("profiel posssssssssss",posts);
+          
           if (posts.length === 0) {
             this.noMorePosts = true;
           } else {

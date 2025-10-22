@@ -1,8 +1,7 @@
 <!-- HTML Template -->
 <div class="home-container">
 
-  <!-- Users Panel -->
-  <app-users class="users-panel" [ngClass]="{'dark-mode': isDarkMode}" [isDarkMode]="isDarkMode"></app-users>
+ 
 
   <!-- Posts Panel -->
   <div class="posts-panel" #postsPanel [ngClass]="{'dark-mode': isDarkMode}">
@@ -13,19 +12,26 @@
     <!-- Post Creation Form -->
      
     <div class="post-form">
-      <div *ngIf="showError" class="error-box">
-      <span>{{ errorMessage }}</span>
-    </div>
-      <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
-      <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
-      <div class="form-actions">
-        <input type="file" (change)="onFileSelected($event)" id="file-upload" />
-        <label for="file-upload" class="file-label">
-          <i class="fa-solid fa-image"></i>
-        </label>
-        <button (click)="submitPost()" class="publish-btn">Publish</button>
-      </div>
-    </div>
+  <div *ngIf="showError" class="error-box">
+    <span>{{ errorMessage }}</span>
+  </div>
+  <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
+  <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
+
+  <div *ngIf="mediaPreviewUrl" class="media-preview-container">
+    <img [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+    <button (click)="cancelMediaPreview()" class="cancel-preview-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="form-actions">
+    <input type="file" (change)="onFileSelected($event)" id="file-upload" #fileUploadInput />
+    <label for="file-upload" class="file-label">
+      <i class="fa-solid fa-image"></i>
+    </label>
+    <button (click)="submitPost()" class="publish-btn">Publish</button>
+  </div>
+</div>
 
     <!-- Posts Feed -->
     <div class="posts-feed">

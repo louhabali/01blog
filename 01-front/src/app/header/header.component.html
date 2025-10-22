@@ -1,17 +1,56 @@
 <mat-toolbar color="primary" class="header">
 
-  <!-- Left: Logo -->
+  <!-- Logo is here -->
   <div class="logo" routerLink="/">
-   
     <span class="logo-text">01BLOG</span>
   </div>
 
-  <!-- Spacer -->
+  <!-- 
+    REMOVED: The first spacer was here. 
+    Removing it pulls the search-container to the left.
+  -->
+
+  <!-- Search container now sits next to the logo -->
+  <div class="search-container" *ngIf="!isMobile">
+    <mat-form-field class="search-form-field" appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        type="text" 
+        placeholder="Search users..." 
+        aria-label="Search users"
+        matInput 
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="filterUsers()"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onUserSelected($event)">
+        
+        <mat-option *ngIf="filteredUsers.length === 0 && searchQuery.length > 0" disabled class="no-results">
+          No users found.
+        </mat-option>
+
+        <mat-option *ngFor="let user of filteredUsers" [value]="user">
+          <div class="user-suggestion">
+             <img 
+               [src]="user.avatar || 'default-avatar.png'" 
+               alt="{{user.username}}" 
+               class="user-avatar-suggestion"
+             />
+             <div class="user-info-suggestion">
+               <span class="username-suggestion">{{ user.username }}</span>
+               <span class="user-status-suggestion">View Profile</span>
+             </div>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <!-- This spacer now pushes all remaining items (the nav links) to the right -->
   <span class="spacer"></span>
 
   <!-- Desktop Navigation -->
   <nav class="nav-links" *ngIf="!isMobile">
-    <!-- Home Icon -->
     <a mat-icon-button routerLink="/home" aria-label="Home">
       <mat-icon>home</mat-icon>
     </a>
@@ -31,7 +70,6 @@
         <span *ngIf="showBadge && notifsnumber > 0" class="notif-badge">{{ notifsnumber }}</span>
       </a>
 
-      <!-- Logout Icon -->
       <a mat-icon-button (click)="logout()" aria-label="Logout">
         <mat-icon>logout</mat-icon>
       </a>
@@ -42,39 +80,38 @@
     </ng-container>
   </nav>
 
-  <!-- Mobile Menu -->
+  <!-- Mobile buttons remain unchanged -->
+  <button mat-icon-button class="search-button-mobile" *ngIf="isMobile" (click)="toggleMobileSearch()">
+    <mat-icon>search</mat-icon>
+  </button>
+
   <button mat-icon-button class="menu-button" *ngIf="isMobile" [matMenuTriggerFor]="menu">
     <mat-icon>menu</mat-icon>
   </button>
 
+  <!-- Mobile menu remains unchanged -->
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/home">
       <mat-icon>home</mat-icon>
       <span>Home</span>
     </button>
-
     <ng-container *ngIf="!auth.isLoggedIn()">
       <button mat-menu-item routerLink="/login">Sign in</button>
       <button mat-menu-item routerLink="/register">Register</button>
     </ng-container>
-
     <ng-container *ngIf="auth.isLoggedIn()">
       <button *ngIf="role === 'ADMIN'" mat-menu-item routerLink="/dashboard">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </button>
-
       <button mat-menu-item routerLink="/notifications">
         <mat-icon>notifications</mat-icon>
         <span>Notifications</span>
       </button>
-
-      <!-- Logout Icon (mobile) -->
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>
-
       <button mat-menu-item routerLink="/profile/{{ currentUserId }}">
         <mat-icon>person</mat-icon>
         <span>Profile</span>
@@ -82,3 +119,40 @@
     </ng-container>
   </mat-menu>
 </mat-toolbar>
+
+<!-- Mobile search bar remains unchanged -->
+<div class="mobile-search-bar" *ngIf="isMobile && mobileSearchActive">
+  <mat-form-field class="search-form-field-mobile" appearance="outline">
+    <mat-icon matPrefix>search</mat-icon>
+    <input 
+      type="text" 
+      placeholder="..." 
+      aria-label="Search users"
+      matInput 
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="filterUsers()"
+      [matAutocomplete]="autoMobile"
+    />
+    <button mat-icon-button matSuffix (click)="toggleMobileSearch()">
+       <mat-icon>close</mat-icon>
+    </button>
+    <mat-autocomplete #autoMobile="matAutocomplete" (optionSelected)="onUserSelected($event)">
+      <mat-option *ngIf="filteredUsers.length === 0 && searchQuery.length > 0" disabled class="no-results">
+        No users found.
+      </mat-option>
+      <mat-option *ngFor="let user of filteredUsers" [value]="user">
+        <div class="user-suggestion">
+           <img 
+             [src]="user.avatar || 'default-avatar.png'" 
+             alt="{{user.username}}" 
+             class="user-avatar-suggestion"
+           />
+           <div class="user-info-suggestion">
+             <span class="username-suggestion">{{ user.username }}</span>
+             <span class="user-status-suggestion">View Profile</span>
+           </div>
+        </div>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>

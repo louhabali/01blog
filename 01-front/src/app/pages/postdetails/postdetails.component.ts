@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsersComponent } from '../users/users.component';
 import { PostService } from '../../services/post.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
@@ -29,7 +28,7 @@ interface Post {
 @Component({
   selector: 'app-postdetails',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe],
+  imports: [FormsModule, CommonModule,TimeAgoPipe],
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css']
 })

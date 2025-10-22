@@ -1,3 +1,4 @@
+/* --- Original Header Styles (Kept) --- */
 .header {
   display: flex;
   align-items: center;
@@ -19,17 +20,15 @@
   cursor: pointer;
 }
 
-.logo-img {
-  height: 32px;
-  width: 32px;
-  margin-right: 8px;
-  border-radius: 6px;
-}
-
 .logo-text {
   font-size: 1.2rem;
   font-weight: bold;
   letter-spacing: 0.5px;
+}
+
+/* Spacer */
+.spacer {
+  flex: 1 1 auto;
 }
 
 /* Navigation */
@@ -57,7 +56,7 @@
 /* Notifications */
 .notif-badge {
   position: absolute;
-  top: 4px;
+  top: 5px;
   right: 4px;
   background-color: #f44336;
   color: white;
@@ -65,19 +64,155 @@
   font-size: 0.7rem;
   padding: 2px 5px;
   font-weight: bold;
+  width: 6px;
+  height: 13px;
+  text-align: center;
+  line-height: initial;
 }
 
-/* Responsive */
+/* --- UPDATED: Desktop Search Bar --- */
+.search-container {
+  /* Gives the container a flexible, but max, width */
+  flex: 0 1 10%; 
+  display: flex;
+  justify-content: center;
+ 
+  /* NEW: Adds spacing between logo and search bar */
+  margin-left: 30px;
+}
+
+.search-form-field {
+  width: 90%;
+}
+
+/* UPDATED: Added :host ::ng-deep to all Material overrides.
+  This is required for Angular to apply these styles.
+*/
+:host ::ng-deep .search-form-field .mat-mdc-form-field-wrapper,
+:host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-wrapper {
+  height: 35px;
+  padding: 0;
+}
+:host ::ng-deep .search-form-field .mat-mdc-form-field-flex,
+:host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-flex {
+  height: 44px;
+  align-items: center;
+}
+:host ::ng-deep .search-form-field .mat-mdc-text-field-wrapper,
+:host ::ng-deep .search-form-field-mobile .mat-mdc-text-field-wrapper {
+   /* This gives it the rounded "pill" shape */
+   border-radius: 28px !important;
+}
+:host ::ng-deep .search-form-field .mat-mdc-form-field-infix,
+:host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-infix {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  /* NEW: Fix for vertical alignment of text */
+  position: relative;
+  top: -2px;
+}
+:host ::ng-deep .search-form-field .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Hides the underline/hint space */
+}
+
+/* --- UPDATED: Autocomplete Suggestion Dropdown --- */
+
+/* Style the popup panel itself */
+:host ::ng-deep .mat-mdc-autocomplete-panel {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  margin-top: 8px !important;
+}
+
+/* Style each suggestion item */
+.user-suggestion {
+  display: flex;
+  align-items: center;
+  padding: 4px 0; /* Add some padding inside the option */
+}
+
+:host ::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  display: block; /* Allows our flex container to fill the option */
+  color: inherit;
+}
+
+.user-avatar-suggestion {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.user-info-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.username-suggestion {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #222;
+}
+
+.user-status-suggestion {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.no-results.mat-mdc-option {
+  color: #999;
+  font-style: italic;
+}
+
+
+/* --- NEW & Original Responsive Styles --- */
+
+/* Hide mobile-only buttons by default */
 .menu-button {
+  display: none;
+}
+.search-button-mobile {
   display: none;
 }
 
 @media (max-width: 767px) {
+  /* Hide desktop nav and search */
   .nav-links {
     display: none;
   }
+  .search-container {
+    display: none;
+  }
 
+  /* Show mobile buttons */
   .menu-button {
     display: block;
   }
+  .search-button-mobile {
+    display: block;
+    margin-right: 4px; /* Space it from the menu button */
+  }
+
+  /* Adjust spacer for mobile layout */
+  .spacer {
+    display: block;
+  }
+}
+
+/* --- NEW: Mobile Search Bar (Appears below header) --- */
+.mobile-search-bar {
+  padding: 8px 16px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  /* Sticks to the bottom of the header */
+  position: sticky;
+  top: 64px; 
+  z-index: 999; /* Below header, above content */
+}
+
+.search-form-field-mobile {
+  width: 100%;
 }

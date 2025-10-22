@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
-import { UsersComponent } from '../users/users.component';
 import { Router ,ActivatedRoute } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
@@ -32,12 +31,13 @@ interface Post {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, UsersComponent,TimeAgoPipe,ReportModalComponent],
+  imports: [FormsModule, CommonModule,TimeAgoPipe,ReportModalComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   @ViewChild('postsPanel') postsPanel!: ElementRef;
+  @ViewChild('fileUploadInput') fileUploadInput!: ElementRef<HTMLInputElement>;
   currentUserId!: number;
   isDarkMode: boolean = false;
   posts: Post[] = [];
@@ -140,12 +140,36 @@ handleScroll() {
   }
 }
 newMedia: File | null = null;
-
+mediaPreviewUrl: string | ArrayBuffer | null = null;
 onFileSelected(event: any) {
-  this.newMedia = event.target.files[0];
-  console.log("selected media is ",this.newMedia);
+  const file = event.target.files[0];
+    
+    if (file) {
+      this.newMedia = file;
+      console.log("selected media is ", this.newMedia);
+
+      // 3. Use FileReader to create a preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.mediaPreviewUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      // User cancelled the file dialog
+      this.cancelMediaPreview();
+    }
   
 }
+cancelMediaPreview() {
+    this.newMedia = null;
+    this.mediaPreviewUrl = null;
+    
+    // Reset the file input element
+    if (this.fileUploadInput) {
+      this.fileUploadInput.nativeElement.value = '';
+    }
+  }
 
 submitPost() {
   if (this.newMedia) {
@@ -185,7 +209,7 @@ submitPost() {
         
         this.newPost = { title: '', content: '' };
         this.newMedia = null;
-    
+        this.cancelMediaPreview();
       },
       error: err =>{
         if (err.status === 400) {

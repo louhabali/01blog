@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { UsersComponent } from '../users/users.component';
+
 import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ interface Comment {
 
 @Component({
   selector: 'app-comments',
-  imports : [UsersComponent,TimeAgoPipe,CommonModule,FormsModule],
+  imports : [TimeAgoPipe,CommonModule,FormsModule],
   templateUrl: './comments.component.html',
   styleUrls: ['./comments.component.css']
 })
