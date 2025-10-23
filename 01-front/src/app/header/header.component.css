@@ -1,7 +1,10 @@
-/* --- Original Header Styles (Kept) --- */
+/* =========================================================
+  HEADER STYLES
+  ========================================================= */
+
 .header {
   display: flex;
-  align-items: center;
+  align-items: center; /* Center items vertically */
   justify-content: space-between;
   padding: 0 16px;
   height: 64px;
@@ -11,9 +14,14 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
 }
 
-/* Logo */
+/* =========================================================
+  LOGO
+  ========================================================= */
+
 .logo {
   display: flex;
   align-items: center;
@@ -26,113 +34,174 @@
   letter-spacing: 0.5px;
 }
 
-/* Spacer */
+/* =========================================================
+  LAYOUT HELPERS
+  ========================================================= */
+
 .spacer {
   flex: 1 1 auto;
 }
 
-/* Navigation */
-.nav-links a {
-  text-decoration: none;
-  color: black;
-  margin-right: 12px;
-  font-weight: 500;
-  transition: color 0.2s ease;
+/* =========================================================
+  NAVIGATION LINKS
+  ========================================================= */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
 }
 
-.nav-links a:hover {
+.nav-link-item {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Space between icon and text */
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.nav-link-item:hover {
   color: #1976d2;
 }
 
-/* Profile */
-.profile-pic {
-  width: 36px;
-  height: 36px;
+/* =========================================================
+  PROFILE MENU BUTTON (UPDATED)
+  ========================================================= */
+
+/* This is now a mat-button, not a mat-icon-button */
+.profile-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Space between pic and dropdown icon */
+  margin-left: 8px;
+  padding: 0 4px 0 8px; /* Custom padding */
+  min-width: 0; /* Override mat-button min-width */
+  line-height: normal; /* Ensure vertical centering */
+
+  /* These styles ensure it inherits the theme and font */
+  text-decoration: none;
+  color: black;
+  transition: color 0.2s ease;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.profile-menu-button:hover {
+  color: #1976d2; /* Match hover of other nav links */
+  background-color: rgba(0,0,0,0.04); /* Subtle hover background */
+}
+
+/* MODIFIED: Fixed size for the profile pic in the nav */
+.profile-pic-nav {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #ddd;
 }
 
-/* Notifications */
-.notif-badge {
-  position: absolute;
-  top: 5px;
-  right: 4px;
-  background-color: #f44336;
-  color: white;
-  border-radius: 50%;
-  font-size: 0.7rem;
-  padding: 2px 5px;
-  font-weight: bold;
-  width: 6px;
-  height: 13px;
-  text-align: center;
-  line-height: initial;
+/* NEW: Style for the dropdown arrow */
+.profile-dropdown-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
 }
 
-/* --- UPDATED: Desktop Search Bar --- */
+/* =========================================================
+  SEARCH BAR (DESKTOP)
+  ========================================================= */
+
 .search-container {
-  /* Gives the container a flexible, but max, width */
-  flex: 0 1 10%; 
+  flex: 0 1 300px;
   display: flex;
+  align-items: center;
   justify-content: center;
- 
-  /* NEW: Adds spacing between logo and search bar */
-  margin-left: 30px;
 }
 
 .search-form-field {
-  width: 90%;
+  width: 100%;
+  height: 40px;
 }
 
-/* UPDATED: Added :host ::ng-deep to all Material overrides.
-  This is required for Angular to apply these styles.
-*/
+/* --- ::ng-deep Overrides --- */
+
 :host ::ng-deep .search-form-field .mat-mdc-form-field-wrapper,
 :host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-wrapper {
-  height: 35px;
   padding: 0;
+  height: 40px;
 }
+
 :host ::ng-deep .search-form-field .mat-mdc-form-field-flex,
 :host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-flex {
-  height: 44px;
+  height: 100%;
   align-items: center;
 }
+
 :host ::ng-deep .search-form-field .mat-mdc-text-field-wrapper,
 :host ::ng-deep .search-form-field-mobile .mat-mdc-text-field-wrapper {
-   /* This gives it the rounded "pill" shape */
-   border-radius: 28px !important;
+  border-radius: 28px !important;
+  height: 100%;
 }
+
 :host ::ng-deep .search-form-field .mat-mdc-form-field-infix,
 :host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-infix {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  /* NEW: Fix for vertical alignment of text */
-  position: relative;
-  top: -2px;
+  padding-top: 0;
+  padding-bottom: 0;
+  position: static;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
+
 :host ::ng-deep .search-form-field .mat-mdc-form-field-subscript-wrapper {
-  display: none; /* Hides the underline/hint space */
+  display: none;
 }
 
-/* --- UPDATED: Autocomplete Suggestion Dropdown --- */
+/* --- Font Styling for Search Bar --- */
 
-/* Style the popup panel itself */
+:host ::ng-deep .search-form-field .mat-mdc-form-field-flex,
+:host ::ng-deep .search-form-field-mobile .mat-mdc-form-field-flex {
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .search-form-field input.mat-mdc-input-element,
+:host ::ng-deep .search-form-field-mobile input.mat-mdc-input-element {
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .search-form-field input.mat-mdc-input-element::placeholder,
+:host ::ng-deep .search-form-field-mobile input.mat-mdc-input-element::placeholder {
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+  color: #9e9e9e;
+  opacity: 1;
+}
+
+/* --- Autocomplete Dropdown --- */
+
 :host ::ng-deep .mat-mdc-autocomplete-panel {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
   margin-top: 8px !important;
+  font-family: "Saira", sans-serif !important;
 }
 
-/* Style each suggestion item */
 .user-suggestion {
   display: flex;
   align-items: center;
-  padding: 4px 0; /* Add some padding inside the option */
+  padding: 4px 0;
+  font-weight: 500 !important;
 }
 
 :host ::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
-  display: block; /* Allows our flex container to fill the option */
+  display: block;
   color: inherit;
 }
 
@@ -160,59 +229,156 @@
 .user-status-suggestion {
   font-size: 0.8rem;
   color: #777;
+  font-weight: 500;
 }
 
 .no-results.mat-mdc-option {
   color: #999;
   font-style: italic;
+  font-weight: 500;
 }
 
+/* =========================================================
+  RESPONSIVE STYLES
+  ========================================================= */
 
-/* --- NEW & Original Responsive Styles --- */
-
-/* Hide mobile-only buttons by default */
-.menu-button {
-  display: none;
-}
+.menu-button,
 .search-button-mobile {
   display: none;
 }
 
 @media (max-width: 767px) {
-  /* Hide desktop nav and search */
-  .nav-links {
-    display: none;
-  }
+  .nav-links,
   .search-container {
     display: none;
   }
 
-  /* Show mobile buttons */
-  .menu-button {
-    display: block;
-  }
+  .menu-button,
   .search-button-mobile {
     display: block;
-    margin-right: 4px; /* Space it from the menu button */
   }
 
-  /* Adjust spacer for mobile layout */
+  .search-button-mobile {
+    margin-right: 4px;
+  }
+
   .spacer {
     display: block;
   }
 }
 
-/* --- NEW: Mobile Search Bar (Appears below header) --- */
+/* =========================================================
+  MOBILE SEARCH BAR
+  ========================================================= */
+
 .mobile-search-bar {
   padding: 8px 16px;
   background: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  /* Sticks to the bottom of the header */
   position: sticky;
-  top: 64px; 
-  z-index: 999; /* Below header, above content */
+  display: flex;
+  justify-content: center;
+  top: 64px;
+  z-index: 999;
+  width: 100%;
 }
 
 .search-form-field-mobile {
-  width: 100%;
+  width: 60%;
+  height: 40px;
+}
+
+/* =========================================================
+  MENU FONT STYLING
+  ========================================================= */
+
+/* Mobile Menu */
+:host ::ng-deep .mat-mdc-menu-panel:not(.profile-dropdown) {
+  font-family: "Saira", sans-serif !important;
+}
+
+:host ::ng-deep .mat-mdc-menu-item:not(.profile-dropdown *) .mdc-list-item__primary-text {
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Desktop Profile Menu */
+:host ::ng-deep .mat-mdc-menu-panel.profile-dropdown {
+  font-family: "Saira", sans-serif !important;
+}
+
+:host ::ng-deep .profile-dropdown .mat-mdc-menu-item .mdc-list-item__primary-text,
+:host ::ng-deep .profile-dropdown .mat-mdc-menu-item mat-icon,
+:host ::ng-deep .profile-dropdown .mat-mdc-menu-item span {
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .profile-dropdown .mat-mdc-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================================
+  NOTIFICATION BADGE (NEW - FOR NAV BAR)
+  ========================================================= */
+
+/* NEW: Wrapper for the top-level nav notification icon */
+.notif-wrapper-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Match the size of other mat-icons in the nav */
+  width: 24px; 
+  height: 24px;
+}
+
+/* NEW: Badge for the top-level nav icon */
+.notif-badge-nav {
+  position: absolute;
+      /* Position badge above the icon */
+  right:0px;    /* Position badge to the right of the icon */
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 1px 4px;
+  line-height: 1;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 99; /* Ensures it's on top of the icon */
+}
+
+/* =========================================================
+  NOTIFICATION BADGE (FOR MOBILE MENU)
+  ========================================================= */
+
+/* This is for the notification item inside the *mobile* menu */
+.notif-wrapper-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-badge-menu {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 1px 4px;
+  line-height: 1;
+  min-width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  text-align: center;
 }

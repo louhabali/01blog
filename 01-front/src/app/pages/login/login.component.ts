@@ -5,11 +5,18 @@ import { FormsModule } from '@angular/forms';
 
 import { Router , RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service'; // <-- use AuthService
- 
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule],
+  imports: [CommonModule, FormsModule,RouterModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule, // <-- Add to imports
+    MatInputModule,],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms'; // <-- Import FormsModule for ngMo
 
 // --- Import Angular Material Modules for Search ---
 import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatDividerModule} from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -35,6 +36,7 @@ interface User {
     HttpClientModule, // <-- Add to imports
     MatToolbarModule,
     MatButtonModule,
+    MatDividerModule,
     MatIconModule,
     MatMenuModule,
     MatFormFieldModule, // <-- Add to imports
@@ -89,6 +91,7 @@ export class HeaderComponent implements OnInit {
           this.notifsnumber = notifs.filter(n => n.actorId !== this.currentUserId && !n.seen).length;
         });
         console.log("Logged-in user:", user);
+
       },
       error: (err) => {
         if (err.status === 401) {

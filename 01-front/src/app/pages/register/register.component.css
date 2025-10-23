@@ -1,126 +1,93 @@
-/* Full page container */
-.auth-container {
-font-family: 'Press Start 2P', sans-serif;
+/*
+ * This single CSS file can be shared by both
+ * Login and Register components.
+ *
+ * In your component.ts:
+ * styleUrls: ['./auth.css']
+ */
 
+/* Full-page container */
+.auth-container {
+  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;       /* Full screen height */
-  width: 100vw;        /* Full screen width */
-   background: linear-gradient(to right,#000000, #060025, #03256e); /* heavy blue gradient */
-
-  margin: 0;
-  padding: 0;
-}
-.error-box {
-  color: red;
-
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-top: 10px;
-  text-align: center;
-  animation: fadeIn 0.4s ease-in, fadeOut 0.4s ease-out 3s forwards;
+  min-height: 100vh; /* Use min-height for flexibility */
+  padding: 16px; /* Padding for mobile */
+  box-sizing: border-box; /* Include padding in height/width */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-2px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-2px); }
-}
-/* Card style */
+/* The main card for login/register */
 .auth-card {
-  padding: 2rem;
-  border-radius: 12px;
- 
-  width: 350px;
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  padding: 2rem; /* More padding */
   text-align: center;
-  animation: fadeIn 0.6s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01) !important; /* Softer shadow */
 }
 
-/* Top image */
-.auth-image img {
-  width: 80px;
+/* "01BLOG" Logo */
+.auth-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #333;
   margin-bottom: 1rem;
 }
 
-/* Title */
-.auth-card h2 {
-  margin-bottom: 0.9rem;
-  font-size: 1.2rem;
-
-  color: #0a74de;
+/* "Welcome Back" / "Create Account" */
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 1.5rem;
 }
 
-/* Form */
-form {
+/* Form element */
+.auth-form {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem; /* Spacing between form fields */
 }
 
-label {
-  font-size: 0.8em;
-  text-align: left;
-  color: #ffffff;
+/* Make form fields full-width */
+.auth-form mat-form-field {
+  width: 100%;
+}
+
+/* Full-width submit button */
+.auth-button {
+  width: 100%;
+  background-color: #111;
+  padding: 1.25rem 0; /* Taller button */
+  font-size: 1rem;
   font-weight: 500;
+  line-height: 0; /* Fix line-height issue with mat-button */
 }
 
-input {
-  font-family: 'Press Start 2P', sans-serif;
-  padding: 10px;
-  border: 4px solid #000000;
-  border-radius: 6px;
-  font-size: 14px;
+/* "Don't have an account?" text */
+.redirect-link {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #555;
 }
 
-button {
-font-family: 'Press Start 2P', sans-serif;
-
-  margin-top: 1rem;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background-color: #000000;
-  color: white;
-  font-size: 0.8em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-button:hover {
-  background-color: #0755a2;
-}
-
-/* Redirect link */
-.redirect-text {
-  color: white;
-  margin-top: 1rem;
-  font-size: 0.8em;
-}
-
-.redirect-text a {
-  color: #095db1;
-  font-weight: bold;
+.redirect-link a {
+  color: #007bff; /* Use your app's primary color */
+  font-weight: 500;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.redirect-text a:hover {
+.redirect-link a:hover {
   text-decoration: underline;
 }
 
-/* Fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Error message styling */
+.error-message {
+  color: #f44336; /* Material's warn color */
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }

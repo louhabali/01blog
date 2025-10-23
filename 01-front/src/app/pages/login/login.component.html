@@ -1,29 +1,55 @@
-<div class="login-container">
-  <div class="login-card">
-    <!-- Top image / logo -->
-    <div class="login-logo">
-      <img src="developer.png" alt="App Logo">
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <div class="auth-logo">
+      01BLOG
     </div>
 
-    <!-- Title -->
-    <h2 class="login-title">Welcome Back</h2>
-      <!-- Show errors -->
-    <p *ngIf="errorMessage" style="color:red; font-size: 0.8em;">{{ errorMessage }}</p>
-    <!-- Login Form -->
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <label>Email or username</label>
-      <input type="text" [(ngModel)]="formData.email" name="identifier" required>
+    <div class="auth-title">Welcome Back</div>
 
-      <label>Password</label>
-      <input type="password" [(ngModel)]="formData.password" name="password" required>
+    <p *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </p>
 
-      <button type="submit">Login</button>
-    </form>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" class="auth-form">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Email or Username</mat-label>
+          <input 
+            matInput 
+            type="text" 
+            [(ngModel)]="formData.email" 
+            name="identifier" 
+            required
+          >
+        </mat-form-field>
 
-    <!-- Register link -->
-    <p class="register-link">
-      Don’t have an account?
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            type="password" 
+            [(ngModel)]="formData.password" 
+            name="password" 
+            required
+          >
+        </mat-form-field>
+
+        <button 
+          mat-flat-button 
+          color="primary" 
+          type="submit"
+          class="auth-button"
+        >
+          Login
+        </button>
+        
+      </form>
+    </mat-card-content>
+
+    <p class="redirect-link">
+      Don’t have an account? 
       <a routerLink="/register">Create one</a>
     </p>
-  </div>
+  </mat-card>
 </div>

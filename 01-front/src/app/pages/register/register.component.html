@@ -1,29 +1,66 @@
 <div class="auth-container">
-  <div class="auth-card">
-    <!-- Top image placeholder -->
-    <div class="auth-image">
-      <img src="developer.png" alt="Register Illustration">
+  <mat-card class="auth-card">
+    <div class="auth-logo">
+      01BLOG
     </div>
 
-    <h2>Create an Account</h2>
-    <div *ngIf="showError" class="error-box">
+    <h2 class="auth-title">Create an Account</h2>
+
+    <div *ngIf="showError" class="error-message">
       <span>{{ errorMessage }}</span>
     </div>
-    <form (ngSubmit)="onSubmit()">
-      <label>Username</label>
-      <input type="text" [(ngModel)]="formData.username" name="username" required>
 
-      <label>Email</label>
-      <input type="email" [(ngModel)]="formData.email" name="email" required>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" class="auth-form">
 
-      <label>Password</label>
-      <input type="password" [(ngModel)]="formData.password" name="password" required>
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input 
+            matInput 
+            type="text" 
+            [(ngModel)]="formData.username" 
+            name="username" 
+            required
+          >
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email" 
+            [(ngModel)]="formData.email" 
+            name="email" 
+            required
+          >
+        </mat-form-field>
 
-      <button type="submit">Register</button>
-    </form>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            type="password" 
+            [(ngModel)]="formData.password" 
+            name="password" 
+            required
+          >
+        </mat-form-field>
 
-    <p class="redirect-text">
-      Already have an account? <a routerLink="/login">Login here</a>
+        <button 
+          mat-flat-button 
+          color="primary" 
+          type="submit"
+          class="auth-button"
+        >
+          Register
+        </button>
+        
+      </form>
+    </mat-card-content>
+
+    <p class="redirect-link">
+      Already have an account? 
+      <a routerLink="/login">Login here</a>
     </p>
-  </div>
+  </mat-card>
 </div>
