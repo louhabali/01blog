@@ -1,55 +1,53 @@
-/* HERO SECTION */
+/* ---------------- HERO SECTION ---------------- */
 .hero {
-   /* full viewport minus header */
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right,#000000, #060025, #000a20);
-  color: white;
  
-  margin-left: -10px;
-  margin-right: -10px;
-    font-family: 'Press Start 2P', sans-serif;
-  
+  background: linear-gradient(to right, #000000, #05011a, #000000);
+  color: white;
+  font-family: "Saira", sans-serif;
+  padding: 40px 20px;
 }
 
 .hero-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   max-width: 1200px;
+  width: 100%;
   flex-wrap: wrap;
+  gap: 30px;
 }
 
 .hero-text {
   flex: 1 1 500px;
-  padding: 20px;
 }
 
 .hero-text h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 800;
   margin-bottom: 20px;
+  line-height: 1.2;
 }
 
 .hero-text h1 span {
-  color: #00aaff; /* sky blue accent */
+  color: #00aaff;
 }
 
 .hero-text p {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   margin-bottom: 30px;
+  opacity: 0.9;
 }
 
 .hero-text .btn {
   text-decoration: none;
   background-color: white;
   color: #001f3f;
-  padding: 15px 35px;
-  font-weight: 700;
+  padding: 15px 40px;
   border-radius: 8px;
+  font-weight: 700;
   transition: transform 0.2s, opacity 0.2s;
 }
 
@@ -58,38 +56,22 @@
   opacity: 0.9;
 }
 
-/* Hero Image */
-.hero-image {
-     width: 50%;  /* half of the container width */
-  max-width: 400px; /* never bigger than 400px */
-  height: auto;
-  flex: 1 1 400px;
-  text-align: center;
-  padding: 20px;
-}
-
-.hero-image img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* FEATURES SECTION */
+/* ---------------- FEATURES SECTION ---------------- */
 .features {
-font-family: 'Press Start 2P', sans-serif;
-
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
+  gap: 25px;
+  padding: 60px 20px;
   background-color: #f0f4f8;
-  
+  font-family: "Saira", sans-serif;
 }
 
 .feature-card {
   background-color: white;
   border-radius: 12px;
-  padding: 30px 20px;
-  margin: 15px;
+  padding: 30px 25px;
   width: 280px;
   text-align: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -102,13 +84,73 @@ font-family: 'Press Start 2P', sans-serif;
 }
 
 .feature-card h2 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #001f3f;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .feature-card p {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: #333;
-  line-height: 1.4;
+  line-height: 1.5;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+  }
+
+ .hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(to right, #000000, #05011a, #000000);
+  color: white;
+  font-family: "Saira", sans-serif;
+  padding: 40px 20px;
+  height: calc(100vh - 64px);
+}
+
+  .hero-content {
+    flex-direction: column;
+  }
+
+  .hero-image img {
+    max-width: 300px;
+  }
+}
+@media (max-width: 450px) {
+  .hero-text h1 {
+    font-size: 1.9rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+  }
+
+ .hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(to right, #000000, #05011a, #000000);
+  color: white;
+  font-family: "Saira", sans-serif;
+  padding: 40px 20px;
+  height: 200px;
+}
+
+  .hero-content {
+    flex-direction: column;
+  }
+
+  .hero-image img {
+    max-width: 300px;
+  }
 }

@@ -39,7 +39,9 @@
         <div *ngIf="post.appropriate" >
         <!-- Post Header -->
         <div class="post-header">
-          <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}" class="avatar">
+          <a [routerLink]="['/profile', post.authorId]">
+            <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}" class="avatar">
+          </a>
           <div class="author-info">
             <span class="author-name">{{ post.authorName }}  | </span>
             <span style="color: rgb(148, 143, 143);font-size: 0.875rem;">{{ post.createdAT | timeAgo }} </span>
@@ -82,6 +84,12 @@
     <div *ngIf="loading" class="loading">
   <i class="fa fa-spinner fa-spin"></i> Loading posts...
 </div>
+<div class="no-more" *ngIf="noMorePosts && posts.length > 0">
+  <p>You've reached the end!</p>
+</div>
+    <div *ngIf="!loading && posts.length === 0" class="no-posts">
+      <p>No posts available.</p>
+    </div>
   </div>
   <div class="modal-backdrop" *ngIf="isReportModalOpen" (click)="closeReportModal()"></div>
 

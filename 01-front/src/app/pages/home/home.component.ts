@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
-import { Router ,ActivatedRoute } from '@angular/router';
+import { Router ,ActivatedRoute ,RouterModule } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
 
@@ -31,7 +31,7 @@ interface Post {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule,TimeAgoPipe,ReportModalComponent],
+  imports: [FormsModule, CommonModule,TimeAgoPipe,ReportModalComponent, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

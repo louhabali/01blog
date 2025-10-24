@@ -2,7 +2,7 @@
 
 main, .page-content {
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
 
 }
 main, router-outlet {

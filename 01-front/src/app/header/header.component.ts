@@ -190,7 +190,7 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.auth.logout().subscribe(() => {
-      this.router.navigate(['/']);
+      this.router.navigate(['/login']);
       this.menuActive = false;
     });
   }

@@ -20,7 +20,7 @@
         <!-- Author Section -->
         <div class="author-section">
           <div class="author-info">
-            <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar">
+            <a [routerLink]="['/profile', post.authorId]"><img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar"></a>
             <div class="author-details">
               <span class="author-name">{{ post.author }}</span>
               <div class="article-meta">

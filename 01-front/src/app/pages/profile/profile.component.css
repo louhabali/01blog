@@ -14,7 +14,7 @@
 /* -------- CENTER: FEED -------- */
 .center-panel {
   padding: 48px 72px;
-  height: calc(100vh);
+  height: calc(100vh - 100px);
   overflow-y: auto;
   position: relative;
   border-right: 1px solid #eee;
@@ -22,7 +22,12 @@
   flex-direction: column;
   
 }
-
+.no-posts {
+  text-align: center;
+  color: #999;
+  margin-top: 50px;
+  font-style: italic;
+}
 .posts-grid {
   flex: 1;
  

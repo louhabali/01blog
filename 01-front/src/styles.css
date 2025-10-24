@@ -15,8 +15,16 @@
 html, body {
   margin: 0;
   padding: 0;
- overflow: hidden;
+  padding-bottom: 50px;
+ height: 100%;
+  overflow: hidden; /* remove default scrolls */
 }
+main, .page-content {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* scroll handled inside container */
+}
+
 /* 🌙 Dark mode: affects the entire app */
 
 body {

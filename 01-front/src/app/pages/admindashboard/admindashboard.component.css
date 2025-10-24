@@ -1,25 +1,29 @@
-/* Layout */
+/* --- GLOBAL ADMIN DASHBOARD STYLES --- */
 .admin-dashboard {
-  height: calc(100vh - 64px);
-  overflow: auto;
+  height: calc(100vh - 64px); /* full viewport minus header */
   display: flex;
   gap: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Helvetica Neue', sans-serif;
   color: #333;
+  overflow: hidden; /* prevents multiple scrollbars */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
+/* --- STATS PANEL --- */
 .stats-panel {
   width: 20%;
+  max-width: 300px; /* prevents overly large stats on tablets */
   background: #f5f5f5;
   padding: 20px;
   border-radius: 10px;
+  overflow-y: auto; /* scroll if stats exceed panel */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center stats cards */
 }
 
-.tables-panel {
-  width: 80%;
-}
-
-/* Stats Cards */
 .stat-card {
   display: flex;
   align-items: center;
@@ -29,6 +33,8 @@
   padding: 12px 15px;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  width: 100%; /* fill stats-panel width */
+  max-width: 260px; /* keep cards from stretching */
 }
 
 .stat-card i {
@@ -48,39 +54,48 @@
   font-size: 14px;
 }
 
-/* Tables */
-.table-section {
-  margin-bottom: 30px;
+/* --- TABLES PANEL --- */
+.tables-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto; /* main vertical scroll for tables */
+  padding-right: 10px; /* avoid hidden scrollbar */
+  min-width: 0; /* important for flex shrink on mobile */
 }
 
+/* --- TABLE SECTIONS --- */
 .table-section h2 {
   margin-bottom: 10px;
   font-weight: 600;
   color: #222;
+  text-align: center; /* center section titles */
 }
 
-/* Scrollable wrapper */
+/* --- TABLE SCROLL WRAPPER --- */
 .table-scroll-wrapper {
-  max-height: 300px;
+  max-height: calc(100vh - 250px); /* dynamic height based on viewport */
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 5px;
   background: #fff;
 }
 
-.table-scroll-inner {
-  width: 100%;
-}
-
+/* --- TABLE STYLES --- */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* prevent table from overflowing */
 }
 
 .admin-table th, .admin-table td {
   padding: 10px 12px;
   border-bottom: 1px solid #eee;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis; /* truncate long text */
+  white-space: nowrap;
 }
 
 .admin-table th {
@@ -122,22 +137,63 @@
   font-style: italic;
   color: #555;
 }
-a{
+
+/* --- LINKS --- */
+a {
   text-decoration: none;
   color: inherit;
 }
-/* ------------------- Responsive ------------------- */
+
+/* --- RESPONSIVE LAYOUT --- */
+@media (max-width: 1024px) {
+  .stats-panel {
+    width: 25%;
+    max-width: 250px;
+  }
+
+  .table-scroll-wrapper {
+    max-height: 280px;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-dashboard {
     flex-direction: column;
+    height: 100vh; /* full viewport height to allow scroll */
+    padding: 5px;
   }
 
   .stats-panel {
     width: 100%;
-    margin-bottom: 20px;
+    max-width: none;
+    margin-bottom: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: 180px; /* optional, scroll if too many stats */
+    overflow-y: auto;
+  }
+
+  .stat-card {
+    width: 45%; 
+    max-width: 45%;
+    margin-bottom: 10px;
   }
 
   .tables-panel {
     width: 100%;
+    flex: 1; /* take remaining height */
+    min-height: 0; /* important for flex container */
+    overflow-y: auto; /* enable vertical scroll */
   }
+
+  .table-scroll-wrapper {
+    max-height: none; /* allow table wrappers to grow inside scrollable panel */
+  }
+}
+
+
+/* --- SCROLL SMOOTHNESS --- */
+.tables-panel, .stats-panel, .table-scroll-wrapper {
+  scroll-behavior: smooth;
 }

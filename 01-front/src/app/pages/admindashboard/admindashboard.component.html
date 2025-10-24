@@ -1,7 +1,9 @@
 <div class="admin-dashboard">
   <!-- STATS PANEL -->
   <aside class="stats-panel">
-    <h2>Stats Overview</h2>
+    <div class="stat-card">
+      <h2>Stats Overview</h2>
+    </div>
     <div class="stat-card">
       <i class="fas fa-users"></i>
       <div>
@@ -35,6 +37,7 @@
   <!-- TABLES PANEL -->
   <main class="tables-panel">
     <!-- USERS -->
+     
     <section class="table-section">
       <h2>Users</h2>
       <div class="table-scroll-wrapper" (scroll)="onUsersScroll($event)">
@@ -93,7 +96,7 @@
                 <td>
                   <a [routerLink]="['/profile', p.user.id]" class="link">{{ p.user.username }}</a>
                 </td>
-                <td class="title">{{ p.title }}</td>
+                <td class="title">{{ p.title | slice:0:10 }}...</td>
                 <td [class.hidden]="!p.appropriate">
                   {{ p.appropriate ? 'Visible' : 'Hidden' }}
                 </td>
@@ -134,10 +137,12 @@
               <tr *ngFor="let r of reports">
                 <td>{{ r.id }}</td>
                 <td>
-                  <a [routerLink]="['/posts', r.postId]" class="link">{{ r.post.content }}</a>
+                  <a [routerLink]="['/posts', r.post.id]" class="link">
+                    {{ r.post.title | slice:0:10 }}{{ r.post.title.length > 10 ? '...' : '' }}
+                  </a>
                 </td>
                 <td>
-                  <a [routerLink]="['/profile', r.reporterId]" class="link">{{ r.post.user.username }}</a>
+                  <a [routerLink]="['/profile', r.post.user.id]" class="link">{{ r.post.user.username }}</a>
                 </td>
                 <td class="reason">{{ r.reason }}</td>
                 <td class="actions">

@@ -6,42 +6,50 @@
  * styleUrls: ['./auth.css']
  */
 
-/* Full-page container */
+/* * 1. Global Font Setting
+ * We set the font on the main container, and all child
+ * elements will inherit it.
+ */
 .auth-container {
-  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh; /* Use min-height for flexibility */
+  background-color: white;
   padding: 16px; /* Padding for mobile */
   box-sizing: border-box; /* Include padding in height/width */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* --- FONT SET HERE --- */
+  font-family: "Saira", sans-serif;
+  font-weight: 500;
 }
 
-/* The main card for login/register */
+/* * 2. Card Styling
+ * No font-family needed; it inherits from .auth-container
+ */
 .auth-card {
   width: 100%;
   max-width: 400px;
   background-color: white;
   padding: 2rem; /* More padding */
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01) !important; /* Softer shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; /* Softer shadow */
 }
 
 /* "01BLOG" Logo */
 .auth-logo {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 700; /* Bolder for the logo */
   letter-spacing: 1px;
-  color: #333;
+  color: #000000;
   margin-bottom: 1rem;
 }
 
 /* "Welcome Back" / "Create Account" */
 .auth-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #111;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #187bb8;
   margin-bottom: 1.5rem;
 }
 
@@ -57,10 +65,41 @@
   width: 100%;
 }
 
-/* Full-width submit button */
+/* * 3. --- NEW ---
+ * Force Font on Angular Material Form Fields
+ * We use ::ng-deep to apply the font to the inner
+ * elements of <mat-form-field>.
+ */
+:host ::ng-deep .auth-form mat-form-field .mat-mdc-form-field-flex {
+  /* Set font for the Label */
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .auth-form mat-form-field input.mat-mdc-input-element {
+  /* Set font for the Input text */
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* --- UPDATED RULE ---
+ * Targets the placeholder on the correct input element
+ */
+:host ::ng-deep .auth-form mat-form-field input.mat-mdc-input-element::placeholder {
+  /* Set font for the Placeholder */
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+  color: #9e9e9e; /* Optional: style placeholder color */
+  opacity: 1; /* Override Material's default placeholder opacity */
+}
+
+
+/* * 4. Button Styling
+ * No font-family needed; it inherits.
+ */
 .auth-button {
-  width: 100%;
   background-color: #111;
+  width: 100%;
   padding: 1.25rem 0; /* Taller button */
   font-size: 1rem;
   font-weight: 500;
@@ -75,8 +114,8 @@
 }
 
 .redirect-link a {
-  color: #007bff; /* Use your app's primary color */
-  font-weight: 500;
+ color: #187bb8;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
 }
@@ -90,4 +129,5 @@
   color: #f44336; /* Material's warn color */
   font-size: 0.9rem;
   margin-bottom: 1rem;
+  /* font-family is inherited */
 }

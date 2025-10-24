@@ -6,17 +6,18 @@ import { CommonModule } from '@angular/common';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { Router ,RouterModule} from '@angular/router';
 interface Comment {
   id?: number;
   user: { id: number; username: string; avatar?: string };
   content: string;
   createdAt: string;
+ 
 }
 
 @Component({
   selector: 'app-comments',
-  imports : [TimeAgoPipe,CommonModule,FormsModule],
+  imports : [TimeAgoPipe,CommonModule,FormsModule,RouterModule],
   templateUrl: './comments.component.html',
   styleUrls: ['./comments.component.css']
 })
@@ -40,7 +41,7 @@ export class CommentsComponent implements OnInit {
     });
     this.route.paramMap.subscribe(params => {
       this.postId = Number(params.get('id'));
-      console.log(this.postId);
+      console.log("ssss",this.postId);
       
       this.loadComments();
       

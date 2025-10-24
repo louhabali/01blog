@@ -1,9 +1,14 @@
 <div class="home-container">
 
-
   <!-- CENTER: Comments Feed & Form -->
   <div class="posts-panel">
-    
+
+    <!-- 🔙 Back Button -->
+    <div class="back-button-container" *ngIf="postId">
+      <a [routerLink]="['/posts',postId]" class="back-button">
+        ← Back to Post
+      </a>
+    </div>
 
     <!-- Comment Form -->
     <div class="post-form">
@@ -18,7 +23,7 @@
       <div class="post-card" *ngFor="let comment of comments">
         <div class="post-header">
           <div class="author-info">
-            <img class="avatar" [src]="comment.user.avatar || 'default-avatar.png'" alt="avatar">
+            <img class="avatar" [src]="comment.user.avatar || 'assets/default-avatar.png'" alt="avatar">
             <span class="author-name">{{ comment.user.username }}</span>
           </div>
           <small>{{ comment.createdAt | timeAgo }}</small>

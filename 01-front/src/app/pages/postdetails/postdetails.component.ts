@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute , RouterModule } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
@@ -28,7 +28,7 @@ interface Post {
 @Component({
   selector: 'app-postdetails',
   standalone: true,
-  imports: [FormsModule, CommonModule,TimeAgoPipe],
+  imports: [FormsModule, CommonModule,TimeAgoPipe, RouterModule],
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css']
 })
@@ -77,9 +77,12 @@ showError: boolean = false;
    this.http.get<Post>(`http://localhost:8087/posts/${postId}?currentUserId=${this.currentUserId}`, { withCredentials: true })
   .subscribe({
     next: post => {
+      console.log("Fetched post:", post);
       this.post = post;
     },
-    error: () => {} // redirect if not found
+    error: () => {
+      this.router.navigate(['/404']); // redirect if error
+    } // redirect if not found
   });
   }
 
