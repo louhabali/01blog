@@ -27,7 +27,7 @@ List<Post> findWithOffsetLimit(
     @Param("showAll") boolean showAll
 );
     void deleteByUserId(Long userId);
-    @Query(value = "SELECT * FROM posts WHERE user_id = :userId ORDER BY created_at DESC LIMIT :limit OFFSET :offset", nativeQuery = true)
+    @Query(value = "SELECT * FROM posts WHERE (user_id = :userId AND is_appropriate = true) ORDER BY created_at DESC LIMIT :limit OFFSET :offset", nativeQuery = true)
 List<Post> findPostsByUserWithPagination(@Param("userId") Long userId,
                                          @Param("offset") int offset,
                                          @Param("limit") int limit);
