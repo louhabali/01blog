@@ -28,7 +28,6 @@
 }
 .error-box {
   color: red;
-
   padding: 8px 12px;
   border-radius: 6px;
   margin-top: 10px;
@@ -79,7 +78,10 @@
   font-size: 2.5rem;
   font-weight: 700;
   font-family: "Saira", sans-serif !important;
-
+  white-space: pre-line;
+  overflow-wrap: break-word;    /* Modern standard */
+  max-width: 100%;              /* Prevent content from stretching container */
+  word-break: break-word;       /* Force breaking long tokens like URLs */
   line-height: 1.2;
   margin: 0 0 32px 0;
   color: #242424;
@@ -264,13 +266,62 @@
 .featured-video video {
   width: 100%;
   height: auto;
-  object-fit: cover;
+  object-fit: contain;
   max-height: 500px;
 }
+
+/* --- NEW STYLES --- */
+/* Edit Mode Media Preview */
+.edit-media-container {
+  margin: 32px 0 48px;
+  width: 100%;
+  border: 2px dashed #e6e6e6;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.article-panel.dark-mode .edit-media-container {
+  border-color: #2d2d2d;
+}
+
+.edit-media-container .featured-image,
+.edit-media-container .featured-video {
+  margin: 0; /* Remove extra margin inside container */
+}
+
+/* Style the change media button to be more prominent */
+.change-media-btn {
+  width: auto; /* No longer just an icon */
+  padding: 8px 16px;
+  border-radius: 99px; /* Pill shape */
+  background: #f2f2f2;
+  gap: 8px; /* Space between icon and text */
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.change-media-btn:hover {
+  background: #e6e6e6;
+}
+.article-panel.dark-mode .change-media-btn {
+  background: #2d2d2d;
+  color: rgba(255, 255, 255, 0.8);
+}
+.article-panel.dark-mode .change-media-btn:hover {
+  background: #3a3a3a;
+}
+/* --- END NEW STYLES --- */
 
 /* Article Content */
 .article-content {
   margin: 48px 0;
+  white-space: pre-line;
+  overflow-wrap: break-word;    /* Modern standard */
+  max-width: 100%;              /* Prevent content from stretching container */
+  word-break: break-word;       /* Force breaking long tokens like URLs */
 }
 
 .content-text {
@@ -332,33 +383,33 @@
   .home-container {
     flex-direction: column;
   }
-  
+
   .users-panel {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #f2f2f2;
   }
-  
+
   .article-container {
     padding: 40px 20px 80px;
   }
-  
+
   .article-title {
     font-size: 2rem;
   }
-  
+
   .title-edit-input {
     font-size: 2rem;
   }
-  
+
   .content-text {
     font-size: 1.125rem;
   }
-  
+
   .content-edit-textarea {
     font-size: 1.125rem;
   }
-  
+
   .theme-icon {
     top: 72px;
     right: 16px;

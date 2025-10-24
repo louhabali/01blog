@@ -163,6 +163,81 @@
   font-weight: 500 !important;
   transition: background 0.2s;
 }
+/* --- DELETE CONFIRMATION MODAL --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.delete-confirm-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 1.8rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 1001;
+  width: 300px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.delete-confirm-modal p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-btn,
+.cancel-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.confirm-btn {
+  background-color: #d9534f;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background-color: #c9302c;
+}
+
+.cancel-btn {
+  background-color: #f1f1f1;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #ddd;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
 /* Media preview container */
 .media-preview-container {
   position: relative;
@@ -209,7 +284,7 @@
 }
 
 .publish-btn:hover {
-  background-color: #156d13;
+  background-color: #1a61a9;
 }
 
 /* Posts Feed */
@@ -283,6 +358,10 @@
 .post-title {
   font-size: 1.375rem;
   font-weight: 700;
+   white-space: pre-line;
+   overflow-wrap: break-word;     /* Modern standard */
+  max-width: 100%;               /* Prevent content from stretching container */
+  word-break: break-word;        /* Force breaking long tokens like URLs */ 
 font-family: "Saira", sans-serif !important;
   font-weight: 700 !important;
   line-height: 1.4;

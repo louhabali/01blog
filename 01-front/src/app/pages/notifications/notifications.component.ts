@@ -34,7 +34,7 @@ export class NotificationsComponent implements OnInit {
         const map = new Map<string, NotificationDTO>();
 
         notifications.forEach(n => {
-          const key = `${n.actorId}-${n.type}`;
+          const key = `${n.actorId}-${n.type}${n.createdAt}`;
           const existing = map.get(key);
 
           // Keep the latest one

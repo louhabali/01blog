@@ -1,15 +1,10 @@
 <div class="home-container">
-
-  <!-- Article Panel -->
   <div class="article-panel" [ngClass]="{'dark-mode': isDarkMode}">
-
     <article class="article-container" *ngIf="post">
-      <!-- Article Header -->
       <header class="article-header">
-         <div *ngIf="showError" class="error-box">
-      <span>{{ errorMessage }}</span>
-    </div>
-        <!-- Title -->
+        <div *ngIf="showError" class="error-box">
+          <span>{{ errorMessage }}</span>
+        </div>
         <h1 *ngIf="!post.isEditing; else editTitle" class="article-title">
           {{ post.title }}
         </h1>
@@ -17,21 +12,21 @@
           <input [(ngModel)]="post.title" class="title-edit-input" placeholder="Title" />
         </ng-template>
 
-        <!-- Author Section -->
         <div class="author-section">
           <div class="author-info">
-            <a [routerLink]="['/profile', post.authorId]"><img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar"></a>
+            <a [routerLink]="['/profile', post.authorId]">
+              <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar">
+            </a>
             <div class="author-details">
               <span class="author-name">{{ post.author }}</span>
               <div class="article-meta">
-                <span class="read-time">{{ post.createdAT | timeAgo }}  </span>
+                <span class="read-time">{{ post.createdAT | timeAgo }} </span>
                 <span class="separator">·</span>
                 <span class="publish-date">{{ post.createdAT | date:'yyyy-MM-dd' }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Action Buttons -->
           <div class="header-actions">
             <ng-container *ngIf="post.authorId === currentUserId; ">
               <button class="icon-btn" *ngIf="!post.isEditing" (click)="editPost(post, $event)" title="Edit">
@@ -43,33 +38,33 @@
               <button class="icon-btn" (click)="deletePost(post)" title="Delete">
                 <i class="fas fa-trash"></i>
               </button>
-
-              <!-- Change Picture Icon -->
-              <button *ngIf="post.isEditing" class="icon-btn" title="Change Picture" (click)="changePicture(post)">
-                <i class="fa-solid fa-image"></i>
-              </button>
-            </ng-container>
-           
+              
+              </ng-container>
           </div>
         </div>
-
-     
       </header>
 
-      <!-- Featured Media -->
-      <div *ngIf="!post.isEditing && post.imageUrl" class="featured-image">
-        <img [src]="post.imageUrl" alt="Article featured image"/>
-      </div>
-      <div *ngIf="!post.isEditing && post.videoUrl" class="featured-video">
-        <video controls [src]="post.videoUrl"></video>
+      <div *ngIf="!post.isEditing">
+        <div *ngIf="post.imageUrl" class="featured-image">
+          <img [src]="post.imageUrl" alt="Article featured image" />
+        </div>
+        <div *ngIf="post.videoUrl" class="featured-video">
+          <video controls [src]="post.videoUrl"></video>
+        </div>
       </div>
 
-      <!-- Edit Mode Image Upload -->
-     <button *ngIf="post.isEditing" class="icon-btn" title="Change Media" (click)="changeMedia(post)">
-  <i class="fa-solid fa-image"></i>
-</button>
+      <div *ngIf="post.isEditing" class="edit-media-container">
+        <div *ngIf="post.imageUrl" class="featured-image">
+          <img [src]="post.imageUrl" alt="Article featured image" />
+        </div>
+        <div *ngIf="post.videoUrl" class="featured-video">
+          <video controls [src]="post.videoUrl"></video>
+        </div>
+        <button class="icon-btn change-media-btn" title="Change Media" (click)="changeMedia(post)">
+          <i class="fa-solid fa-image"></i> Change Media
+        </button>
+      </div>
 
-      <!-- Article Content -->
       <div class="article-content">
         <div *ngIf="!post.isEditing; else editContent" class="content-text">
           <p>{{ post.content }}</p>
@@ -79,7 +74,6 @@
         </ng-template>
       </div>
 
-      <!-- Article Footer -->
       <footer class="article-footer">
         <div class="footer-actions">
           <button class="engagement-btn large" (click)="toggleLike(post)">

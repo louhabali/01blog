@@ -3,9 +3,11 @@
 .notifications-container {
    font-family: "Saira", sans-serif !important;
   font-weight: 500 !important;
-  max-width: 700px;
   margin: 6rem auto; 
-  width: 100%; /* Will be 100% of parent, up to 700px */
+ width: 100%;
+max-width: 700px;
+   max-height: 70vh; /* ✅ limit height so scroll can appear */
+  overflow-y: auto;  /* ✅ scroll will now work */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Softer shadow */

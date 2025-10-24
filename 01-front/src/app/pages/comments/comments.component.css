@@ -4,7 +4,6 @@
   font-weight: 500 !important;
   background-color: #fff;
   color: #242424;
-
   height: 100vh;
 }
 
@@ -34,10 +33,12 @@
 .posts-panel {
   flex: 1;
   padding: 40px;
+  height: calc(100vh - 100px); /* subtract the total vertical padding */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 /* Comment Form */
@@ -56,6 +57,7 @@
   border: none;
   outline: none;
   resize: none;
+ 
   font-size: 1rem;
   line-height: 1.6;
   min-height: 80px;
@@ -134,6 +136,9 @@
   line-height: 1.7;
   color: #242424;
   white-space: pre-line;
+   overflow-wrap: break-word;     /* Modern standard */
+  max-width: 100%;               /* Prevent content from stretching container */
+  word-break: break-word;        /* Force breaking long tokens like URLs */ 
 }
 
 /* Timestamp */

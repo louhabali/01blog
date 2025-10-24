@@ -1,7 +1,7 @@
 <div class="home-container">
 
   <!-- CENTER: Comments Feed & Form -->
-  <div class="posts-panel">
+  <div class="posts-panel" #scrollContainer (scroll)="onScroll($event)">
 
     <!-- 🔙 Back Button -->
     <div class="back-button-container" *ngIf="postId">

@@ -1,108 +1,113 @@
-  <div class="home-container">
-
-
-    <!-- MIDDLE: Posts & Post Form -->
-    <div class="center-panel"  #centerPanel [ngClass]="{'dark-mode': isDarkMode}">
-      
-
-      <!-- Post Creation Form -->
-        
-      <div class="post-form" *ngIf="user?.id === currentUserId">
-         <div *ngIf="showError" class="error-box">
+<div class="home-container">
+  <div class="center-panel" #centerPanel [ngClass]="{'dark-mode': isDarkMode}">
+    <div class="post-form" *ngIf="user?.id === currentUserId">
+      <div *ngIf="showError" class="error-box">
         <span>{{ errorMessage }}</span>
       </div>
-        <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
-        <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
-            <div class="form-actions">
-          <input type="file" (change)="onFileSelected($event)" id="file-upload" />
-          <label for="file-upload" class="file-label">
-            <i class="fa-solid fa-image"></i>
-          </label>
-          <button (click)="submitPost()" class="publish-btn">Publish</button>
-        </div>
+      <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
+      <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
+
+      <div *ngIf="mediaPreviewUrl" class="media-preview-container">
+        <img [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+        <button (click)="cancelMediaPreview()" class="cancel-preview-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <!-- Posts Feed -->
-      
-      <div class="posts-grid">
-        <div class="post-card" *ngFor="let post of posts">
-    <!-- Top-right actions -->
-    <div class="post-top-actions">
-      <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
-        <i (click)="deletePost(post)" class="fas fa-trash"></i>
-      </ng-container>
-      <ng-template #reportOnly>
-        <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
-      </ng-template>
+      <div class="form-actions">
+        <input type="file" (change)="onFileSelected($event)" id="file-upload" #fileUploadInput />
+        <label for="file-upload" class="file-label">
+          <i class="fa-solid fa-image"></i>
+        </label>
+        <button (click)="submitPost()" class="publish-btn">Publish</button>
+      </div>
     </div>
 
-    <div class="post-content-wrapper">
-      <div class="post-text">
-        <div class="post-header">
-          <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
-          <span style="color: black;">{{ post.authorName }}  |</span>
-          <span>{{ post.createdAT | timeAgo}}</span> 
+    <div class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts">
+        <div class="post-top-actions">
+          <ng-container *ngIf="post.authorId === currentUserId; else reportOnly">
+            <i (click)="confirmDelete(post)" class="fas fa-trash"></i>
+          </ng-container>
+          <ng-template #reportOnly>
+            <i (click)="reportPost(post)" class="fa-solid fa-triangle-exclamation"></i>
+          </ng-template>
         </div>
-        <h5>{{ post.title }}</h5>
-        <p (click)="goTopostdetails(post)">
-          {{ post.content | slice:0:100 }}...
-          <span style="color:#1a8917;cursor:pointer;">Read more</span>
-        </p>
-        <div class="post-actions">
-          <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
-          <span>{{ post.likes || 0 }}</span>
-        </div>
-      </div>
 
-      <!-- Small image/video at right -->
-      <div class="post-media-wrapper" *ngIf="post.imageUrl || post.videoUrl">
-        <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="post image" />
-        <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
+        <div class="post-content-wrapper">
+          <div class="post-text">
+            <div class="post-header">
+              <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
+              <span style="color: black;">{{ post.authorName }} |</span>
+              <span>{{ post.createdAT | timeAgo}}</span>
+            </div>
+            <h5>{{ post.title }}</h5>
+            <p (click)="goTopostdetails(post)">
+              {{ post.content | slice:0:100 }}...
+              <span style="color:#1167a3;cursor:pointer;">Read more</span>
+            </p>
+            <div class="post-actions">
+              <i class="fa-heart" [ngClass]="post.liked ? 'fa-solid text-red-500' : 'fa-regular'" (click)="toggleLike(post)"></i>
+              <span>{{ post.likes || 0 }}</span>
+            </div>
+          </div>
+
+          <div class="post-media-wrapper" *ngIf="post.imageUrl || post.videoUrl">
+            <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="post image" />
+            <video *ngIf="post.videoUrl" [src]="post.videoUrl" controls></video>
+          </div>
+        </div>
       </div>
+    </div>
+    
+    <div class="loading" *ngIf="loading">
+      <i class="fa fa-spinner fa-spin"></i> Loading more posts...
+    </div>
+
+    <div class="no-more" *ngIf="noMorePosts && posts.length > 0">
+      <p>You've reached the end!</p>
+    </div>
+    
+    <div *ngIf="posts.length === 0" class="no-posts">
+      <p>No posts to display.</p>
     </div>
   </div>
 
-      </div>
-      <div class="loading" *ngIf="loading">
-  <i class="fa fa-spinner fa-spin"></i> Loading more posts...
-</div>
-
-
-<div class="no-more" *ngIf="noMorePosts && posts.length > 0">
-  <p>You've reached the end!</p>
-</div>
-      <!-- No Posts -->
-      <div *ngIf="posts.length === 0" class="no-posts">
-        <p>No posts to display.</p>
-      </div>
+  <div class="profile-panel" *ngIf="user" [ngClass]="{'dark-mode': isDarkMode}">
+    <div class="avatar-wrapper">
+      <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
+      <i class="fa-solid fa-pen edit-avatar-icon" *ngIf="user.id === currentUserId" (click)="triggerAvatarUpload()"></i>
+      <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
     </div>
 
-    <!-- RIGHT: Profile Info -->
-    <div class="profile-panel" *ngIf="user" [ngClass]="{'dark-mode': isDarkMode}">
-      <div class="avatar-wrapper">
-        <img [src]="user.avatar ? user.avatar : 'default-avatar.png'" [alt]="user.avatar" class="avatar" />
-        <i class="fa-solid fa-pen edit-avatar-icon" *ngIf="user.id === currentUserId" (click)="triggerAvatarUpload()"></i>
-        <input type="file" accept="image/*" #avatarInput hidden (change)="onAvatarSelected($event)" />
-      </div>
+    <h2>{{ user.username }}</h2>
+    <p>{{ user.email }}</p>
 
-      <h2>{{ user.username }}</h2>
-      <p>{{ user.email }}</p>
+    <button [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
+      {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
+    </button>
 
-      <button [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
-        {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
-      </button>
-
-      <div class="stats">
-        <div><strong>{{ numberOfposts || 0 }}</strong><span>Posts</span></div>
-        <div><strong>{{ user.followersCount || 0 }}</strong><span>Followers</span></div>
-        <div><strong>{{ user.followingCount || 0 }}</strong><span>Following</span></div>
-      </div>
+    <div class="stats">
+      <div><strong>{{ numberOfposts || 0 }}</strong><span>Posts</span></div>
+      <div><strong>{{ user.followersCount || 0 }}</strong><span>Followers</span></div>
+      <div><strong>{{ user.followingCount || 0 }}</strong><span>Following</span></div>
     </div>
-    <app-report-modal
-  [isOpen]="isReportModalOpen"
-  [currentUserId]="currentUserId"
-  [postId]="selectedPostId"
-  [reportedUserId]="selectedReportedUserId"
-  (closed)="closeReportModal()">
-</app-report-modal>
+  </div>
+   
+  <app-report-modal
+    [isOpen]="isReportModalOpen"
+    [currentUserId]="currentUserId"
+    [postId]="selectedPostId"
+    [reportedUserId]="selectedReportedUserId"
+    (closed)="closeReportModal()">
+  </app-report-modal>
+  
+</div>
+<div class="modal-backdrop" *ngIf="isDeleteConfirmOpen"></div>
+  <div class="delete-confirm-modal" *ngIf="isDeleteConfirmOpen">
+    <p>Are you sure you want to delete this post?</p>
+    <div class="modal-actions">
+      <button (click)="proceedDelete()" class="confirm-btn">Yes</button>
+      <button (click)="cancelDelete()" class="cancel-btn">No</button>
+    </div>
   </div>

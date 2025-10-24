@@ -46,6 +46,10 @@ interface User {
 export class ProfileComponent implements OnInit {
   @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
   @ViewChild('centerPanel') centerPanel!: ElementRef<HTMLDivElement>;
+  
+  // NEW: ViewChild for file input
+  @ViewChild('fileUploadInput') fileUploadInput!: ElementRef<HTMLInputElement>;
+
   currentUserId!: number;
   isDarkMode = false;
   posts: Post[] = [];
@@ -62,10 +66,16 @@ export class ProfileComponent implements OnInit {
   noMorePosts = false;
 
   newMedia: File | null = null;
+  
+  // NEW: Property for preview URL
+  mediaPreviewUrl: string | ArrayBuffer | null = null;
+  
   isReportModalOpen = false;
   selectedPostId = 0;
   selectedReportedUserId = 0;
 
+  isDeleteConfirmOpen = false;
+  postToDelete: Post | null = null;
   constructor(
     private http: HttpClient,
     private postService: PostService,
@@ -201,20 +211,47 @@ export class ProfileComponent implements OnInit {
       });
   }
 
- ngAfterViewInit() {
-  this.centerPanel.nativeElement.addEventListener('scroll', () => {
-    const element = this.centerPanel.nativeElement;
-    console.log("Scroll event detected. ScrollTop:", element.scrollTop, "ScrollHeight:", element.scrollHeight, "ClientHeight:", element.clientHeight);
-    if (element.scrollHeight - element.scrollTop <= element.clientHeight + 100) {
-      // near bottom
-      this.fetchPosts(this.user.id, true);
-    }
-  });
-}
+  ngAfterViewInit() {
+    this.centerPanel.nativeElement.addEventListener('scroll', () => {
+      const element = this.centerPanel.nativeElement;
+      console.log("Scroll event detected. ScrollTop:", element.scrollTop, "ScrollHeight:", element.scrollHeight, "ClientHeight:", element.clientHeight);
+      if (element.scrollHeight - element.scrollTop <= element.clientHeight + 100) {
+        // near bottom
+        this.fetchPosts(this.user.id, true);
+      }
+    });
+  }
 
-
+  // UPDATED: Functionality from home.component.ts
   onFileSelected(event: any) {
-    this.newMedia = event.target.files[0];
+    const file = event.target.files[0];
+      
+    if (file) {
+      this.newMedia = file;
+      console.log("selected media is ", this.newMedia);
+
+      // 3. Use FileReader to create a preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.mediaPreviewUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      // User cancelled the file dialog
+      this.cancelMediaPreview();
+    }
+  }
+
+  // NEW: Function from home.component.ts
+  cancelMediaPreview() {
+    this.newMedia = null;
+    this.mediaPreviewUrl = null;
+    
+    // Reset the file input element
+    if (this.fileUploadInput) {
+      this.fileUploadInput.nativeElement.value = '';
+    }
   }
 
   submitPost() {
@@ -244,9 +281,16 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: post => {
           post.authorId = this.currentUserId;
+          // You might need to add authorName and avatar from the current user object
+          post.authorName = this.user.username; 
+          post.avatar = this.user.avatar;
+          
           this.posts.unshift(post);
           this.newPost = { title: '', content: '' };
-          this.newMedia = null;
+          
+          // UPDATED: Reset the preview
+          this.cancelMediaPreview(); 
+          
           this.refreshPostCount(this.user.id); // Update total count
         },
         error: err => {
@@ -305,11 +349,29 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  deletePost(post: Post) {
-    this.http.delete(`http://localhost:8087/posts/delete/${post.id}`, { withCredentials: true })
-      .subscribe(() => {
-        this.posts = this.posts.filter(p => p.id !== post.id);
-        this.refreshPostCount(this.user.id);
+  confirmDelete(post: Post) {
+    this.postToDelete = post;
+    this.isDeleteConfirmOpen = true;
+  }
+
+  cancelDelete() {
+    this.postToDelete = null;
+    this.isDeleteConfirmOpen = false;
+  }
+
+  proceedDelete() {
+    if (!this.postToDelete) return;
+
+    this.http.delete(`http://localhost:8087/posts/delete/${this.postToDelete.id}`, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          this.posts = this.posts.filter(p => p.id !== this.postToDelete!.id);
+          this.cancelDelete();
+        },
+        error: err => {
+          console.error("Error deleting post", err);
+          this.cancelDelete();
+        }
       });
   }
 

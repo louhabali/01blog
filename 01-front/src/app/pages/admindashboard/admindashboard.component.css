@@ -3,7 +3,8 @@
   height: calc(100vh - 64px); /* full viewport minus header */
   display: flex;
   gap: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Helvetica Neue', sans-serif;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
   color: #333;
   overflow: hidden; /* prevents multiple scrollbars */
   padding: 10px;
@@ -149,6 +150,7 @@ a {
   .stats-panel {
     width: 25%;
     max-width: 250px;
+    gap: 15px;
   }
 
   .table-scroll-wrapper {
@@ -159,7 +161,7 @@ a {
 @media (max-width: 768px) {
   .admin-dashboard {
     flex-direction: column;
-    height: 100vh; /* full viewport height to allow scroll */
+    height: calc(100vh - 100px); /* account for taller header */
     padding: 5px;
   }
 
@@ -170,27 +172,22 @@ a {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    max-height: 180px; /* optional, scroll if too many stats */
+    max-height: 180px;
     overflow-y: auto;
   }
 
-  .stat-card {
-    width: 45%; 
-    max-width: 45%;
-    margin-bottom: 10px;
-  }
-
   .tables-panel {
-    width: 100%;
-    flex: 1; /* take remaining height */
-    min-height: 0; /* important for flex container */
-    overflow-y: auto; /* enable vertical scroll */
+    flex: 1 1 auto;
+    min-height: 0;   /* critical for scroll */
+    overflow-y: auto;
   }
 
   .table-scroll-wrapper {
-    max-height: none; /* allow table wrappers to grow inside scrollable panel */
+    max-height: 100%;
+    overflow-y: auto;
   }
 }
+
 
 
 /* --- SCROLL SMOOTHNESS --- */
