@@ -25,12 +25,14 @@ public class CommentController {
         this.postService = postService;
     }
 
-    @GetMapping
-    public List<Comment> getComments(@PathVariable Long postId) {
-        System.out.println("88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888 "+ postId);
-        Post post = postService.getPostById(postId);
-        return commentService.getCommentsByPost(post);
-    }
+  @GetMapping
+public List<Comment> getComments(
+        @PathVariable Long postId,
+        @RequestParam(defaultValue = "10") int limit,
+        @RequestParam(defaultValue = "0") int offset) {
+
+    return commentService.getCommentsByPostWithLimit(postId, limit, offset);
+}
 
     @PostMapping
     public ResponseEntity<?> addComment(@RequestBody CommentDTO dto) {

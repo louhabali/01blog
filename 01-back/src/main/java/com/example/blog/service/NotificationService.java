@@ -52,7 +52,7 @@ public class NotificationService {
     }
 
     public List<Notification> getNotificationsFor(Long userId) {
-        return repo.findByRecipientIdOrderByCreatedAtDesc(userId);
+        return repo.findTop20ByRecipientIdOrderByCreatedAtDesc(userId);
     }
 
     // optional: mark as seen

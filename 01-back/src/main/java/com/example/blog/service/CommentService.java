@@ -18,7 +18,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getCommentsByPost(Post post) {
-        return commentRepository.findByPost(post);
+   public List<Comment> getCommentsByPostWithLimit(Long postId, int limit, int offset) {
+        return commentRepository.findCommentsByPostWithLimit(postId, limit, offset);
     }
 }
