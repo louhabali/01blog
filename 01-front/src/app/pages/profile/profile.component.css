@@ -492,7 +492,7 @@
  * MEDIA QUERIES
  * ======================================== */
 @media (max-width: 768px) {
-  .home-container { display: flex; flex-direction: column; height: calc(100vh - 64px); overflow-y: auto }
+  .home-container { display: flex; flex-direction: column; height: calc(100vh - 64px); overflow-y: auto ; overflow-x: hidden;}
 
   .post-content-wrapper {
     flex-direction: column;
@@ -524,21 +524,19 @@
 
   .profile-panel {
     order: 0;
-    height: calc(110vh );
-    padding: 20px;
-    
     border-left: none;
     border-bottom: 1px solid #eee;
     flex-direction: column;
-    overflow-x: hidden;            /* ✅ remove horizontal scroll */
+    overflow-x: hidden;
+         /* ✅ remove horizontal scroll */
     align-items: center;           /* ✅ center horizontally */
     text-align: center;
+    height:500px;
     justify-content: center;
-    gap: 12px;
     background: white;
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    width: 100% !important;
+    width: 95% !important;
   }
   .post-card p {
 
