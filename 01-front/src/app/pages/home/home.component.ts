@@ -206,6 +206,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         },
         error: err => {
           if (err.status === 400) {
+            console.error('Validation error:', err.error);
             this.errorResponse = err.error;
             if (this.errorResponse.title && this.errorResponse.content) this.errorMessage = 'Title and content are required';
             else if (this.errorResponse.title) this.errorMessage = this.errorResponse.title;

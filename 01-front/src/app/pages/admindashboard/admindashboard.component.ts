@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-  import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+
 @Component({
   selector: 'app-admindashboard',
   standalone: true,
@@ -44,7 +44,12 @@ export class AdmindashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private adminService: AdminService,private router: Router,) {}
+  // custom confirm modal
+  showConfirm = false;
+  confirmMessage = '';
+  confirmCallback: (() => void) | null = null;
+
+  constructor(private adminService: AdminService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadStats();
@@ -52,9 +57,28 @@ export class AdmindashboardComponent implements OnInit {
     this.loadPosts();
     this.loadReports();
   }
+
   navigateToPost(postId: number) {
     this.router.navigate(['/posts', postId]);
   }
+
+  // ------------------- CONFIRM MODAL -------------------
+  openConfirm(message: string, onConfirm: () => void) {
+    this.confirmMessage = message;
+    this.confirmCallback = onConfirm;
+    this.showConfirm = true;
+  }
+
+  confirmDelete() {
+    if (this.confirmCallback) this.confirmCallback();
+    this.closeConfirm();
+  }
+
+  closeConfirm() {
+    this.showConfirm = false;
+    this.confirmCallback = null;
+  }
+
   // ------------------- STATS -------------------
   loadStats() {
     this.adminService.getStats().subscribe({
@@ -98,10 +122,11 @@ export class AdmindashboardComponent implements OnInit {
   }
 
   deleteUser(user: any) {
-    if (!confirm(`Delete user ${user.username}?`)) return;
-    this.adminService.deleteUser(user.id).subscribe({
-      next: () => this.users = this.users.filter(u => u.id !== user.id),
-      error: () => this.error = 'Failed to delete user'
+    this.openConfirm(`Are you sure you want to delete ${user.username}'s account?`, () => {
+      this.adminService.deleteUser(user.id).subscribe({
+        next: () => this.users = this.users.filter(u => u.id !== user.id),
+        error: () => this.error = 'Failed to delete user'
+      });
     });
   }
 
@@ -129,22 +154,17 @@ export class AdmindashboardComponent implements OnInit {
 
   hidePost(post: any) {
     this.adminService.toggleHidePost(post.id).subscribe({
-      next: updated =>{
-        console.log("Post updated:", updated);
-post.appropriate = updated.appropriate
-      } ,
+      next: updated => post.appropriate = updated.appropriate,
       error: () => this.error = 'Failed to toggle hide'
     });
   }
 
   deletePost(post: any) {
-    if (!confirm(`Delete post "${post.title}"?`)) return;
-    this.adminService.deletePost(post.id).subscribe({
-      next: () =>{
-        console.log("Post deleted:", post.id);
-        this.posts = this.posts.filter(p => p.id !== post.id)
-      } ,
-      error: () => this.error = 'Failed to delete post'
+    this.openConfirm(`Are you sure you want to delete post number ${post.id} ?`, () => {
+      this.adminService.deletePost(post.id).subscribe({
+        next: () => this.posts = this.posts.filter(p => p.id !== post.id),
+        error: () => this.error = 'Failed to delete post'
+      });
     });
   }
 
@@ -154,7 +174,6 @@ post.appropriate = updated.appropriate
     this.loadingReports = true;
     this.adminService.getReports(this.reportsOffset, this.reportsLimit).subscribe({
       next: newReports => {
-        console.log("Loaded reports:", newReports);
         if (newReports.length < this.reportsLimit) this.allReportsLoaded = true;
         this.reports.push(...newReports);
         this.reportsOffset += newReports.length;
@@ -179,13 +198,14 @@ post.appropriate = updated.appropriate
   }
 
   deletePostFromReport(postId: number) {
-    if (!confirm(`Delete post ${postId} reported?`)) return;
-    this.adminService.deletePost(postId).subscribe({
-      next: () => {
-        this.posts = this.posts.filter(p => p.id !== postId);
-        this.reports = this.reports.filter(r => r.post.id !== postId);
-      },
-      error: () => this.error = 'Failed to delete post'
+    this.openConfirm(`Are you sure you want to delete the reported post (ID: ${postId})?`, () => {
+      this.adminService.deletePost(postId).subscribe({
+        next: () => {
+          this.posts = this.posts.filter(p => p.id !== postId);
+          this.reports = this.reports.filter(r => r.post.id !== postId);
+        },
+        error: () => this.error = 'Failed to delete post'
+      });
     });
   }
 }

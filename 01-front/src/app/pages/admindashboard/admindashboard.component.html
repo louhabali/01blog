@@ -58,7 +58,7 @@
                   <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.id }}</a></td>
                   <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.username }}</a></td>
                   <td class="email">{{ u.email }}</td>
-                  <td [class.active]="u.enabled" [class.banned]="!u.enabled">
+                  <td  [class.active]="u.enabled" [class.banned]="!u.enabled">
                     {{ u.enabled ? 'Active' : 'Banned' }}
                   </td>
                   <td class="actions">
@@ -158,3 +158,14 @@
     </section>
   </main>
 </div>
+<!-- Confirmation Modal -->
+<div class="confirm-overlay" *ngIf="showConfirm">
+  <div class="confirm-box">
+    <p>{{ confirmMessage }}</p>
+    <div class="confirm-actions">
+      <button class="confirm-btn yes" (click)="confirmDelete()">Yes</button>
+      <button class="confirm-btn no" (click)="closeConfirm()">No</button>
+    </div>
+  </div>
+</div>
+

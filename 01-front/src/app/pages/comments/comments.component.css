@@ -79,6 +79,8 @@
   color: #fff;
   border: none;
   border-radius: 20px;
+   font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;

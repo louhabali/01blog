@@ -43,18 +43,9 @@
   border-radius: 6px;
   margin-top: 10px;
   text-align: center;
-  animation: fadeIn 0.4s ease-in, fadeOut 0.4s ease-out 1.6s forwards;
+
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-2px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-2px); }
-}
 /* Theme Toggle */
 .theme-icon {
   position: fixed;
