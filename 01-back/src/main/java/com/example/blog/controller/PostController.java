@@ -45,7 +45,9 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPost(@RequestBody PostRequest request) {
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
+        // we should validate request fields here
+    
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 

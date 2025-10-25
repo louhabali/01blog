@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class PostRequest {
     @NotBlank(message = "Title is required")
-    @Size(max = 40, message = "Title cannot exceed 40 characters")
+    @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
 
     @NotBlank(message = "Content is required")
