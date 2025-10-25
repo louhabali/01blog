@@ -211,16 +211,17 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  ngAfterViewInit() {
-    this.centerPanel.nativeElement.addEventListener('scroll', () => {
-      const element = this.centerPanel.nativeElement;
-      console.log("Scroll event detected. ScrollTop:", element.scrollTop, "ScrollHeight:", element.scrollHeight, "ClientHeight:", element.clientHeight);
-      if (element.scrollHeight - element.scrollTop <= element.clientHeight + 100) {
-        // near bottom
-        this.fetchPosts(this.user.id, true);
-      }
-    });
-  }
+ngAfterViewInit() {
+  this.centerPanel.nativeElement.addEventListener('scroll', () => {
+    const element = this.centerPanel.nativeElement;
+    const scrollBottom = element.scrollTop + element.clientHeight;
+    const threshold = element.scrollHeight - 150; // ✅ safe distance
+
+    if (scrollBottom >= threshold && !this.loading && !this.noMorePosts) {
+      this.fetchPosts(this.user.id, true);
+    }
+  });
+}
 
   // UPDATED: Functionality from home.component.ts
   onFileSelected(event: any) {

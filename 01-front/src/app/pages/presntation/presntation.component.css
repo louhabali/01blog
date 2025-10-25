@@ -1,31 +1,50 @@
+/* ---------------- GLOBAL STYLES ---------------- */
+
+/* REMOVED the 'html', 'body', and 'main' rules from here.
+  Your main Angular 'styles.css' and 'app.component.css'
+  are already handling these, and they were conflicting.
+*/
+
+/* Animation for content fading in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ---------------- HERO SECTION ---------------- */
 .hero {
   display: flex;
   justify-content: center;
   align-items: center;
- 
   background: linear-gradient(to right, #000000, #05011a, #000000);
   color: white;
-  font-family: "Saira", sans-serif;
-  padding: 40px 20px;
+  padding: 100px 20px; /* Increased padding for a classic "hero" feel */
+  text-align: left;
+  box-sizing: border-box;
+  font-family: "Saira", sans-serif !important;
+  font-weight: 500 !important;
+  height: 100vh;
 }
 
 .hero-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   max-width: 1200px;
   width: 100%;
-  flex-wrap: wrap;
-  gap: 30px;
 }
 
 .hero-text {
-  flex: 1 1 500px;
+  flex: 1;
+  /* Apply the fade-in animation */
+  animation: fadeIn 1s ease-out;
 }
 
 .hero-text h1 {
-  font-size: 3rem;
+  font-size: 3.5rem; /* Slightly larger for more impact */
   font-weight: 800;
   margin-bottom: 20px;
   line-height: 1.2;
@@ -39,6 +58,7 @@
   font-size: 1.25rem;
   margin-bottom: 30px;
   opacity: 0.9;
+  max-width: 600px; /* Prevents text from being too wide */
 }
 
 .hero-text .btn {
@@ -48,109 +68,46 @@
   padding: 15px 40px;
   border-radius: 8px;
   font-weight: 700;
-  transition: transform 0.2s, opacity 0.2s;
+  /* Kept your smooth transition */
+  transition: transform 0.2s, opacity 0.2s, background-color 0.2s, color 0.2s;
+  display: inline-block; /* Ensures padding and margins apply correctly */
 }
 
 .hero-text .btn:hover {
   transform: scale(1.05);
-  opacity: 0.9;
+  background-color: #00aaff;
+  color: #fff;
+  opacity: 1;
 }
 
-/* ---------------- FEATURES SECTION ---------------- */
-.features {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 25px;
-  padding: 60px 20px;
-  background-color: #f0f4f8;
-  font-family: "Saira", sans-serif;
-}
 
-.feature-card {
-  background-color: white;
-  border-radius: 12px;
-  padding: 30px 25px;
-  width: 280px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-}
-
-.feature-card h2 {
-  font-size: 1.4rem;
-  color: #001f3f;
-  margin-bottom: 10px;
-}
-
-.feature-card p {
-  font-size: 0.95rem;
-  color: #333;
-  line-height: 1.5;
-}
-
-/* ---------------- RESPONSIVE ---------------- */
+/* ---------------- RESPONSIVE (iPad / Tablet) ---------------- */
 @media (max-width: 768px) {
+  .hero {
+    padding: 80px 20px;
+    text-align: center; /* Center text on tablets */
+  }
+
   .hero-text h1 {
-    font-size: 2.2rem;
+    font-size: 2.8rem; /* Responsive font size */
   }
 
   .hero-text p {
-    font-size: 1rem;
-  }
-
- .hero {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: linear-gradient(to right, #000000, #05011a, #000000);
-  color: white;
-  font-family: "Saira", sans-serif;
-  padding: 40px 20px;
-  height: calc(100vh - 64px);
-}
-
-  .hero-content {
-    flex-direction: column;
-  }
-
-  .hero-image img {
-    max-width: 300px;
+    font-size: 1.15rem;
+    margin-left: auto; /* Center the <p> block */
+    margin-right: auto;
   }
 }
-@media (max-width: 450px) {
-  .hero-text h1 {
-    font-size: 1.9rem;
+
+/* ---------------- RESPONSIVE (Mobile) ---------------- */
+@media (max-width: 500px) {
+  .hero {
+    padding: 60px 20px; /* Less padding on small screens */
+    text-align: center;
   }
 
-  .hero-text p {
-    font-size: 1rem;
-  }
-
- .hero {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: linear-gradient(to right, #000000, #05011a, #000000);
-  color: white;
-  font-family: "Saira", sans-serif;
-  padding: 40px 20px;
-  height: 200px;
+  
 }
 
-  .hero-content {
-    flex-direction: column;
-  }
 
-  .hero-image img {
-    max-width: 300px;
-  }
-}

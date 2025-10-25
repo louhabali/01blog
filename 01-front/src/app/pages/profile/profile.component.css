@@ -28,7 +28,12 @@
   margin-top: 50px;
   font-style: italic;
 }
-
+.no-more {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
 .posts-grid {
   flex: 1;
   padding-right: 8px;
@@ -487,8 +492,7 @@
  * MEDIA QUERIES
  * ======================================== */
 @media (max-width: 768px) {
-  .home-container { display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-  .users-panel { display: none; }
+  .home-container { display: flex; flex-direction: column; height: calc(100vh - 64px); overflow-y: auto }
 
   .post-content-wrapper {
     flex-direction: column;
@@ -520,18 +524,27 @@
 
   .profile-panel {
     order: 0;
-    height: auto;
+    height: calc(110vh );
     padding: 20px;
+    
     border-left: none;
     border-bottom: 1px solid #eee;
     flex-direction: column;
+    overflow-x: hidden;            /* ✅ remove horizontal scroll */
+    align-items: center;           /* ✅ center horizontally */
     text-align: center;
+    justify-content: center;
     gap: 12px;
     background: white;
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    width: 100%;
+    width: 100% !important;
   }
+  .post-card p {
+
+  width: 100%;
+
+}
   .center-panel {
     order: 1;
     padding: 20px;
@@ -539,11 +552,16 @@
     height: 100vh;
     overflow: auto;
   }
+  .post-header {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* ✅ smaller space between avatar and name */
+}
   .posts-grid { overflow: visible; flex: none; padding-right: 0; }
 }
 
 @media (max-width: 480px) {
-  .home-container { height: auto; min-height: 100vh; }
+  .home-container { min-height: 100vh; }
   .profile-panel { padding: 16px; gap: 10px; }
   .profile-panel .avatar-wrapper .avatar { width: 60px; height: 60px; }
   .center-panel { padding: 16px; }
