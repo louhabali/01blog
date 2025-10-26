@@ -14,13 +14,15 @@ public class PostService {
     private final SubscriptionRepository subrepo;
     private final NotificationRepository notifrepo;
     private final NotificationService notifservice;
+    private final UserRepository userRepository;
 
-    public PostService(NotificationService notifservice,NotificationRepository notifrepo,SubscriptionRepository subrepo,PostRepository postRepository,InteractionRepository interactionRepository) {
+    public PostService(UserRepository userRepository, NotificationService notifservice,NotificationRepository notifrepo,SubscriptionRepository subrepo,PostRepository postRepository,InteractionRepository interactionRepository) {
         this.postRepository = postRepository;
         this.interactionRepository = interactionRepository;
         this.subrepo =subrepo;
         this.notifrepo = notifrepo;
         this.notifservice = notifservice;
+        this.userRepository = userRepository;
     }
 
     public Post createPost(Post post) {
@@ -42,7 +44,7 @@ public class PostService {
 
         // Push in real time (optional)
        
-        notifservice.pushNotification(n);
+        notifservice.pushNotification(userRepository.getById(n.getRecipientId()).getUsername() ,n);
     }
         return savedPost;
     }

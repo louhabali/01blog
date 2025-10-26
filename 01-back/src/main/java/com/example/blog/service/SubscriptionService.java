@@ -1,6 +1,5 @@
 package com.example.blog.service;
 
-import com.example.blog.entity.Subscription;
 import com.example.blog.entity.*;
 import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.SubscriptionRepository;
@@ -43,7 +42,7 @@ public class SubscriptionService {
                 //n.setPostId(postId);
                 
                 n = repo.save(n);
-                    notificationService.pushNotification(
+                    notificationService.pushNotification(userRepository.getById(n.getRecipientId()).getUsername() ,
                      n
                 );
                     return true;

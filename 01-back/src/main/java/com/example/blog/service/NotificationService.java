@@ -36,7 +36,7 @@ public class NotificationService {
     //     // return n;
         
     // }
- public void pushNotification(Notification notification) {
+ public void pushNotification(String recipientName, Notification notification) {
         // Send to specific user's private queue
         NotificationDTO dto = new NotificationDTO(
         notification.getId(),
@@ -47,7 +47,7 @@ public class NotificationService {
         notification.getCreatedAt(),
         notification.isSeen()
     );
-        messaging.convertAndSend("/topic/notifications", dto);
+        messaging.convertAndSendToUser(recipientName, "/queue/notifications", dto);
        //System.out.println("+++++++++ Sending notification to user " + recipientId + ": " + notification);
     }
 
