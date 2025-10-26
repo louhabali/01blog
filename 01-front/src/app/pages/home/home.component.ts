@@ -200,6 +200,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         next: post => {
           post.authorId = this.currentUserId;
           post.authorName = post.user.username;
+          post.likes = post.likes || 0;
+          post.liked = false;
           this.posts.unshift(post);
           this.newPost = { title: '', content: '' };
           this.cancelMediaPreview();

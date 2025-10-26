@@ -34,13 +34,15 @@ export class WebsocketService {
       console.log('Connected to WebSocket!');
 
       // Subscribe to live notifications
-      this.stompClient?.subscribe(`/topic/notifications`, (message) => {
+      this.stompClient?.subscribe(`/user/queue/notifications`, (message) => {
         if (message.body) {
           console.log("notification is : ",message.body);
           
           const notif: NotificationDTO = JSON.parse(message.body);
           const current = this.notifications$.getValue();
-          this.notifications$.next([notif, ...current]); // prepend live notification
+          if (!current.some(n => n.id === notif.id)) {
+            this.notifications$.next([notif, ...current]);
+          }
         }
       });
     });

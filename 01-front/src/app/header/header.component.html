@@ -52,10 +52,6 @@
         <mat-icon>login</mat-icon>
         <span>Sign in</span>
       </a>
-      <a mat-button class="nav-link-item" routerLink="/register">
-        <mat-icon>person_add</mat-icon>
-        <span>Register</span>
-      </a>
     </ng-container>
 
     <ng-container *ngIf="auth.isLoggedIn()">
@@ -95,10 +91,6 @@
       <button mat-menu-item routerLink="/login">
         <mat-icon>login</mat-icon>
         <span>Sign in</span>
-      </button>
-      <button mat-menu-item routerLink="/register">
-        <mat-icon>person_add</mat-icon>
-        <span>Register</span>
       </button>
     </ng-container>
     <ng-container *ngIf="auth.isLoggedIn()">

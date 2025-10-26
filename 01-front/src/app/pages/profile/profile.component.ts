@@ -285,7 +285,8 @@ ngAfterViewInit() {
           // You might need to add authorName and avatar from the current user object
           post.authorName = this.user.username; 
           post.avatar = this.user.avatar;
-          
+           post.likes = post.likes || 0;
+          post.liked = false;
           this.posts.unshift(post);
           this.newPost = { title: '', content: '' };
           

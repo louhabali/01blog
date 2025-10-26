@@ -528,8 +528,7 @@
     border-bottom: 1px solid #eee;
     flex-direction: column;
     overflow-x: hidden;
-         /* ✅ remove horizontal scroll */
-    align-items: center;           /* ✅ center horizontally */
+    align-items: center;          
     text-align: center;
     height:500px;
     justify-content: center;
