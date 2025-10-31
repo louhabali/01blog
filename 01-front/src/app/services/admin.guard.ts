@@ -9,7 +9,7 @@ export class AdminGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this.auth.checkAuth().pipe(
+    return this.auth.getAuthCheckResult().pipe(
       map(res => {
         // Check if logged in AND role is ADMIN
         if (res.loggedIn && res.role === 'ADMIN') {

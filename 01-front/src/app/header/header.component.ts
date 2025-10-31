@@ -103,14 +103,12 @@ export class HeaderComponent implements OnInit {
     // --- Fetch all users for search (from UsersComponent) ---
     this.fetchUsers();
 
-    this.auth.checkAuth().subscribe();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (!event.url.includes('/notifications')) {
           this.showBadge = true;
         }
-        this.auth.checkAuth().subscribe();
       });
   }
 

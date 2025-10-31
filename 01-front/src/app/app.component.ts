@@ -28,7 +28,7 @@ export class AppComponent {
 
   ngOnInit() {
     
-    this.auth.checkAuth().subscribe((res: any) => {
+    this.auth.getAuthCheckResult().subscribe((res: any) => {
       if (res.currentUserId){
 
         this.wsService.connect(res.currentUserId);

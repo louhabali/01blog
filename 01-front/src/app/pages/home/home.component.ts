@@ -87,15 +87,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
               return;
           })
     }
-        console.log("Logged-in user:", user);
-        this.loading = true;
-        setTimeout(() => {
-          this.loading = false;
-          this.fetchPosts();
-        }, 1000);
+        this.fetchPosts();
+       
       },
       error: (err) => {
         if (err.status === 401) {
+          console.log(888)
           this.currentUserId = 0; // not logged in
           this.fetchPosts();
         }
@@ -103,11 +100,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-  }
 
   fetchPosts() {
+    
     if (this.loading || this.noMorePosts) return;
 
     this.loading = true;
