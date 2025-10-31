@@ -40,7 +40,10 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
                 }
                 try {
                     String email = jwtUtil.validateToken(token);
-                    request.setAttribute("userEmail", email);
+                    System.out.println("5555555555555555555555err : " + email);
+
+                    request.setAttribute("userName", email);
+                    System.out.println("5555555555555555555555err : " + request.getAttribute(token));
                 } catch (Exception e) {
                     // Invalid token, ignore
                 }

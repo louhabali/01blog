@@ -10,7 +10,6 @@ import com.example.blog.repository.UserRepository;
 
 @Configuration
 public class DataInitializer {
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

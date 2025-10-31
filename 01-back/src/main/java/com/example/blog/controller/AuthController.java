@@ -66,11 +66,11 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
                 res.put("message", "Login successful");
                 res.put("banned", !optionalUser.get().isEnabled()); 
                 if (optionalUser.get().isEnabled() == true) {
-                    String token = jwtUtil.generateToken(optionalUser.get().getEmail());
+                    String token = jwtUtil.generateToken(optionalUser.get().getUsername());
                     Cookie cookie = new Cookie("jwt", token);
                     cookie.setHttpOnly(true);
                     cookie.setPath("/");
-                    cookie.setMaxAge(24 * 60 * 60);
+                    cookie.setMaxAge((int) (jwtUtil.getExpration()/1000));
                     response.addCookie(cookie);
                 }
                 // send is the user banned or not
@@ -80,17 +80,17 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("{\"message\":\"Invalid credentials\"}");
+                .body("{\"message\":\"username or password is incorrect!\"}");
     }
 
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
-        String email = (String) request.getAttribute("userEmail");
+        String email = (String) request.getAttribute("userName");
         String role = "USER";
         
         if (email != null) {
             // return role and isloggedIn
-            User u = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            User u = userRepository.findByUsername(email).orElseThrow(() -> new RuntimeException("User not found"));
             role = u.getRole();
             HashMap<String, Object> res = new HashMap<>();
             res.put("loggedIn", true);

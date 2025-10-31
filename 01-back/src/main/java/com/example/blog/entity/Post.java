@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "posts")
 public class Post {
-
- @Id
+    
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // << this is important
     private Long id;
-   @Size(max = 500)
+    @Size(max = 500)
     private String title;
 
     @Column(columnDefinition = "TEXT")

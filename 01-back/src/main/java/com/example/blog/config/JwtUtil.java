@@ -10,10 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
     private final String SECRET = "supersecretkeysupersecretkeysupersecretkey"; // must be >=32 chars
-    private final long EXPIRATION = 1000 * 60 * 60; // 1 hour
+    private final long EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
-
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -21,7 +20,6 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
     public String validateToken(String token) {
         try {
             return Jwts.parserBuilder()
@@ -33,5 +31,8 @@ public class JwtUtil {
         } catch (JwtException e) {
             return null;
         }
+    }
+    public long getExpration(){
+        return this.EXPIRATION;
     }
 }

@@ -44,7 +44,7 @@ public class UserController {
     }
    @GetMapping("/me")
 public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
-    String email = (String) request.getAttribute("userEmail");
+    String email = (String) request.getAttribute("userName");
 
     // 🧠 No email = not logged in
     if (email == null) {

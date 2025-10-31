@@ -52,6 +52,49 @@ public List<Comment> getComments(
         return ResponseEntity.ok(comment);
     }
 
+    @PutMapping("/{commentId}")
+    public ResponseEntity<?> editComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @RequestBody CommentDTO dto) {
+
+        Comment existing = commentService.getCommentById(commentId);
+        if (existing == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Comment not found");
+        }
+
+        if (!existing.getUser().getId().equals(dto.userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You can only edit your own comments");
+        }
+
+        existing.setContent(dto.content);
+        commentService.updateComment(existing);
+
+        return ResponseEntity.ok(existing);
+    }
+      @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @RequestParam Long userId) {
+
+        Comment existing = commentService.getCommentById(commentId);
+        if (existing == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Comment not found");
+        }
+
+        if (!existing.getUser().getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You can only delete your own comments");
+        }
+
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok("Comment deleted successfully");
+    }
+
     public static class CommentDTO {
         public Long userId;
         public Long postId;
