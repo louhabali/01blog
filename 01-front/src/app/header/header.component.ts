@@ -131,7 +131,7 @@ export class HeaderComponent implements OnInit {
       return;
     }
     this.filteredUsers = this.allUsers.filter(u =>
-      u.username.toLowerCase().includes(this.searchQuery.toLowerCase())
+      u.username.toLowerCase().includes(this.searchQuery)
     );
   }
 
@@ -159,7 +159,9 @@ export class HeaderComponent implements OnInit {
   }
 
   checkScreenSize() {
+    if (typeof window !== 'undefined') {
     this.isMobile = window.innerWidth < 768;
+    }
   }
 
   @HostListener('window:resize')

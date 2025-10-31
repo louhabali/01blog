@@ -12,6 +12,7 @@ export class UserService {
   getCurrentUser(): Observable<any> {
     return this.http.get<any>(`http://localhost:8087/users/me`, { withCredentials: true });
   }
+  
 toggleFollow(followerId: number, followingId: number) {
   return this.http.post<boolean>(
     `http://localhost:8087/subscriptions/toggle`,

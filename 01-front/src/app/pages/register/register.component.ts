@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [CommonModule, FormsModule,RouterModule, MatCardModule,
     MatButtonModule,
-    MatFormFieldModule, // <-- Add to imports
+    MatFormFieldModule,
     MatInputModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -36,7 +36,7 @@ export class RegisterComponent {
         error: err => {
           if (err.status === 400) {
             console.error('Registration failed:', err.error);
-    const errors = err.error;
+            const errors = err.error;
     if (errors.username && errors.email) {
       this.errorMessage = errors.username;
     } else if (errors.username) {

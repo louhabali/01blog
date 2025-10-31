@@ -6,7 +6,7 @@ import { PostService } from '../../services/post.service';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
-
+import { AuthService } from '../../services/auth.service';
 interface Post {
   id: number;
   title: string;
@@ -48,7 +48,8 @@ export class PostdetailsComponent {
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
-    private postService: PostService
+    private postService: PostService ,
+    private auth : AuthService
   ) {}
 
   ngOnInit() {
@@ -56,6 +57,13 @@ export class PostdetailsComponent {
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUserId = user.id;
+        if (!user.enabled) {
+          //console.log("aaaaaaaaaaaaaa")
+          this.auth.logout().subscribe(() => {
+              this.router.navigate(['/login'])
+              return;
+          })
+          };
         this.fetchPost();
       },
       error: (err) => {

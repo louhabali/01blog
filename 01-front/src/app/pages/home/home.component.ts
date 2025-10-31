@@ -1,9 +1,10 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
@@ -26,7 +27,6 @@ interface Post {
   originalTitle?: string;
   originalContent?: string;
 }
-
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('fileUploadInput') fileUploadInput!: ElementRef<HTMLInputElement>;
 
   currentUserId!: number;
+  banned !: boolean;
   isDarkMode: boolean = false;
   posts: Post[] = [];
   newPost: Partial<Post> = { title: '', content: '', likes: 0 };
@@ -70,13 +71,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private postService: PostService,
     private userService: UserService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth : AuthService
   ) {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUserId = user.id;
+        this.banned = user.enabled;
+           if (!this.banned) {
+          //console.log("aaaaaaaaaaaaaa")
+          this.auth.logout().subscribe(() => {
+              this.router.navigate(['/login'])
+              return;
+          })
+    }
         console.log("Logged-in user:", user);
         this.loading = true;
         setTimeout(() => {
@@ -183,6 +193,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   createPost(mediaUrl: string | null) {
+    // check if user is banned
+    
     const postPayload: any = {
       title: this.newPost.title,
       content: this.newPost.content,
@@ -226,6 +238,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   toggleLike(post: Post): void {
+ 
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
         post.likes += liked ? 1 : -1;
@@ -243,14 +256,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.postToDelete = post;
     this.isDeleteConfirmOpen = true;
   }
-
+  
   cancelDelete() {
     this.postToDelete = null;
     this.isDeleteConfirmOpen = false;
   }
-
+  
   proceedDelete() {
     if (!this.postToDelete) return;
+ 
 
     this.http.delete(`http://localhost:8087/posts/delete/${this.postToDelete.id}`, { withCredentials: true })
       .subscribe({

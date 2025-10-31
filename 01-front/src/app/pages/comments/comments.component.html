@@ -5,7 +5,7 @@
 
     <!-- 🔙 Back Button -->
     <div class="back-button-container" *ngIf="postId">
-      <a [routerLink]="['/posts',postId]" class="back-button">
+      <a [routerLink]="['/posts', postId]" class="back-button">
         ← Back to Post
       </a>
     </div>
@@ -28,9 +28,43 @@
           </div>
           <small>{{ comment.createdAt | timeAgo }}</small>
         </div>
+
         <div class="post-body">
           <div class="post-text">
-            <p class="post-content">{{ comment.content }}</p>
+            <!-- ✅ Editing mode -->
+            <textarea *ngIf="editingCommentId === comment.id"
+                      [(ngModel)]="editedContent"
+                      class="edit-input"></textarea>
+
+            <!-- ✅ Normal mode -->
+            <p *ngIf="editingCommentId !== comment.id"
+               class="post-content">{{ comment.content }}</p>
+          </div>
+
+          <!-- ✅ Edit/Delete icons only for the current user's comments -->
+          <div class="comment-actions" *ngIf="comment.user.id === currentUserId">
+            <button *ngIf="editingCommentId !== comment.id"
+                    class="icon-btn edit"
+                    (click)="startEdit(comment)"
+                    title="Edit">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button *ngIf="editingCommentId !== comment.id"
+                    class="icon-btn delete"
+                    (click)="deleteComment(comment.id)"
+                    title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+
+            <!-- ✅ Save/Cancel buttons -->
+            <div *ngIf="editingCommentId === comment.id" class="edit-actions">
+              <button class="save-btn" (click)="saveEdit(comment)" title="Save">
+                <i class="fas fa-save"></i> 
+              </button>
+              <button class="cancel-btn" (click)="cancelEdit()" title="Cancel">
+                <i class="fas fa-times"></i> 
+              </button>
+            </div>
           </div>
         </div>
       </div>

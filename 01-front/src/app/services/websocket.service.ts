@@ -28,6 +28,7 @@ export class WebsocketService {
     this.fetchStoredNotifications(userId);
 
     const socket = new SockJS('http://localhost:8087/ws-notifications');
+    console.log(7777777)
     this.stompClient = over(socket);
 
     this.stompClient.connect({}, () => {
@@ -46,6 +47,8 @@ export class WebsocketService {
         }
       });
     });
+
+    
   }
 
   // Observable for the component

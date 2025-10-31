@@ -491,6 +491,78 @@
 /* ========================================
  * MEDIA QUERIES
  * ======================================== */
+ /* ========================================
+ * MEDIUM SCREENS FIX (1000px → 700px)
+ * ======================================== */
+@media (max-width: 1000px) and (min-width: 768px) {
+  .home-container {
+    grid-template-columns: 65% 35%;
+  }
+
+  .center-panel {
+    padding: 32px 48px;
+  }
+
+  .posts-grid {
+    width: 85%;
+  }
+
+  .post-content-wrapper {
+    flex-direction: column; /* ✅ Stack text and image vertically */
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .post-header {
+    flex-wrap: wrap; /* ✅ Prevent overflow */
+    gap: 6px;
+  }
+
+  .post-header img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .post-card h5 {
+    font-size: 1.15rem; /* ✅ Slightly smaller titles */
+  }
+
+  .post-card p {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .post-media-wrapper {
+    width: 100%;
+    height: auto;
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .post-media-wrapper img,
+  .post-media-wrapper video {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  .profile-panel {
+    padding: 24px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .post-form {
+    width: 85%;
+  }
+}
+
 @media (max-width: 768px) {
   .home-container { display: flex; flex-direction: column; height: calc(100vh - 64px); overflow-y: auto ; overflow-x: hidden;}
 

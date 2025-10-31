@@ -70,6 +70,58 @@
 .content-input::placeholder {
   color: #aaa;
 }
+.comment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+}
+
+.icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-input {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.save-btn {
+  background-color: #000000;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #000;
+}
 
 /* Publish Button */
 .publish-btn {
