@@ -152,7 +152,7 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
         @RequestParam(required = false) Long currentUserId,
         @RequestParam(defaultValue = "0") int offset,
         @RequestParam(defaultValue = "10") int limit) {
- 
+            System.out.println("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
             List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
 
     List<PostResponse> responses = posts.stream()

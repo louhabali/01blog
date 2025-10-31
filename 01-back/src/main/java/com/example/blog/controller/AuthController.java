@@ -87,7 +87,7 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
         String email = (String) request.getAttribute("userName");
         String role = "USER";
-        
+        System.out.println("EMAINPP : "+ email);
         if (email != null) {
             // return role and isloggedIn
             User u = userRepository.findByUsername(email).orElseThrow(() -> new RuntimeException("User not found"));
@@ -96,8 +96,13 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
             res.put("loggedIn", true);
             res.put("role", role);
             res.put("currentUserId", u.getId());
+        System.out.println("LOGGED IN  : ");
+
             return ResponseEntity.ok(res);
         }
+        System.out.println("ZBII ");
+
+
         return ResponseEntity.ok(Map.of("loggedIn", false));
     }
 
