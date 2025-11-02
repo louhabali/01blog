@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit,NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -72,7 +72,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
-    private auth : AuthService
+    private auth : AuthService,
+    private zone : NgZone
   ) {}
 
   ngOnInit(): void {
@@ -180,7 +181,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       const formData = new FormData();
       formData.append("file", this.newMedia);
 
-      this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
+      this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' ,withCredentials:true})
         .subscribe(url => { this.createPost(url); });
     } else {
       this.createPost(null);
@@ -214,8 +215,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.cancelMediaPreview();
         },
         error: err => {
+          console.error('Validation error:', err);
           if (err.status === 400) {
-            console.error('Validation error:', err.error);
             this.errorResponse = err.error;
             if (this.errorResponse.title && this.errorResponse.content) this.errorMessage = 'Title and content are required';
             else if (this.errorResponse.title) this.errorMessage = this.errorResponse.title;
@@ -224,7 +225,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.showError = true;
             setTimeout(() => { this.showError = false; }, 2000);
           } else if (err.status === 401) {
-            this.router.navigate(['/login']);
+           window.location.reload()
           } else {
             console.error('Unexpected error:', err);
           }
@@ -233,15 +234,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   toggleLike(post: Post): void {
- 
+    if (this.currentUserId == 0){
+        console.log("liked btn")
+          this.auth.logout().subscribe()
+          return
+    }
     this.postService.toggleLike(post.id, this.currentUserId).subscribe({
       next: (liked) => {
         post.likes += liked ? 1 : -1;
         post.liked = liked;
       },
       error: (err) => {
-        if (err.status === 401) this.router.navigate(['/login']);
-        else console.error('Unexpected error:', err);
+        if (err.status === 401 || err.status == 403){
+    
+          
+          this.auth.logout().subscribe()
+        }else console.error('Unexpected error:', err);
       }
     });
   }

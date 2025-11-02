@@ -1,9 +1,10 @@
 // auth.service.ts
-import { Injectable, signal }from '@angular/core';
+import { Injectable, signal ,NgZone }from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { Observable, ReplaySubject } from 'rxjs'; // <-- Import ReplaySubject
-
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 // Define your auth response interface
 interface AuthCheckResponse {
   loggedIn: boolean;
@@ -27,7 +28,7 @@ export class AuthService {
   // This is the magic: A subject that holds the result of the *one* initial check
   private authCheckResult$ = new ReplaySubject<AuthCheckResponse>(1);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private router : Router ,private zone: NgZone) {
     // Run the check *immediately* when the service is created
     this.runInitialAuthCheck();
   }
@@ -93,7 +94,16 @@ export class AuthService {
       return this.http
         .post('http://localhost:8087/auth/logout', {}, { withCredentials: true })
         .pipe(
-          tap(() => this.isLoggedIn.set(false))
+          tap(() =>{
+            console.log(88888888888888888888888888888888888888);
+            
+              this.isLoggedIn.set(false);
+             
+          this.router.navigate(["/login"]);
+      
+               
+          
+          })
         );
     }
 }
