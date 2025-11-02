@@ -2,6 +2,8 @@ package com.example.blog.controller;
 import com.example.blog.repository.*;
 import com.example.blog.service.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +29,12 @@ public class InteractionController {
     @PostMapping("/like/{postId}/like")
 public ResponseEntity<?> toggleLike(
         @PathVariable Long postId,
-        @RequestParam(required = false) Long userId) {
-
+        @RequestParam(required = false) Long userId , HttpServletRequest http ) {
+            String uersname  = (String) http.getAttribute("userName");
+            if (uersname == null){
+               return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("You must log in to like a post");
+            }
     if (userId == null || userId == 0 ) {
         // user not logged in → return 401 Unauthorized
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

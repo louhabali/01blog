@@ -21,9 +21,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
 protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
-
-
-    
+            if (request.getServletPath().equals("/auth/logout")) {
+        filterChain.doFilter(request, response);
+        return; // Don't do any validation below
+    }
     if (request.getCookies() != null) {
         for (Cookie cookie : request.getCookies()) {
             if ("jwt".equals(cookie.getName())) {
@@ -38,14 +39,19 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
                     response.addHeader("Set-Cookie", c.toString());
                     return;
                 }
+
+
+
+
                 try {
                     String email = jwtUtil.validateToken(token);
-                    System.out.println("5555555555555555555555err : " + email);
-
+                    // print email if token is valid
+                    System.out.println("THE EMAIL : "+ email);
                     request.setAttribute("userName", email);
-                    System.out.println("5555555555555555555555err : " + request.getAttribute(token));
+
                 } catch (Exception e) {
-                    // Invalid token, ignore
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
             }
         }

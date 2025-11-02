@@ -61,7 +61,6 @@ public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
-        System.out.println("yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayyyyy"+id);
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")    );
         
         Map<String, Object> response = new HashMap<>();

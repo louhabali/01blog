@@ -100,7 +100,7 @@ public class AdminController {
 
     @PutMapping("/posts/{id}/hide")
     public ResponseEntity<Post> toggleHidePost(@PathVariable Long id) {
-        System.out.println("Toggling hide for post ID:********************************* " + id);
+        
         Post post = postRepository.findById(id).orElseThrow();
         post.setisAppropriate(!post.isAppropriate()); // assuming you have a 'hidden' boolean field in Post
         postRepository.save(post);

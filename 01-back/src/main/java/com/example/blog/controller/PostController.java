@@ -6,6 +6,7 @@ import com.example.blog.entity.User;
 import com.example.blog.service.InteractionService;
 import com.example.blog.service.PostService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import com.example.blog.repository.*;
@@ -45,9 +46,8 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
-        // we should validate request fields here
-    
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, HttpServletRequest httpRequest) {
+        
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
@@ -132,8 +132,7 @@ public ResponseEntity<PostResponse> getPostById(
             }
 
             // Update fields
-            System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ "
-                    + updatedPost.getImageUrl());
+          
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
             post.setImageUrl(updatedPost.getImageUrl());
@@ -152,7 +151,7 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
         @RequestParam(required = false) Long currentUserId,
         @RequestParam(defaultValue = "0") int offset,
         @RequestParam(defaultValue = "10") int limit) {
-            System.out.println("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+       
             List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
 
     List<PostResponse> responses = posts.stream()

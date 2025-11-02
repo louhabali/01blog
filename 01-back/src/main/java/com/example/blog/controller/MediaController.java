@@ -22,7 +22,7 @@ public String uploadFile(@RequestParam("file") MultipartFile file) {
     try {
         file.transferTo(new File(filePath));
     } catch (Exception e) {
-        System.out.println("EXCEPTION " + e);
+        
         throw new RuntimeException("File upload failed", e);
     }
 

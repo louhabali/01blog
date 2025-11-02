@@ -1,4 +1,5 @@
 package com.example.blog.controller;
+
 import java.util.*;
 
 import com.example.blog.DTO.RegisterRequest;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
@@ -21,39 +23,40 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final TokenBlacklist tokenBlacklist;
+
     public AuthController(UserService userService,
-                          UserRepository userRepository,
-                          JwtUtil jwtUtil ,TokenBlacklist tokenBlacklist) {
+            UserRepository userRepository,
+            JwtUtil jwtUtil, TokenBlacklist tokenBlacklist) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil; 
+        this.jwtUtil = jwtUtil;
         this.tokenBlacklist = tokenBlacklist;
     }
 
-   @PostMapping("/register")
-public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
 
-    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("username", "Username already taken"));
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("username", "Username already taken"));
+        }
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("email", "Email already taken"));
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        userService.register(user);
+
+        User savedUser = userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("message", "User registered successfully", "userId", savedUser.getId()));
     }
-
-    if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("email", "Email already taken"));
-    }
-
-    User user = new User();
-    user.setUsername(request.getUsername());
-    user.setEmail(request.getEmail());
-    user.setPassword(request.getPassword());
-    userService.register(user);
-
-    User savedUser = userRepository.save(user);
-
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .body(Map.of("message", "User registered successfully", "userId", savedUser.getId()));
-}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
@@ -64,18 +67,22 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
             if (success) {
                 Map<String, Object> res = new HashMap<>();
                 res.put("message", "Login successful");
-                res.put("banned", !optionalUser.get().isEnabled()); 
+                res.put("banned", !optionalUser.get().isEnabled());
                 if (optionalUser.get().isEnabled() == true) {
                     String token = jwtUtil.generateToken(optionalUser.get().getUsername());
-                    Cookie cookie = new Cookie("jwt", token);
-                    cookie.setHttpOnly(true);
-                    cookie.setPath("/");
-                    cookie.setMaxAge((int) (jwtUtil.getExpration()/1000));
-                    response.addCookie(cookie);
+                    ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                            .httpOnly(true)
+                            .path("/")
+                            .maxAge((int) (jwtUtil.getExpration() / 1000))
+                            .sameSite("None") // 💡 ADD THIS
+                            .secure(true) // 💡 ADD THIS (Requires HTTPS)
+                            .build();
+
+                    response.addHeader("Set-Cookie", cookie.toString());
                 }
                 // send is the user banned or not
                 return ResponseEntity.ok(res);
-                //return ResponseEntity.ok().body("{\"message\":\"Login successful\"}");
+                // return ResponseEntity.ok().body("{\"message\":\"Login successful\"}");
             }
         }
 
@@ -87,7 +94,7 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
         String email = (String) request.getAttribute("userName");
         String role = "USER";
-        System.out.println("EMAINPP : "+ email);
+
         if (email != null) {
             // return role and isloggedIn
             User u = userRepository.findByUsername(email).orElseThrow(() -> new RuntimeException("User not found"));
@@ -96,41 +103,37 @@ public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
             res.put("loggedIn", true);
             res.put("role", role);
             res.put("currentUserId", u.getId());
-        System.out.println("LOGGED IN  : ");
 
             return ResponseEntity.ok(res);
         }
-        System.out.println("ZBII ");
-
 
         return ResponseEntity.ok(Map.of("loggedIn", false));
     }
 
-@PostMapping("/logout")
-public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-    // extract the JWT token from the cookies
-    if (request.getCookies() != null) {
-        for (Cookie cookie : request.getCookies()) {
-            if ("jwt".equals(cookie.getName())) {
-                String token = cookie.getValue();
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        // extract the JWT token from the cookies
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {
+                    String token = cookie.getValue();
 
-                // 🧱 add token to blacklist
-                tokenBlacklist.add(token);
+                    // 🧱 add token to blacklist
+                    tokenBlacklist.add(token);
 
-                break;
+                    break;
+                }
             }
         }
+
+        // remove the cookie
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
-
-    // remove the cookie
-    ResponseCookie cookie = ResponseCookie.from("jwt", "")
-            .httpOnly(true)
-            .path("/")
-            .maxAge(0)
-            .build();
-    response.addHeader("Set-Cookie", cookie.toString());
-
-    return ResponseEntity.ok(Map.of("message", "Logged out"));
 }
-}
-

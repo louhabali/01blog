@@ -2,6 +2,7 @@ package com.example.blog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,17 +23,21 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-   @Bean
+@Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/dashboard").hasRole("ADMIN")
-            .anyRequest().permitAll()
+            
+            // 💡 ADD THIS:
+            // Explicitly allow your logout endpoint (and login/register)
+            .requestMatchers("/auth/logout", "/auth/login", "/auth/register").permitAll() 
+            .requestMatchers(HttpMethod.GET, "/**").permitAll()
+            .anyRequest().authenticated() 
         )
         .userDetailsService(userDetailsService);
-
     return http.build();
 }
 
