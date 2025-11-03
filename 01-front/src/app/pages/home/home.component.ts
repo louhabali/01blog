@@ -225,7 +225,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.showError = true;
             setTimeout(() => { this.showError = false; }, 2000);
           } else if (err.status === 401) {
-           window.location.reload()
+            this.router.navigate(["/login"]);
           } else {
             console.error('Unexpected error:', err);
           }
