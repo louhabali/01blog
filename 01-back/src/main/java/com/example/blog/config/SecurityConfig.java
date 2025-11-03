@@ -29,13 +29,13 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/dashboard").hasRole("ADMIN")
+            .requestMatchers("/admin/**").hasRole("ADMIN")
             
             // 💡 ADD THIS:
             // Explicitly allow your logout endpoint (and login/register)
             .requestMatchers("/auth/logout", "/auth/login", "/auth/register").permitAll() 
             .requestMatchers(HttpMethod.GET, "/**").permitAll()
-            .anyRequest().authenticated() 
+            .anyRequest().permitAll() 
         )
         .userDetailsService(userDetailsService);
     return http.build();

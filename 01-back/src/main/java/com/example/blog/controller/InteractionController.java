@@ -30,11 +30,7 @@ public class InteractionController {
 public ResponseEntity<?> toggleLike(
         @PathVariable Long postId,
         @RequestParam(required = false) Long userId , HttpServletRequest http ) {
-            String uersname  = (String) http.getAttribute("userName");
-            if (uersname == null){
-               return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("You must log in to like a post");
-            }
+        
     if (userId == null || userId == 0 ) {
         // user not logged in → return 401 Unauthorized
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

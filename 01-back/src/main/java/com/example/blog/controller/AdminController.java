@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final UserRepository userRepository;
