@@ -39,7 +39,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             // 💡 ADD THIS:
             // Explicitly allow your logout endpoint (and login/register)
             .requestMatchers("/auth/logout", "/auth/login", "/auth/register").permitAll() 
-            .requestMatchers(HttpMethod.GET,"/home" ,"/posts/all", "/posts/{id}","posts/{id}/comments","/profile/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET,"/uploads/**","/auth/check","/home" ,"/posts/**","posts/{id}/comments","/profile/{id}","/users/**").permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .anyRequest().authenticated() 
         )

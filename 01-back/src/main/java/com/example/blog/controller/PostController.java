@@ -124,7 +124,7 @@ public ResponseEntity<PostResponse> getPostById(
         return ResponseEntity.noContent().build();
     }
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Post> editPost(@PathVariable Long id, @RequestBody Post updatedPost) {
+    public ResponseEntity<Post> editPost(@PathVariable Long id, @Valid @RequestBody PostRequest updatedPost) {
         try {
             Post post = postService.getPostById(id);
             if (post == null) {
