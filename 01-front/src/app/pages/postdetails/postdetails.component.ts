@@ -99,7 +99,7 @@ export class PostdetailsComponent {
   }
 
   toggleLike(post: Post): void {
-    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+    this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
         if (liked == true) {
           post.likes += 1;

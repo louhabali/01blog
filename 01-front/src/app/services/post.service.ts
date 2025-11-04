@@ -21,7 +21,7 @@ export class PostService {
   getMyPosts(): Observable<Post[]> {
     return this.http.get<Post[]>('http://localhost:8087/posts/me', { withCredentials: true });
   }
-   toggleLike(postId: number, userId: number): Observable<boolean> {
-    return this.http.post<boolean>(`http://localhost:8087/interactions/like/${postId}/like?userId=${userId}`, { withCredentials: true });
+   toggleLike(postId: number): Observable<boolean> {
+    return this.http.post<boolean>(`http://localhost:8087/interactions/like/${postId}/like`,null, { withCredentials: true });
   }
 }

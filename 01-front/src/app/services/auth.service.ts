@@ -95,13 +95,8 @@ export class AuthService {
         .post('http://localhost:8087/auth/logout', {}, { withCredentials: true })
         .pipe(
           tap(() =>{
-            console.log(88888888888888888888888888888888888888);
-            
-              this.isLoggedIn.set(false);
-             
-          this.router.navigate(["/login"]);
-      
-               
+            this.isLoggedIn.set(false);
+            this.router.navigate(["/login"]);
           
           })
         );

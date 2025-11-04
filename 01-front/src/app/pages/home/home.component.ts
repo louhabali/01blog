@@ -239,14 +239,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.auth.logout().subscribe()
           return
     }
-    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+    this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
         post.likes += liked ? 1 : -1;
         post.liked = liked;
       },
       error: (err) => {
         if (err.status === 401 || err.status == 403){
-    
+          console.log(err);
+          
           
           this.auth.logout().subscribe()
         }else console.error('Unexpected error:', err);

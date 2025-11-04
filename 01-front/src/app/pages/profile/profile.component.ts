@@ -315,7 +315,7 @@ ngAfterViewInit() {
   }
 
   toggleLike(post: Post): void {
-    this.postService.toggleLike(post.id, this.currentUserId).subscribe({
+    this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
         post.likes += liked ? 1 : -1;
         post.liked = liked;
