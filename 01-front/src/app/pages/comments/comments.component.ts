@@ -89,7 +89,9 @@ export class CommentsComponent implements OnInit {
           this.newComment = '';
         },
         error: err => {
-          if (err.status === 401) this.router.navigate(['/login']);
+          if (err.status === 401 || err.status == 403){
+          this.auth.logout().subscribe()
+        }else console.error('Unexpected error:', err);
         },
       });
   }

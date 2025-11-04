@@ -99,6 +99,11 @@ export class PostdetailsComponent {
   }
 
   toggleLike(post: Post): void {
+     if (this.currentUserId == 0){
+        console.log("liked btn")
+          this.auth.logout().subscribe()
+          return
+    }
     this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
         if (liked == true) {
@@ -109,11 +114,9 @@ export class PostdetailsComponent {
         post.liked = liked;
       },
       error: (err) => {
-        if (err.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          console.error('Unexpected error:', err);
-        }
+        if (err.status === 401 || err.status == 403){
+          this.auth.logout().subscribe()
+        }else console.error('Unexpected error:', err);
       }
     });
   }

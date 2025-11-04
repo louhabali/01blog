@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
@@ -81,7 +81,8 @@ export class ProfileComponent implements OnInit {
     private postService: PostService,
     private userService: UserService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth :AuthService
   ) {}
 
   ngOnInit(): void {
@@ -315,17 +316,20 @@ ngAfterViewInit() {
   }
 
   toggleLike(post: Post): void {
+     if (this.currentUserId == 0){
+        console.log("liked btn")
+          this.auth.logout().subscribe()
+          return
+    }
     this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
         post.likes += liked ? 1 : -1;
         post.liked = liked;
       },
       error: (err) => {
-        if (err.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          console.error('Unexpected error:', err);
-        }
+       if (err.status === 401 || err.status == 403){
+          this.auth.logout().subscribe()
+        }else console.error('Unexpected error:', err);
       }
     });
   }

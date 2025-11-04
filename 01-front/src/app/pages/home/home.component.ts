@@ -215,7 +215,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.cancelMediaPreview();
         },
         error: err => {
-          console.error('Validation error:', err);
           if (err.status === 400) {
             this.errorResponse = err.error;
             if (this.errorResponse.title && this.errorResponse.content) this.errorMessage = 'Title and content are required';
@@ -224,7 +223,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
             this.showError = true;
             setTimeout(() => { this.showError = false; }, 2000);
-          } else if (err.status === 401) {
+          } else if (err.status === 401 || err.status === 403) {
             this.router.navigate(["/login"]);
           } else {
             console.error('Unexpected error:', err);
@@ -246,9 +245,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         if (err.status === 401 || err.status == 403){
-          console.log(err);
-          
-          
           this.auth.logout().subscribe()
         }else console.error('Unexpected error:', err);
       }

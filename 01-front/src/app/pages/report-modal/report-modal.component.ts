@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-report-modal',
   standalone: true,
@@ -25,7 +25,7 @@ export class ReportModalComponent {
     description: ''
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router , private auth : AuthService) {}
 
   close() {
     this.closed.emit();
@@ -48,12 +48,9 @@ export class ReportModalComponent {
           this.close();
         },
         error: (err) => {
-          if (err.status === 401) {
-  
-            this.router.navigate(['/login']);
-          } else {
-            console.error('Error submitting report:', err);
-          }
+           if (err.status === 401 || err.status == 403){
+          this.auth.logout().subscribe()
+        }else console.error('Unexpected error:', err);
         }
       });
   }

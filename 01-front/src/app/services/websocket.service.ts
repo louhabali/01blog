@@ -25,13 +25,13 @@ export class WebsocketService {
 
   connect(userId: number) {
     // Fetch stored notifications first
-    this.fetchStoredNotifications(userId);
-
+    
     const socket = new SockJS('http://localhost:8087/ws-notifications');
     console.log(7777777)
     this.stompClient = over(socket);
-
+    
     this.stompClient.connect({}, () => {
+      this.fetchStoredNotifications(userId);
       console.log('Connected to WebSocket!');
 
       // Subscribe to live notifications
