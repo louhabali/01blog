@@ -1,63 +1,115 @@
 package com.example.blog.config;
+
 import org.springframework.http.ResponseCookie;
+// 💡 --- IMPORT THESE ---
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import com.example.blog.service.CustomUserDetailsService; // 💡 Or your UserDetailsService
+// 💡 --- END IMPORTS ---
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final TokenBlacklist tokenBlacklist;
-    //init jwr
-    public JwtAuthFilter(JwtUtil jwtUtil,TokenBlacklist tokenBlacklist) {
+    private final CustomUserDetailsService userDetailsService; // 💡 INJECT THIS
+
+    // 💡 UPDATE CONSTRUCTOR
+    public JwtAuthFilter(JwtUtil jwtUtil, TokenBlacklist tokenBlacklist, CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.tokenBlacklist = tokenBlacklist;
+        this.userDetailsService = userDetailsService;
     }
-  
+
     @Override
-protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
-            if (request.getServletPath().equals("/auth/logout")) {
-        filterChain.doFilter(request, response);
-        return; // Don't do any validation below
-    }
-    if (request.getCookies() != null) {
-        for (Cookie cookie : request.getCookies()) {
-            if ("jwt".equals(cookie.getName())) {
-                String token = cookie.getValue();
-                if (tokenBlacklist.isBlacklisted(token)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                       ResponseCookie c = ResponseCookie.from("jwt", "")
-                            .httpOnly(true)
-                            .path("/")
-                            .maxAge(0)
-                            .build();
-                    response.addHeader("Set-Cookie", c.toString());
-                    return;
-                }
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
+        // 💡 Allow auth-related paths to pass through without checks
+        String path = request.getServletPath();
+        if (path.equals("/auth/login") || path.equals("/auth/register") || path.equals("/auth/logout")) {
+            filterChain.doFilter(request, response);
+            return; 
+        }
 
+        String token = null;
+        if (request.getCookies() != null) {
+        System.out.println("COOKIES NOT NULL");
 
-
-                try {
-                    String email = jwtUtil.validateToken(token);
-                    // print email if token is valid
-                    System.out.println("THE EMAIL : "+ email);
-                    request.setAttribute("userName", email);
-
-                } catch (Exception e) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
+            for (Cookie cookie : request.getCookies()) {
+                System.out.println("COOKIES LOOPED");
+                if ("jwt".equals(cookie.getName())) {
+                    System.out.println("JWT COOKIE NAME FOUNDED");
+                    token = cookie.getValue();
+                    System.out.println("COOKIES VALUE : "+token);
+                    break;
                 }
             }
         }
+                    System.out.println("COOKIES VALUE 2 : "+token);
+
+        // If no token, continue chain (Spring Security will block if needed)
+        if (token == null) {
+        System.out.println("TOKEN NULL");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (tokenBlacklist.isBlacklisted(token)) {
+        System.out.println("TOKEN BLACKLISTED");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            ResponseCookie c = ResponseCookie.from("jwt", "").httpOnly(true).path("/").maxAge(0).build();
+            response.addHeader("Set-Cookie", c.toString());
+            return;
+        }
+
+        String username = null; // Renamed from email to username for clarity
+        try {
+            username = jwtUtil.validateToken(token);
+            if (username == null ){
+            System.out.println("USERNAMETOKEN NULL");
+
+            }
+        } catch (Exception e) {
+            // Invalid token
+        System.out.println("TOKEN EXCEPTION");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Load user details from the username in the token
+        System.out.println("YES SECURITYCONTEXT");
+
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+            // Create an authentication token
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null, // We don't have credentials
+                    userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            // Set the authentication in the security context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            System.out.println("User Authenticated: " + username);
+            request.setAttribute("userName", username);
+        }else {
+
+            System.out.println("NO SECURITYCONTEXT");
+        }
+
+        filterChain.doFilter(request, response);
     }
-
-    filterChain.doFilter(request, response);
-}
-
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.blog.entity.*;
+
+import java.security.Principal;
 import java.util.Map;
 @RestController
 @RequestMapping("/interactions")
@@ -29,15 +31,17 @@ public class InteractionController {
     @PostMapping("/like/{postId}/like")
 public ResponseEntity<?> toggleLike(
         @PathVariable Long postId,
-        @RequestParam(required = false) Long userId , HttpServletRequest http ) {
-        
-    if (userId == null || userId == 0 ) {
-        // user not logged in → return 401 Unauthorized
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("You must log in to like a post");
-    }
+        Principal principal) {
+  if (principal == null) {
+        System.out.println("NOT PRINCPAL");
 
-    User user = userRepository.findById(userId)
+            // This will be handled by the filter, but it's good practice
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You must log in to like a post");
+        }
+        String username = principal.getName();
+        System.out.println("USERNAMEPRINCIPAL IS : "+username);
+    User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new RuntimeException("User not found"));
     Post post = postRepository.findById(postId)
             .orElseThrow(() -> new RuntimeException("Post not found"));
