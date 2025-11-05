@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit,NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit,NgZone  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -88,19 +88,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
               return;
           })
     }
-        this.fetchPosts();
+        
        
       },
       error: (err) => {
+        console.log("hhhhhhhhhhhhhhh",err.status)
         if (err.status === 401) {
-          console.log(888)
           this.currentUserId = 0; // not logged in
-          this.fetchPosts();
+          
         }
       }
     });
   }
-
 
   fetchPosts() {
     
@@ -138,6 +137,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.fetchPosts();
     this.postsPanel.nativeElement.addEventListener('scroll', () => {
       this.handleScroll();
     });

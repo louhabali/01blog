@@ -170,14 +170,6 @@ export class HeaderComponent implements OnInit {
   hideBadge() {
     this.showBadge = false;
     this.notifsnumber = 0;
-    this.wsService.markNotificationsAsSeen().subscribe({
-      next: () => {
-        console.log("Notifications marked as seen");
-      },
-      error: (err) => {
-        console.error("Failed to mark notifications as seen:", err);
-      }
-    });
   }
 
   toggleMenu() {

@@ -61,8 +61,9 @@ export class WebsocketService {
     if (this.storedFetched) return;
     this.storedFetched = true;
 
-    this.http.get<NotificationDTO[]>(`http://localhost:8087/api/notifications/${userId}`)
-      .subscribe(fetchedNotifs => {
+    this.http.get<NotificationDTO[]>(`http://localhost:8087/api/notifications/${userId}`,{withCredentials :true})
+      .subscribe( {
+         next: (fetchedNotifs) => {
         // dont show notifs that comes from you 
         console.log("fetchedNotifs",fetchedNotifs);
         fetchedNotifs = fetchedNotifs.filter(n => n.actorId !== userId);
@@ -70,9 +71,14 @@ export class WebsocketService {
 
         const current = this.notifications$.getValue();
         this.notifications$.next([...fetchedNotifs, ...current]); // prepend stored notifications
-      });
+        console.log(this.notifications$);
+        
+      },
+      error : (err) => {
+        console.log("403 is : ",err);
+        
+      }
+    });
   }
-  markNotificationsAsSeen() {
-    return this.http.post(`http://localhost:8087/api/notifications/mark-as-seen`, {});
-  }
+
 }

@@ -40,7 +40,6 @@ export class AuthService {
           // Update signals
           this.isLoggedIn.set(res.loggedIn);
           this.currentUserId.set(res.currentUserId);
-          
           // Broadcast the full result to all waiting subscribers
           this.authCheckResult$.next(res);
         },
@@ -96,8 +95,8 @@ export class AuthService {
         .pipe(
           tap(() =>{
             this.isLoggedIn.set(false);
+            this.authCheckResult$.next({ loggedIn: false, role: '', currentUserId: 0 });
             this.router.navigate(["/login"]);
-          
           })
         );
     }
