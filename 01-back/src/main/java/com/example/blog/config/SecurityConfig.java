@@ -39,7 +39,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             // 💡 ADD THIS:
             // Explicitly allow your logout endpoint (and login/register)
             .requestMatchers("/auth/logout", "/auth/login", "/auth/register").permitAll() 
-            .requestMatchers(HttpMethod.GET,"/uploads/**","/auth/check","/home" ,"/posts/**","posts/{id}/comments","/profile/{id}","/users/**").permitAll()
+           .requestMatchers(HttpMethod.GET,"/api/notifications/{id}").authenticated() 
+            .requestMatchers(HttpMethod.GET, "/**").permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .anyRequest().authenticated() 
         )
@@ -47,10 +48,10 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .userDetailsService(userDetailsService);
     return http.build();
 }
-    // @Bean
-    // public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-    //     return authConfig.getAuthenticationManager();
-    // }   
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }   
 
 
     @Bean

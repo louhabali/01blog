@@ -63,11 +63,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (tokenBlacklist.isBlacklisted(token)) {
-        System.out.println("TOKEN BLACKLISTED");
-
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ResponseCookie c = ResponseCookie.from("jwt", "").httpOnly(true).path("/").maxAge(0).build();
-            response.addHeader("Set-Cookie", c.toString());
             return;
         }
 

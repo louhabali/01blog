@@ -23,9 +23,9 @@ public class UserService {
     }
     public User getUserById(long id){
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
+            if (optionalUser.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
         User user = optionalUser.get();
         return user;
     }
