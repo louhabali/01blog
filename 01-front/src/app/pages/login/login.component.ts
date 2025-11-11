@@ -42,6 +42,7 @@ export class LoginComponent {
         }, 0);
       },
       error: err => {
+        console.log("error is : ",err);
         
         this.errorMessage = err.status === 401 ? err.error?.message || 'Invalid credentials' : 'Something went wrong';
       }
