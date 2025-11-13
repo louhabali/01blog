@@ -1,6 +1,5 @@
 package com.example.blog.config;
 
-import org.springframework.http.ResponseCookie;
 // 💡 --- IMPORT THESE ---
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,11 +62,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (tokenBlacklist.isBlacklisted(token)) {
+        System.out.println("TOKEN BLACKLISTED");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String username = null; // Renamed from email to username for clarity
+        String username = null; 
         try {
             username = jwtUtil.validateToken(token);
             if (username == null ){

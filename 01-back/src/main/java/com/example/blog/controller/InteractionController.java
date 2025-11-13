@@ -2,18 +2,14 @@ package com.example.blog.controller;
 import com.example.blog.repository.*;
 import com.example.blog.service.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.blog.entity.*;
 
 import java.security.Principal;
-import java.util.Map;
 @RestController
 @RequestMapping("/interactions")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class InteractionController {
 
     private final InteractionService interactionService;
@@ -34,11 +30,11 @@ public ResponseEntity<?> toggleLike(
         Principal principal) {
   if (principal == null) {
         System.out.println("NOT PRINCPAL");
-
             // This will be handled by the filter, but it's good practice
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You must log in to like a post");
         }
+        
         String username = principal.getName();
         System.out.println("USERNAMEPRINCIPAL IS : "+username);
     User user = userRepository.findByUsername(username)
@@ -47,7 +43,7 @@ public ResponseEntity<?> toggleLike(
             .orElseThrow(() -> new RuntimeException("Post not found"));
 
     boolean liked = interactionService.toggleLike(user, post);
-
+    System.out.println("POST ID " + postId + " LIKED STATE IS NOW :: " + liked);
     return ResponseEntity.ok(liked);
 }
   

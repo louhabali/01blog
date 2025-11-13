@@ -28,7 +28,6 @@ private LocalDateTime createdAt = LocalDateTime.now();
 protected void onCreate() {
   this.createdAt = LocalDateTime.now();
 }
-
 // getters and setters
 public Long getId() { return id; }
 public void setId(Long id) { this.id = id; }

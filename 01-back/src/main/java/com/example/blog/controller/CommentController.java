@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/posts/{postId}/comments")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class CommentController {
 
     private final CommentService commentService;
@@ -92,7 +92,7 @@ public List<Comment> getComments(
         }
 
         commentService.deleteComment(commentId);
-        return ResponseEntity.ok("Comment deleted successfully");
+        return ResponseEntity.ok(Map.of("message", "Comment deleted successfully"));
     }
 
     public static class CommentDTO {

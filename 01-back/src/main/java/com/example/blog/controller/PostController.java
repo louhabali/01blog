@@ -16,16 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/posts")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PostController {
-    
 
     private final PostService postService;
     private final PostRepository postRepo;
@@ -35,8 +33,8 @@ public class PostController {
     private final InteractionRepository interactionRepository;
 
     public PostController(PostService postService, UserRepository userRepository,
-                          PostRepository postRepo, InteractionService interactionService,
-                          CommentRepository commentRepository, InteractionRepository interactionRepository) {
+            PostRepository postRepo, InteractionService interactionService,
+            CommentRepository commentRepository, InteractionRepository interactionRepository) {
         this.postService = postService;
         this.userRepository = userRepository;
         this.postRepo = postRepo;
@@ -47,7 +45,7 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, HttpServletRequest httpRequest) {
-        
+
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
@@ -63,46 +61,43 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
-   @GetMapping("/user/{userId}")
-public ResponseEntity<List<PostResponse>> getPostsByUser(
-        @PathVariable Long userId,
-        @RequestParam(required = false) Long currentUserId,
-        @RequestParam(defaultValue = "0") int offset,
-        @RequestParam(defaultValue = "10") int limit) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PostResponse>> getPostsByUser(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Long currentUserId,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
 
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        List<Post> posts = postRepo.findPostsByUserWithPagination(userId, offset, limit);
 
-    List<Post> posts = postRepo.findPostsByUserWithPagination(userId, offset, limit);
+        List<PostResponse> responses = posts.stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
 
-    List<PostResponse> responses = posts.stream()
-            .map(post -> {
-                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                Long likes = interactionService.getLikesCount(post.getId());
-                return new PostResponse(post, liked, likes);
-            })
-            .toList();
-
-    return ResponseEntity.ok(responses);
-}
+        return ResponseEntity.ok(responses);
+    }
 
     @GetMapping("/{id}")
-public ResponseEntity<PostResponse> getPostById(
-        @PathVariable Long id,
-        @RequestParam(required = false) Long currentUserId) {
+    public ResponseEntity<PostResponse> getPostById(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long currentUserId) {
 
-    Post post = postRepo.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+        Post post = postRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
 
-    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-    Long likes = interactionService.getLikesCount(post.getId());
+        boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+        Long likes = interactionService.getLikesCount(post.getId());
 
-    return ResponseEntity.ok(new PostResponse(post, liked, likes));
-}
+        return ResponseEntity.ok(new PostResponse(post, liked, likes));
+    }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Boolean> toggleLike(@PathVariable Long postId,
-                                              @RequestParam(required = false) Long userId) {
+            @RequestParam(required = false) Long userId) {
         if (userId == null || userId == 0)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login required to like");
 
@@ -123,6 +118,7 @@ public ResponseEntity<PostResponse> getPostById(
         postRepo.deleteById(postId);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping("/edit/{id}")
     public ResponseEntity<Post> editPost(@PathVariable Long id, @Valid @RequestBody PostRequest updatedPost) {
         try {
@@ -132,7 +128,7 @@ public ResponseEntity<PostResponse> getPostById(
             }
 
             // Update fields
-          
+
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
             post.setImageUrl(updatedPost.getImageUrl());
@@ -146,28 +142,33 @@ public ResponseEntity<PostResponse> getPostById(
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @GetMapping("/all")
-public ResponseEntity<List<PostResponse>> getAllPosts(
-        @RequestParam(required = false) Long currentUserId,
-        @RequestParam(defaultValue = "0") int offset,
-        @RequestParam(defaultValue = "10") int limit) {
-       
-            List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
+    public ResponseEntity<List<PostResponse>> getAllPosts(
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit, Principal principal) {
+        if (principal == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be logged in to view posts");
+        }
+        List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
+        String username = principal.getName();
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+        Long currentUserId = currentUser.getId();
+        List<PostResponse> responses = posts.stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
 
-    List<PostResponse> responses = posts.stream()
-            .map(post -> {
-                boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                Long likes = interactionService.getLikesCount(post.getId());
-                return new PostResponse(post, liked, likes);
-            })
-            .toList();
+        return ResponseEntity.ok(responses);
+    }
 
-    return ResponseEntity.ok(responses);
-}
     @GetMapping("/user/{userId}/count")
-public ResponseEntity<Long> countPostsByUser(@PathVariable Long userId) {
-    long count = postRepo.countByAuthorId(userId);
-    return ResponseEntity.ok(count);
+    public ResponseEntity<Long> countPostsByUser(@PathVariable Long userId) {
+        long count = postRepo.countByAuthorId(userId);
+        return ResponseEntity.ok(count);
+    }
 }
-}
-

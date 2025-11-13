@@ -16,7 +16,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AuthController {
 
     private final UserService userService;
@@ -74,8 +73,8 @@ public class AuthController {
                             .httpOnly(true)
                             .path("/")
                             .maxAge((int) (jwtUtil.getExpration() / 1000))
-                            .sameSite("None") // 💡 ADD THIS
-                            .secure(true) // 💡 ADD THIS (Requires HTTPS)
+                            .sameSite("Lax") 
+                            .secure(true)
                             .build();
 
                     response.addHeader("Set-Cookie", cookie.toString());

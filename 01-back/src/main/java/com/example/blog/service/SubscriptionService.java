@@ -4,6 +4,9 @@ import com.example.blog.entity.*;
 import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.SubscriptionRepository;
 import com.example.blog.repository.UserRepository;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,9 +53,13 @@ public class SubscriptionService {
     }
 
     public boolean isFollowing(Long followerId, Long followedId) {
-        User follower = userRepository.findById(followerId).orElseThrow();
-        User followed = userRepository.findById(followedId).orElseThrow();
-        return subscriptionRepository.existsByFollowerAndFollowed(follower, followed);
+
+        Optional<User> follower = userRepository.findById(followerId);
+        Optional<User> followed = userRepository.findById(followedId);
+        if (!follower.isPresent() || !followed.isPresent()) {
+            return false;
+        }
+        return subscriptionRepository.existsByFollowerAndFollowed(follower.get(), followed.get());
     }
 
     public Long countFollowers(Long userId) {

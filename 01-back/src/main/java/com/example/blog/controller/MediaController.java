@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 @RestController
 @RequestMapping("/api/media")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class MediaController {
 
     @PostMapping("/upload")
@@ -20,6 +19,7 @@ public String uploadFile(@RequestParam("file") MultipartFile file) {
 
     String filePath = uploadDir + file.getOriginalFilename();
     try {
+        // save the file locally
         file.transferTo(new File(filePath));
     } catch (Exception e) {
         

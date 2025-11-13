@@ -32,7 +32,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
         List<User> followers = subrepo.findFollowersByFollowed(author);
 
-        // 2️⃣ Loop through followers and create a notification for each
+        //  Loop through followers and create a notification for each
         for (User follower : followers) {
             Notification n = new Notification();
             n.setRecipientId(follower.getId()); // the follower
@@ -43,9 +43,7 @@ public class PostService {
 
             // Save to DB
             n = notifrepo.save(n);
-
             // Push in real time (optional)
-
             notifservice.pushNotification(userRepository.getById(n.getRecipientId()).getUsername(), n);
         }
         return savedPost;
@@ -73,15 +71,18 @@ public class PostService {
 
     public Post savePost(Post post) {
         // Save the post first
-
         Post savedPost = postRepository.save(post);
         return savedPost;
     }
 
     public boolean isPostLikedByUser(Long postId, Long userId) {
-        return interactionRepository.findByPostIdAndUserId(postId, userId)
-                .map(Interaction::getState)
-                .orElse(false);
+        Interaction i = interactionRepository.findByPostIdAndUserId(postId, userId).orElse(null);
+        if (i == null) {
+            System.out.println("NO INTERACTION FOUND FOR POST ID " + postId + " AND USER ID " + userId);
+            return false;
+        }
+        System.out.println("INTERACTION FOUND FOR POST ID " + postId + " AND USER ID " + userId + " WITH LIKED STATE :: " + i.getLiked());
+        return i.getLiked();
     }
 
 }

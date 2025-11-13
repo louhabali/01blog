@@ -47,9 +47,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             Object userNameAttribute = servletRequest.getServletRequest().getAttribute("userName");
 
                             if (userNameAttribute != null) {
-                                String email = userNameAttribute.toString();
+                                String username = userNameAttribute.toString();
 
-                                return userRepository.findByUsername(email) // Returns Optional<User>
+                                return userRepository.findByUsername(username) // Returns Optional<User>
                                     .map(user -> (Principal) user::getUsername) // Map User to a Principal
                                     .orElse(null); // Return null if user not found
                             }

@@ -18,15 +18,17 @@ public class InteractionService {
     public boolean toggleLike(User user, Post post) {
         return interactionRepository.findByUserAndPost(user, post)
             .map(interaction -> {
-                interaction.setState(!interaction.getState());
+                System.out.println("INTERACTION FOUND, TOGGLING LIKE BEFORE STATE :: " +interaction.getLiked());
+                interaction.setLiked(!interaction.getLiked());
+                System.out.println("INTERACTION FOUND, TOGGLING LIKE AFTER STATE :: " +interaction.getLiked());
                 interactionRepository.save(interaction);
-                return interaction.getState();
+                return interaction.getLiked();
             })
             .orElseGet(() -> {
                 Interaction interaction = new Interaction();
                 interaction.setUser(user);
                 interaction.setPost(post);
-                interaction.setState(true);
+                interaction.setLiked(true);
                 interactionRepository.save(interaction);
                 return true;
             });

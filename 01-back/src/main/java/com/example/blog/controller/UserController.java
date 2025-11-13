@@ -1,6 +1,5 @@
 package com.example.blog.controller;
 import java.io.File;
-import com.example.blog.entity.Post;
 import com.example.blog.entity.User;
 import com.example.blog.service.UserService;
 
@@ -11,23 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserRepository;
 
 import java.util.*;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+
 public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final PostRepository postrepo;
-    public UserController(UserService userService,UserRepository userRepository,PostRepository postrepo) {
+    public UserController(UserService userService,UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.postrepo = postrepo;
+      
     }
 
     // GET /users - list all users

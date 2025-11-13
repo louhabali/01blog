@@ -20,10 +20,10 @@ public class Interaction {
      public Long getId(){
         return this.id;
     }
-    public Boolean getState(){
+    public Boolean getLiked(){
         return this.liked;
     }
-    public void setState(boolean newliked){
+    public void setLiked(boolean newliked){
         this.liked = newliked;
     }
     public User getUser() { return user; } 
