@@ -12,7 +12,11 @@
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
 
       <div *ngIf="mediaPreviewUrl" class="media-preview-container">
-        <img [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+        <img *ngIf="!isvideo" [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+        <video *ngIf="isvideo" width="200" height="160" controls class="media-preview-image">
+          <source [src]="mediaPreviewUrl" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
         <button (click)="cancelMediaPreview()" class="cancel-preview-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -59,8 +63,17 @@
             </div>
 
             <div *ngIf="post.imageUrl" class="post-thumbnail">
-              <img [src]="post.imageUrl" alt="post image">
+              <img (click)="goTopostdetails(post)"  [src]="post.imageUrl" alt="post image">
             </div>
+            <div *ngIf="post.videoUrl" class="post-thumbnail">
+              <video width="200" height="160" controls (click)="goTopostdetails(post)">
+                <source [src]="post.videoUrl" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+
+            </div>
+
+
           </div>
 
           <!-- Post Footer -->

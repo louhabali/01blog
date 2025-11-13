@@ -155,13 +155,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.fetchPosts();
     }
   }
-
+  isvideo : boolean = false;
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.newMedia = file;
       const reader = new FileReader();
-      reader.onload = () => { this.mediaPreviewUrl = reader.result; };
+      reader.onload = () => { 
+        this.mediaPreviewUrl = reader.result; 
+        this.isvideo = file.type.startsWith("video/");
+      };
       reader.readAsDataURL(file);
     } else {
       this.cancelMediaPreview();

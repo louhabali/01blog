@@ -69,7 +69,7 @@ export class ProfileComponent implements OnInit {
   
   // NEW: Property for preview URL
   mediaPreviewUrl: string | ArrayBuffer | null = null;
-  
+  isvideo : boolean = false;
   isReportModalOpen = false;
   selectedPostId = 0;
   selectedReportedUserId = 0;
@@ -236,6 +236,7 @@ ngAfterViewInit() {
       const reader = new FileReader();
       reader.onload = () => {
         this.mediaPreviewUrl = reader.result;
+        this.isvideo = file.type.startsWith("video/");
       };
       reader.readAsDataURL(file);
 

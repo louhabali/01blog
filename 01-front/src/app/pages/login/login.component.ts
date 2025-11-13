@@ -32,7 +32,7 @@ export class LoginComponent {
     this.auth.login(this.formData).subscribe({
       next: (t) => {
         if (t.banned == true) {
-          this.errorMessage = 'Your account has been banned. Please contact support.';
+          this.errorMessage = 'Your account has been banned, Try later.';
           return;
         }
         // header will update because the signal was set in AuthService

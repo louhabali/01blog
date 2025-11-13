@@ -8,11 +8,16 @@
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
 
       <div *ngIf="mediaPreviewUrl" class="media-preview-container">
-        <img [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+        <img *ngIf="!isvideo" [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
+        <video *ngIf="isvideo" width="200" height="160" controls class="media-preview-image">
+          <source [src]="mediaPreviewUrl" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
         <button (click)="cancelMediaPreview()" class="cancel-preview-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
+
 
       <div class="form-actions">
         <input type="file" (change)="onFileSelected($event)" id="file-upload" #fileUploadInput />
