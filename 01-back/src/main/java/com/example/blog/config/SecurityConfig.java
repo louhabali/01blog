@@ -32,10 +32,13 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter,
+                          RateLimitFilter rateLimitFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
    // Primary Security Filter Chain
@@ -75,6 +78,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 3️ - Add the JWT authentication filter
         //    Runs BEFORE UsernamePasswordAuthenticationFilter (which runs only for form logins /POST /login)
         //    Checks for token in the request header and sets Authentication if valid 
+        .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 

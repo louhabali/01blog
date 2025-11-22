@@ -144,27 +144,44 @@ public class PostController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PostResponse>> getAllPosts(
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit, Principal principal) {
-        if (principal == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be logged in to view posts");
-        }
-        List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
-        String username = principal.getName();
-        User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
-        Long currentUserId = currentUser.getId();
-        List<PostResponse> responses = posts.stream()
-                .map(post -> {
-                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                    Long likes = interactionService.getLikesCount(post.getId());
-                    return new PostResponse(post, liked, likes);
-                })
-                .toList();
+public ResponseEntity<List<PostResponse>> getAllPosts(
+        @RequestParam(defaultValue = "0") int offset,
+        @RequestParam(defaultValue = "10") int limit, 
+        Principal principal) { // Principal is NULL if user is not logged in
 
-        return ResponseEntity.ok(responses);
+    // 1. Get the posts (this works for everyone)
+    List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
+    
+    // 2. Determine the Current User ID (Safely)
+    Long currentUserId = null;
+    
+    if (principal != null) {
+        String username = principal.getName();
+        // We use ifPresent or similar logic to avoid crashing if DB is weird
+        User currentUser = userRepository.findByUsername(username).orElse(null);
+        if (currentUser != null) {
+            currentUserId = currentUser.getId();
+        }
     }
+
+    // 3. Make "currentUserId" effectively final for the lambda below
+    final Long finalUserId = currentUserId; 
+
+    List<PostResponse> responses = posts.stream()
+            .map(post -> {
+                // 4. Only check "liked" if we actually have a user ID
+                boolean liked = false;
+                if (finalUserId != null) {
+                    liked = postService.isPostLikedByUser(post.getId(), finalUserId);
+                }
+
+                Long likes = interactionService.getLikesCount(post.getId());
+                return new PostResponse(post, liked, likes);
+            })
+            .toList();
+
+    return ResponseEntity.ok(responses);
+}
 
     @GetMapping("/user/{userId}/count")
     public ResponseEntity<Long> countPostsByUser(@PathVariable Long userId) {
