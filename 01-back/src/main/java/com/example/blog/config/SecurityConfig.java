@@ -106,29 +106,5 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return source;
     }
 
-    // --- Private Inner Class for CSRF ---
-    private static final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
-        private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-
-        @Override
-        public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-            /*
-             * Always load the CSRF token from the repository to ensure it is available
-             * for Angular to read and send back in a header.
-             */
-            this.delegate.handle(request, response, csrfToken);
-        }
-
-        @Override
-        public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-            /*
-             * If the request contains a header (e.g., X-XSRF-TOKEN), use it.
-             * Otherwise, fall back to the request parameter (e.g., _csrf).
-             */
-            if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
-                return request.getHeader(csrfToken.getHeaderName());
-            }
-            return this.delegate.resolveCsrfTokenValue(request, csrfToken);
-        }
-    }
+   
 }

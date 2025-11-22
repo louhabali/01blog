@@ -26,13 +26,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/queue"); // where clients will subscribe
-        config.setApplicationDestinationPrefixes("/app"); // where clients send
+        config.enableSimpleBroker("/queue"); // where clients will subscribe
         config.setUserDestinationPrefix("/user"); // prefix for user-specific messages
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Register the WebSocket endpoint at /ws-notifications
         registry.addEndpoint("/ws-notifications")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
                     @Override

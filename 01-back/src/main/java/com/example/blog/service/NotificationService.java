@@ -18,24 +18,6 @@ public class NotificationService {
         this.repo = repo;
         this.messaging = messaging;
     }
-
-    // public Notification pushNotification(Long recipientId,  String message) {
-    //     // Notification n = new Notification();
-    //     // n.setRecipientId(recipientId);
-       
-       
-    //     // n.setMessage(message);
-        
-    //     // n = repo.save(n);
-
-    //     // NotificationDTO dto = new NotificationDTO(
-    //     //     n.getId(), n.getActorId(), n.getType(), n.getMessage(), n.getPostId(), n.getCreatedAt(), n.isSeen()
-    //     // );
-
-    //     // messaging.convertAndSendToUser(String.valueOf(recipientId), "/queue/notifications", dto);
-    //     // return n;
-        
-    // }
  public void pushNotification(String recipientName, Notification notification) {
         // Send to specific user's private queue
         NotificationDTO dto = new NotificationDTO(
