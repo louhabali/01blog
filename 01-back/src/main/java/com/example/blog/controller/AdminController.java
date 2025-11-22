@@ -103,7 +103,7 @@ public class AdminController {
         postRepository.save(post);
         return ResponseEntity.ok(post);
     }
-
+    @Transactional
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         try {
@@ -130,7 +130,7 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int limit) {
         return reportRepository.findWithOffsetLimit(offset, limit);
     }
-
+    @Transactional
     @DeleteMapping("/reports/{id}")
     public ResponseEntity<Void> resolveReport(@PathVariable Long id) {
         reportRepository.deleteById(id);

@@ -7,6 +7,7 @@ import com.example.blog.service.InteractionService;
 import com.example.blog.service.PostService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import com.example.blog.repository.*;
@@ -110,7 +111,7 @@ public class PostController {
         boolean liked = interactionService.toggleLike(user, post);
         return ResponseEntity.ok(liked);
     }
-
+    @Transactional
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         interactionRepository.deleteByPostId(postId);
