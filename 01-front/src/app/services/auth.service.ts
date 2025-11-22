@@ -22,9 +22,7 @@ export class AuthService {
   // Signals are still great for your templates
   isLoggedIn = signal(false);
   currentUserId = signal<number | null>(null);
-      private meUrl = 'http://localhost:8087/users/me';
-
-
+  private meUrl = 'http://localhost:8087/users/me';
   // This is the magic: A subject that holds the result of the *one* initial check
   private authCheckResult$ = new ReplaySubject<AuthCheckResponse>(1);
 
@@ -63,12 +61,6 @@ export class AuthService {
     return this.authCheckResult$.asObservable();
   }
 
-  // Your checkAuth() is no longer needed, but if you do keep it, 
-  // just make it return this.getAuthCheckResult()
-
-  // ... your login/logout methods ...
-  // (Make sure login/logout also call this.authCheckResult$.next(...) 
-  // to update the cached value!)
 
   getCurrentUser(): Observable<any> {
       return this.http.get<any>(this.meUrl, { withCredentials: true });

@@ -24,21 +24,20 @@ export class WebsocketService {
   constructor(private http: HttpClient) {}
 
   connect(userId: number) {
-    // Fetch stored notifications first
-    
+    // Establish WebSocket connection
+    // the sockjs is used to make the connection compatible with browsers using different protocols like WebSocket, XHR-streaming, etc.
     const socket = new SockJS('http://localhost:8087/ws-notifications');
-    console.log(7777777)
+    // stompClient is the client that will handle the messaging protocol
+    // over() method wraps the SockJS connection with STOMP protocol
+    // stomp is a simple text-oriented messaging protocol
     this.stompClient = over(socket);
     
     this.stompClient.connect({}, () => {
       this.fetchStoredNotifications(userId);
-      console.log('Connected to WebSocket!');
-
       // Subscribe to live notifications
+      
       this.stompClient?.subscribe(`/user/queue/notifications`, (message) => {
         if (message.body) {
-          console.log("notification is : ",message.body);
-          
           const notif: NotificationDTO = JSON.parse(message.body);
           const current = this.notifications$.getValue();
           if (!current.some(n => n.id === notif.id)) {
@@ -47,10 +46,8 @@ export class WebsocketService {
         }
       });
     });
-
     
   }
-
   // Observable for the component
   getNotifications() {
     return this.notifications$.asObservable();
@@ -64,19 +61,12 @@ export class WebsocketService {
     this.http.get<NotificationDTO[]>(`http://localhost:8087/api/notifications/${userId}`,{withCredentials :true})
       .subscribe( {
          next: (fetchedNotifs) => {
-        // dont show notifs that comes from you 
-        console.log("fetchedNotifs",fetchedNotifs);
         fetchedNotifs = fetchedNotifs.filter(n => n.actorId !== userId);
-
-
         const current = this.notifications$.getValue();
         this.notifications$.next([...fetchedNotifs, ...current]); // prepend stored notifications
-        console.log(this.notifications$);
-        
       },
       error : (err) => {
         console.log("403 is : ",err);
-        
       }
     });
   }

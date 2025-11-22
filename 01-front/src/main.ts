@@ -14,10 +14,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(
       withFetch(), // <-- This is CRITICAL for sending cookies
-      withXsrfConfiguration({ // <-- This is your CSRF config
-        cookieName: 'XSRF-TOKEN',
-        headerName: 'X-XSRF-TOKEN',
-      }),
       withInterceptors([
         credentialsInterceptor
       ])
