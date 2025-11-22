@@ -141,7 +141,7 @@
 
 /* --- TABLE SCROLL WRAPPER --- */
 .table-scroll-wrapper {
-  max-height: calc(100vh - 250px); /* dynamic height based on viewport */
+  max-height: calc(100vh - 400px); /* dynamic height based on viewport */
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 5px;

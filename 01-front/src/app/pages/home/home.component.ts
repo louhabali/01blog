@@ -210,6 +210,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: post => {
           post.authorId = this.currentUserId;
+          post.avatar = post.user.avatar;
           post.authorName = post.user.username;
           post.likes = post.likes || 0;
           post.liked = false;
