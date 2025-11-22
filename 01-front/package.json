@@ -1,6 +1,11 @@
 {
   "name": "01-front",
   "version": "0.0.0",
+  "browser": {
+  "net": false,
+  "tls": false,
+  "fs": false
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
