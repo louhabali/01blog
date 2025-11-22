@@ -116,7 +116,6 @@ By completing this project, you will:
 - Spring Security (JWT)
 - Spring Data JPA / Hibernate
 - PostgreSQL
-- Lombok
 - Maven
 
 ### Frontend

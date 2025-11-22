@@ -1,0 +1,39 @@
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: alouhab
+      POSTGRES_PASSWORD: alilo
+      POSTGRES_DB: 01-blogdb
+    ports:
+      - "5432:5432"
+    networks:
+      - blog-network
+
+  backend:
+    build: ./01-back
+    ports:
+      - "8087:8088"
+    environment:
+      SERVER_PORT: 8088
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/01-blogdb
+      SPRING_DATASOURCE_USERNAME: alouhab
+      SPRING_DATASOURCE_PASSWORD: alilo
+    networks:
+      - blog-network
+    depends_on:
+      - db
+
+  frontend:
+    build: ./01-front
+    ports:
+      - "4200:80"
+    networks:
+      - blog-network
+    depends_on:
+      - backend
+
+networks:
+  blog-network:
+    driver: bridge
