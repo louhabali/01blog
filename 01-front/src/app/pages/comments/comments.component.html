@@ -23,7 +23,7 @@
       <div class="post-card" *ngFor="let comment of comments">
         <div class="post-header">
           <div class="author-info">
-            <img class="avatar" [src]="comment.user.avatar || 'assets/default-avatar.png'" alt="avatar">
+            <img class="avatar" [src]="comment.user.avatar || 'default-avatar.png'" alt="avatar">
             <span class="author-name">{{ comment.user.username }}</span>
           </div>
           <small>{{ comment.createdAt | timeAgo }}</small>

@@ -1,0 +1,16 @@
+// BACK END
+cd 01-back
+mvn clean package -DskipTests
+docker compose build backend
+docker compose up -d backend
+ 
+// FRONT END
+cd 01-front
+npm run build
+docker compose build frontend
+docker compose up -d frontend
+
+// DOCKER-COMPOSE
+docker compose down
+docker compose build --no-cache
+docker compose up -d

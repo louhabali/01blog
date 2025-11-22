@@ -149,7 +149,7 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
         @RequestParam(defaultValue = "0") int offset,
         @RequestParam(defaultValue = "10") int limit, 
         Principal principal) { // Principal is NULL if user is not logged in
-
+            System.out.println("PRINCIPAL ");
     // 1. Get the posts (this works for everyone)
     List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
     
@@ -173,6 +173,7 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
                 // 4. Only check "liked" if we actually have a user ID
                 boolean liked = false;
                 if (finalUserId != null) {
+                    System.out.println("FINAL USER ID : "+finalUserId);
                     liked = postService.isPostLikedByUser(post.getId(), finalUserId);
                 }
 

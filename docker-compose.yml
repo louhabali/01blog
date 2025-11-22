@@ -29,6 +29,7 @@ services:
     build: ./01-front
     ports:
       - "4200:80"
+      
     networks:
       - blog-network
     depends_on:
