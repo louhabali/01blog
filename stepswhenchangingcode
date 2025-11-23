@@ -1,3 +1,6 @@
+on the new machine when cloning 
+./mvnw clean package -DskipTests inside 01-back 
+go out and docker-compose up --build -d
 // BACK END
 cd 01-back
 mvn clean package -DskipTests
