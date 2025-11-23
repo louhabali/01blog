@@ -13,6 +13,7 @@ services:
     ports:
     # set up port mapping for Postgres
       - "5432:5432"
+    # Persist Postgres data using Docker volume which is a named volume defined below
     volumes: 
       - db-data:/var/lib/postgresql/data
     networks:

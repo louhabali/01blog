@@ -59,7 +59,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     }
                 })
                 // Set allowed origins *once* and *before* withSockJS()
-                .setAllowedOriginPatterns("*")
+                .setAllowedOriginPatterns("http://localhost:4200")
                 .withSockJS();
     }
 

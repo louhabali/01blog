@@ -18,7 +18,7 @@ public class RateLimitingService {
     }
 
     private Bucket newBucket(String clientIp) {
-        // CONFIGURATION: Allow 300 requests per 1 minute
+        // Allow 300 requests per 1 minute
         // "Capacity" is the max burst allowed (300)
         // "Refill" adds 300 tokens back every 1 minute
         long capacity = 300; 
