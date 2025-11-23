@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register the WebSocket endpoint at /ws-notifications
+        // Register the WebSocket endpoint with a custom handshake handler
         registry.addEndpoint("/ws-notifications")
                 .setHandshakeHandler(new DefaultHandshakeHandler() {
                     @Override
