@@ -33,12 +33,7 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
-
-    @PutMapping("/{id}/make-admin")
-    public ResponseEntity<User> makeAdmin(@PathVariable Long id) {
-        User adminUser = userService.makeAdmin(id);
-        return ResponseEntity.ok(adminUser);
-    }
+    
    @GetMapping("/me")
 public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
     String email = (String) request.getAttribute("userName");

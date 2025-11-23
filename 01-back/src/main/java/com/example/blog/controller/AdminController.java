@@ -111,10 +111,8 @@ public class AdminController {
         // First, delete interactions related to the post
         reportRepository.deleteByPostId(id);
         interactionRepository.deleteByPostId(id);
-        // 
+
         commentRepository.deleteByPostId(id);
-        
-        //
         postRepository.deleteById(id);
 
         return ResponseEntity.ok().build();

@@ -1,14 +1,20 @@
 # Use Java 17 base image
-
+# Eclipse Temurin is a popular OpenJDK distribution
+# i use it instead of the default openjdk image cuz it's more optimized and maintained and ready for security updates
+# Alpine version is lightweight
+# so we mix Java 17 with Alpine for a small image size
+# we use jdk cuz we need to run a jar file 
 FROM eclipse-temurin:17-jdk-alpine
 
 # Set workdir inside container
+# enter to /app directory
 WORKDIR /app
 
-# Copy jar built locally
+# Copy the built jar file from host to container and rename it to app.jar
 COPY target/01-back-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port (matches container port in docker-compose)
+# this line is optional cuz in docker-compose we can map ports directly
+# so its a good practice to expose the port our app will run on
 EXPOSE 8088
 
 # Run Spring Boot jar

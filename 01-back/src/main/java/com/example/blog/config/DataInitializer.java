@@ -26,7 +26,7 @@ public class DataInitializer {
                 admin.setRole("ADMIN"); // just "ADMIN"
                 admin.setEnabled(true);;
                 userRepository.save(admin);
-                System.out.println("✅ Admin created: admin@blog.com / admin123");
+                System.out.println("✅ Admin created");
             }
         };
     }
