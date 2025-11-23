@@ -240,7 +240,7 @@
 .post-header img {
   width: 34px;
   height: 34px;
-
+  object-fit: contain;
   border-radius: 50%;
 }
 .post-header span {

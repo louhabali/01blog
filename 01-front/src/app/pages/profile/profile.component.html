@@ -42,9 +42,9 @@
         <div class="post-content-wrapper">
           <div class="post-text">
             <div class="post-header">
-              <img [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
+              <img class="post-ava" [src]="post.avatar || 'default-avatar.png'" alt="{{post.authorName}}">
               <span style="color: black;">{{ post.authorName }} |</span>
-              <span>{{ post.createdAT | timeAgo}}</span>
+              <span>{{ post.createdAT | timeAgo }}</span>
             </div>
             <h5>{{ post.title }}</h5>
             <p (click)="goTopostdetails(post)">

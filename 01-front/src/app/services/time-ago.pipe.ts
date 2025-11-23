@@ -29,7 +29,7 @@ export class TimeAgoPipe implements PipeTransform {
     const weeks = Math.floor(days / 7);
     if (weeks < 4) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
 
-    const months = Math.floor(days / 30);
+    const months = Math.floor(days / 29);
     if (months < 12) return `${months} month${months > 1 ? 's' : ''} ago`;
 
     const years = Math.floor(days / 365);
