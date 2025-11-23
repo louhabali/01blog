@@ -4,6 +4,7 @@ services:
   db:
   # Use official Postgres image version 15
     image: postgres:15
+    restart: always
     environment:
     # Set Postgres environment variables to create DB and user
       POSTGRES_USER: alouhab
@@ -12,6 +13,8 @@ services:
     ports:
     # set up port mapping for Postgres
       - "5432:5432"
+    volumes: 
+      - db-data:/var/lib/postgresql/data
     networks:
     # connect to blog-network ,which is defined below
       - blog-network
@@ -55,3 +58,5 @@ networks:
   # use the default bridge driver for container networking , if we dont set it , bridge is used by default
   # its role is to allow containers to communicate within the same host
     driver: bridge
+volumes:
+  db-data:
