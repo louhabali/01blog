@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit {
     // --- Load current user details ---
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
-        console.log("user in header", user);
+       
         this.currentUserId = user.id;
         this.avatarUrl = user.avatar || 'default-avatar.png';
         this.role = user.role;
@@ -90,7 +90,7 @@ export class HeaderComponent implements OnInit {
           }
           this.notifsnumber = notifs.filter(n => n.actorId !== this.currentUserId && !n.seen).length;
         });
-        console.log("Logged-in user:", user);
+       
 
       },
       error: (err) => {

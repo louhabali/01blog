@@ -34,7 +34,7 @@ public class NotificationService {
     }
 
     public List<Notification> getNotificationsFor(Long userId) {
-        return repo.findTop20ByRecipientIdOrderByCreatedAtDesc(userId);
+        return repo.findByRecipientIdOrderByCreatedAtDesc(userId);
     }
 
     // optional: mark as seen

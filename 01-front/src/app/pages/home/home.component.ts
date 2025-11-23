@@ -82,7 +82,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.currentUserId = user.id;
         this.banned = user.enabled;
            if (!this.banned) {
-          //console.log("aaaaaaaaaaaaaa")
           this.auth.logout().subscribe(() => {
               this.router.navigate(['/login'])
               return;
@@ -92,7 +91,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
        
       },
       error: (err) => {
-        console.log("hhhhhhhhhhhhhhh",err.status)
+       
         if (err.status === 401) {
           this.currentUserId = 0; // not logged in
           
@@ -119,7 +118,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }));
 
           this.posts = [...this.posts, ...formatted];
-          console.log("Fetched posts:", formatted);
+          
 
           if (posts.length < this.limit) {
             this.noMorePosts = true;
@@ -130,7 +129,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.loading = false;
         },
         error: (err) => {
-          console.error('Error loading posts:', err);
+       
           this.loading = false;
         }
       });
@@ -238,7 +237,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   toggleLike(post: Post): void {
     if (this.currentUserId == 0){
-        console.log("liked btn")
+      
           this.auth.logout().subscribe()
           return
     }
