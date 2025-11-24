@@ -85,7 +85,7 @@ export class PostdetailsComponent {
     this.http.get<Post>(`http://localhost:8087/posts/${postId}?currentUserId=${this.currentUserId}`, { withCredentials: true })
       .subscribe({
         next: post => {
-          console.log("Fetched post:", post);
+          //console.log("Fetched post:", post);
           this.post = post;
         },
         error: () => {
@@ -100,7 +100,7 @@ export class PostdetailsComponent {
 
   toggleLike(post: Post): void {
      if (this.currentUserId == 0){
-        console.log("liked btn")
+        //console.log("liked btn")
           this.auth.logout().subscribe()
           return
     }
@@ -141,12 +141,12 @@ export class PostdetailsComponent {
     this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
       .subscribe({
         next: (url) => {
-          console.log("Uploaded media URL:", url);
+          //console.log("Uploaded media URL:", url);
           if (url.endsWith(".mp4")) {
             post.videoUrl = url;
             post.imageUrl = null; // reset image if new video
           } else {
-            console.log("URL IS ", url);
+            //console.log("URL IS ", url);
             post.imageUrl = url;
             post.videoUrl = null; // reset video if new image
           }
@@ -166,7 +166,7 @@ export class PostdetailsComponent {
 
   savePost(post: Post, event?: MouseEvent) {
     if (event) event.stopPropagation();
-    console.log("IMAAAAAGE :", post.imageUrl);
+    //console.log("IMAAAAAGE :", post.imageUrl);
 
     this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
       title: post.title,
@@ -176,7 +176,7 @@ export class PostdetailsComponent {
     }, { withCredentials: true })
       .subscribe({
         next: (updated) => {
-          console.log(updated);
+          //console.log(updated);
           post.title = updated.title;
           post.content = updated.content;
           post.imageUrl = updated.imageUrl;
@@ -187,7 +187,7 @@ export class PostdetailsComponent {
         },
         error: (err) => {
           if (err.status === 400) {
-            console.log("errror response is ", err.error);
+            //console.log("errror response is ", err.error);
             this.errorResponse = err.error;
             // 🧠 combine messages
             if (this.errorResponse.title && this.errorResponse.content) {

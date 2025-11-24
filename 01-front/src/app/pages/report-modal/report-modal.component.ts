@@ -33,7 +33,7 @@ export class ReportModalComponent {
 
   submitReport(event: Event) {
     event.preventDefault();
-    console.log("Submitting report:", this.currentUserId);
+    //console.log("Submitting report:", this.currentUserId);
     const payload = {
       reporterUser: { id: this.currentUserId },
       reportedUser: { id: this.reportedUserId },

@@ -148,7 +148,7 @@ export class CommentsComponent implements OnInit {
   // ✅ Confirm delete
   proceedDelete() {
     if (!this.commentToDeleteId) return;
-    console.log(55);
+    //console.log(55);
     
     this.http
       .delete(`http://localhost:8087/posts/${this.postId}/comments/${this.commentToDeleteId}?userId=${this.currentUserId}`,

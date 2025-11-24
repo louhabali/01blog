@@ -66,7 +66,7 @@ export class WebsocketService {
         this.notifications$.next([...fetchedNotifs, ...current]); // prepend stored notifications
       },
       error : (err) => {
-        console.log("403 is : ",err);
+        //console.log("403 is : ",err);
       }
     });
   }

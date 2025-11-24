@@ -1,6 +1,15 @@
 package com.example.blog.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reports")
@@ -25,6 +34,12 @@ public class Report {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // Getters & Setters
     public Long getId() {
         return id;
@@ -36,6 +51,14 @@ public class Report {
 
     public String getReason() {
         return reason;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setReason(String reason) {
@@ -57,9 +80,11 @@ public class Report {
     public void setPost(Post post) {
         this.post = post;
     }
-       public User getReporterUser() {
+
+    public User getReporterUser() {
         return reporterUser;
     }
+
     public void setReporterUser(User reporterUser) {
         this.reporterUser = reporterUser;
     }
@@ -67,6 +92,7 @@ public class Report {
     public User getReportedUser() {
         return reportedUser;
     }
+
     public void setReportedUser(User reportedUser) {
         this.reportedUser = reportedUser;
     }

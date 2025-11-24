@@ -127,10 +127,11 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Post title</th>
+                <th>Post</th>
                 <th>reported user</th>
                 <th>Reason</th>
                 <th>Description</th>
+                <th>reveived</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -139,7 +140,7 @@
                 <td>{{ r.id }}</td>
                 <td>
                   <a [routerLink]="['/posts', r.post.id]" class="link">
-                    {{ r.post.title | slice:0:10 }}{{ r.post.title.length > 10 ? '...' : '' }}
+                    {{ r.post.id}}
                   </a>
                 </td>
                 <td>
@@ -147,6 +148,7 @@
                 </td>
                 <td class="reason">{{ r.reason }}</td>
                 <td class="reason">{{ r.description }}</td>
+                <td class="reason">{{ r.createdAt | timeAgo }}</td>
                 <td class="actions">
                   <i class="fas fa-check" (click)="resolveReport(r)" title="Resolve report"></i>
                   <i class="fas fa-trash" (click)="deletePostFromReport(r.post.id)" title="Delete post"></i>

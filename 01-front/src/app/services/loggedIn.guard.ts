@@ -12,7 +12,7 @@ export class LoggedInGuard implements CanActivate {
   canActivate(): Observable<boolean | UrlTree> {
     return this.auth.getAuthCheckResult().pipe(
       map(res => {
-        console.log(res.loggedIn);
+        //console.log(res.loggedIn);
         
         if (res.loggedIn) {
           // Already logged in → redirect to home or dashboard

@@ -194,7 +194,7 @@ export class ProfileComponent implements OnInit {
     this.http.get<Post[]>(`http://localhost:8087/posts/user/${userId}?${params}`, { withCredentials: true })
       .subscribe({
         next: posts => {
-          console.log("profiel posssssssssss",posts);
+          //console.log("profiel posssssssssss",posts);
           
           if (posts.length === 0) {
             this.noMorePosts = true;
@@ -230,7 +230,7 @@ ngAfterViewInit() {
       
     if (file) {
       this.newMedia = file;
-      console.log("selected media is ", this.newMedia);
+      //console.log("selected media is ", this.newMedia);
 
       // 3. Use FileReader to create a preview
       const reader = new FileReader();
@@ -318,7 +318,7 @@ ngAfterViewInit() {
 
   toggleLike(post: Post): void {
      if (this.currentUserId == 0){
-        console.log("liked btn")
+        //console.log("liked btn")
           this.auth.logout().subscribe()
           return
     }

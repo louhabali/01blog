@@ -29,9 +29,9 @@ export class RegisterComponent {
      this.http.post('http://localhost:8087/auth/register', this.formData)
       .subscribe({
         next: (res: any) => {
-        console.log('registration successed', res);
+        //console.log('registration successed', res);
          this.router.navigate(['/login']);
-         console.log("rani jit mn spring");
+         //console.log("rani jit mn spring");
         },
         error: err => {
           if (err.status === 400) {

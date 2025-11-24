@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-
+import { TimeAgoPipe } from '../../services/time-ago.pipe';
 @Component({
   selector: 'app-admindashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule ,TimeAgoPipe],
   templateUrl: './admindashboard.component.html',
   styleUrls: ['./admindashboard.component.css'],
-  providers: [AdminService]
+  providers: [AdminService ]
 })
 export class AdmindashboardComponent implements OnInit {
   // summary stats
@@ -174,6 +174,7 @@ export class AdmindashboardComponent implements OnInit {
     this.loadingReports = true;
     this.adminService.getReports(this.reportsOffset, this.reportsLimit).subscribe({
       next: newReports => {
+        console.log("reports are :" , newReports)
         if (newReports.length < this.reportsLimit) this.allReportsLoaded = true;
         this.reports.push(...newReports);
         this.reportsOffset += newReports.length;

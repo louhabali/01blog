@@ -22,7 +22,7 @@ export class NotificationsComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getCurrentUser().subscribe(user => {
-      console.log("user in notifications",user);
+      //console.log("user in notifications",user);
       this.currentUserId = user.id;
       if (!user.enabled) {
           this.auth.logout().subscribe(() => {
@@ -59,7 +59,7 @@ export class NotificationsComponent implements OnInit {
     
   }
     handleNotificationClick(n: any) {
-      console.log("Notification clicked:", n);
+      //console.log("Notification clicked:", n);
     if (n.type === 'FOLLOW') {
       this.router.navigate(['/profile', n.actorId]); // or whatever field contains user id
     } else if (n.type === 'POST') {
