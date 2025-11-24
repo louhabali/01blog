@@ -3,6 +3,7 @@ package com.example.blog.config;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 @Component
@@ -17,7 +18,7 @@ public class TokenBlacklist {
     public void add(String token) {
         try {
             // Get the expiration date from the token
-            Date expiration = jwtUtil.extractExpiration(token); 
+            Date expiration = jwtUtil.extractExpiration(token);
             if (expiration != null) {
                 // Store the token string and its expiry timestamp
                 blacklist.put(token, expiration.getTime());

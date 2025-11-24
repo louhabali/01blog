@@ -17,3 +17,13 @@ docker-compose up -d frontend
 docker-compose down
 docker-compose build --no-cache
 docker-compose up -d
+
+
+// tasks : 
+Is error handling present on both backend and frontend?
+Are database relationships (e.g., users, posts, comments, reports) correctly set up?
+Are reports on profiles/posts saved with reasons and timestamps?
+Is all input sanitized to prevent SQL injection or XSS attacks?
+Are all actions (post/report/subscribe) confirmed with visual feedback?
+Are uploaded files retrievable without corruption?
+
