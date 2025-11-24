@@ -35,6 +35,8 @@ services:
     networks:
     # connect to blog-network which is the shared network for all services
       - blog-network
+    volumes:
+      - uploads-data:/app/uploads
     depends_on:
     # ensure that the db service is started before the backend service
       - db
@@ -60,4 +62,5 @@ networks:
   # its role is to allow containers to communicate within the same host
     driver: bridge
 volumes:
+  uploads-data:
   db-data:

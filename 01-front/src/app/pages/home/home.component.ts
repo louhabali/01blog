@@ -87,7 +87,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
               return;
           })
     }
-        
        
       },
       error: (err) => {

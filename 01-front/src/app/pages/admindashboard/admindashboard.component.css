@@ -161,8 +161,13 @@
   border-bottom: 1px solid #eee;
   text-align: left;
   overflow: hidden;
-  text-overflow: ellipsis; /* truncate long text */
-  white-space: nowrap;
+}
+.admin-table td.reason,
+.admin-table td.description {
+  white-space: normal;      /* allow wrapping */
+  overflow: visible;        /* show full text */
+  text-overflow: clip;      /* disable ellipsis */
+  word-break: break-word;   /* break long words if needed */
 }
 
 .admin-table th {

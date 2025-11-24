@@ -1,3 +1,4 @@
-docker run --name 01-blogcontainer -e POSTGRES_DB=01-blogdb -e POSTGRES_USER=alouhab -e POSTGRES_PASSWORD=alilo -p 5432:5432 -d postgres:16.4
+docker run --name 01-blogcontainer -e POSTGRES_DB=01-blogdb -e 
+POSTGRES_USER=alouhab -e POSTGRES_PASSWORD=alilo -p 5432:5432 -d postgres:16.4
 docker ps
 docker exec -it 01-blogcontainer psql -U alouhab -d 01-blogdb
