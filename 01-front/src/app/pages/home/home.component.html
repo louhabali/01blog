@@ -8,6 +8,9 @@
       <div *ngIf="showError" class="error-box">
         <span>{{ errorMessage }}</span>
       </div>
+      <div *ngIf="successMessage" class="success-box">
+        <span>{{ successMessage }}</span>
+      </div>
       <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
 
@@ -116,6 +119,7 @@
     [currentUserId]="currentUserId"
     [postId]="selectedPostId"
     [reportedUserId]="selectedReportedUserId"
-    (closed)="closeReportModal()">
+    (closed)="cancelReportModal()"
+    (submitted)="hideReportModal()">
   </app-report-modal>
 </div>

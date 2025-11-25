@@ -59,7 +59,8 @@ export class ProfileComponent implements OnInit {
   errorResponse: any = {};
   errorMessage: string = '';
   showError = false;
-
+  successMessage: string = '';
+  followmessage: string = '';
   offset = 0;
   limit = 10;
   loading = false;
@@ -159,6 +160,10 @@ export class ProfileComponent implements OnInit {
     this.userService.toggleFollow(this.currentUserId, this.user.id).subscribe({
       next: (isNowFollowed) => {
         this.user.isFollowed = isNowFollowed;
+        if (this.user.isFollowed) {
+          this.followmessage = 'You are now following ' + this.user.username;
+          setTimeout(() => { this.followmessage = ''; }, 2000);
+        }
         this.refreshFollowCounts();
       },
       error: err => console.error('Error toggling follow', err)
@@ -283,6 +288,8 @@ ngAfterViewInit() {
     this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
       .subscribe({
         next: post => {
+          this.successMessage = 'Post created successfully!';
+          setTimeout(() => { this.successMessage = ''; }, 2000);
           post.authorId = this.currentUserId;
           // You might need to add authorName and avatar from the current user object
           post.authorName = this.user.username; 
@@ -392,7 +399,13 @@ ngAfterViewInit() {
     this.selectedReportedUserId = post.authorId;
   }
 
-  closeReportModal() {
+  cancelReportModal() {
+    this.isReportModalOpen = false;
+  }
+   hideReportModal() {
+    this.centerPanel.nativeElement.scrollTop = 0;
+    this.successMessage = 'Report submitted successfully!';
+    setTimeout(() => { this.successMessage = ''; }, 2000);
     this.isReportModalOpen = false;
   }
 }

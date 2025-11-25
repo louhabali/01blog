@@ -17,12 +17,13 @@ export class ReportModalComponent {
   @Input() currentUserId!: number;
   @Input() postId!: number;
   @Input() reportedUserId!: number;
-
+  reasonmessage: string = '';
   @Output() closed = new EventEmitter<void>();
+  // send a variable when submiting post no when canceling
+  @Output() submitted = new EventEmitter<void>();
 
   reportData = {
     reason: '',
-    description: ''
   };
 
   constructor(private http: HttpClient, private router: Router , private auth : AuthService) {}
@@ -31,21 +32,27 @@ export class ReportModalComponent {
     this.closed.emit();
   }
 
-  submitReport(event: Event) {
-    event.preventDefault();
-    //console.log("Submitting report:", this.currentUserId);
+  submit() {
+ 
+    if (this.reportData.reason.trim().length > 40) {
+      
+      this.reasonmessage = "Reason must be less than 30 characters.";
+      setTimeout(() => {
+        this.reasonmessage = '';
+      }, 2000);
+       return;
+    }
     const payload = {
       reporterUser: { id: this.currentUserId },
       reportedUser: { id: this.reportedUserId },
       post: { id: this.postId },
       reason: this.reportData.reason,
-      description: this.reportData.description
     };
 
     this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
       .subscribe({
         next: () => {
-          this.close();
+          this.submitted.emit();  
         },
         error: (err) => {
            if (err.status === 401 || err.status == 403){

@@ -2,16 +2,13 @@
 
 <div class="modal" *ngIf="isOpen">
   <h2>Report Post</h2>
-
-  <form (submit)="submitReport($event)">
+  <div *ngIf="reasonmessage" class="error-message">{{ reasonmessage }}</div>
+  <form>
     <label>Reason:</label>
     <input type="text" [(ngModel)]="reportData.reason" name="reason" required>
 
-    <label>Description:</label>
-    <textarea [(ngModel)]="reportData.description" name="description" rows="3" required></textarea>
-
     <div class="modal-actions">
-      <button type="submit">Submit</button>
+      <button type="submit" (click)="submit()" >Submit</button>
       <button type="button" (click)="close()">Cancel</button>
     </div>
   </form>

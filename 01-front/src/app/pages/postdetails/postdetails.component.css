@@ -260,6 +260,7 @@
 .featured-video {
   margin: 32px 0 48px;
   width: 100%;
+  justify-content: center;
 }
 
 .featured-image img,
@@ -274,7 +275,7 @@
 /* Edit Mode Media Preview */
 .edit-media-container {
   margin: 32px 0 48px;
-  width: 100%;
+  width: 85%;
   border: 2px dashed #e6e6e6;
   border-radius: 8px;
   padding: 24px;

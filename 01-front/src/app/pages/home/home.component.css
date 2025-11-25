@@ -45,6 +45,13 @@
   text-align: center;
 
 }
+.success-box {
+  color: green;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+}
 
 /* Theme Toggle */
 .theme-icon {

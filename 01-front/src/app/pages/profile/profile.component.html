@@ -4,6 +4,7 @@
       <div *ngIf="showError" class="error-box">
         <span>{{ errorMessage }}</span>
       </div>
+     
       <input type="text" placeholder="Title" [(ngModel)]="newPost.title" />
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content"></textarea>
 
@@ -27,7 +28,9 @@
         <button (click)="submitPost()" class="publish-btn">Publish</button>
       </div>
     </div>
-
+     <div *ngIf="successMessage" class="success-box">
+        <span>{{ successMessage }}</span>
+      </div>
     <div class="posts-grid">
       <div class="post-card" *ngFor="let post of posts">
         <div class="post-top-actions">
@@ -87,7 +90,7 @@
 
     <h2>{{ user.username }}</h2>
     <p>{{ user.email }}</p>
-
+    <div class="follow-message" *ngIf="followmessage">{{ followmessage }}</div>
     <button [ngClass]="user.isFollowed ? 'unfollow-btn' : 'follow-btn'" *ngIf="user.id !== currentUserId" (click)="toggleFollow()">
       {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
     </button>
@@ -104,7 +107,8 @@
     [currentUserId]="currentUserId"
     [postId]="selectedPostId"
     [reportedUserId]="selectedReportedUserId"
-    (closed)="closeReportModal()">
+    (closed)="cancelReportModal()"
+    (submitted)="hideReportModal()">
   </app-report-modal>
   
 </div>

@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   // Error handling
   errorResponse: any = {};
+  successMessage: string = '';
   errorMessage: string = '';
   showError: boolean = false;
 
@@ -207,6 +208,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
       .subscribe({
         next: post => {
+          this.successMessage = 'Post created successfully!';
+          setTimeout(() => { this.successMessage = ''; }, 2000);
           post.authorId = this.currentUserId;
           post.avatar = post.user.avatar;
           post.authorName = post.user.username;
@@ -291,7 +294,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.selectedReportedUserId = post.authorId;
   }
 
-  closeReportModal() {
+  cancelReportModal() {
+    this.isReportModalOpen = false;
+  }
+   hideReportModal() {
+    this.postsPanel.nativeElement.scrollTop = 0;
+    this.successMessage = 'Report submitted successfully!';
+    setTimeout(() => { this.successMessage = ''; }, 2000);
     this.isReportModalOpen = false;
   }
 }
