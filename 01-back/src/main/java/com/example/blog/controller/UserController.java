@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.blog.repository.UserRepository;
 
@@ -53,7 +54,7 @@ public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")    );
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "profile not found"));
         
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());

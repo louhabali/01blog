@@ -89,7 +89,7 @@ public class PostController {
 
         Post post = postRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
-
+                System.out.println("ZOOZOZZOZOZOOZOZOZOZ");
         boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
         Long likes = interactionService.getLikesCount(post.getId());
 
