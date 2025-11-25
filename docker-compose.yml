@@ -17,7 +17,7 @@ services:
     volumes: 
       - db-data:/var/lib/postgresql/data
     networks:
-    # connect to blog-network ,which is defined below
+    # connect to blog-network for inter-service communication
       - blog-network
 # Define backend service
   backend:
