@@ -29,6 +29,7 @@ services:
     environment:
     # Set environment variables for Spring Boot application so that it can connect to Postgres DB
       SERVER_PORT: 8088
+      # use the service name 'db' as hostname to connect to Postgres container , docker DNS will resolve it and get the correct IP
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/01-blogdb
       SPRING_DATASOURCE_USERNAME: alouhab
       SPRING_DATASOURCE_PASSWORD: alilo

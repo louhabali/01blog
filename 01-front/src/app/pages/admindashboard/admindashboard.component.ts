@@ -174,7 +174,7 @@ export class AdmindashboardComponent implements OnInit {
     this.loadingReports = true;
     this.adminService.getReports(this.reportsOffset, this.reportsLimit).subscribe({
       next: newReports => {
-        console.log("reports are :" , newReports)
+        //console.log("reports are :" , newReports)
         if (newReports.length < this.reportsLimit) this.allReportsLoaded = true;
         this.reports.push(...newReports);
         this.reportsOffset += newReports.length;

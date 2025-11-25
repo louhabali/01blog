@@ -19,7 +19,7 @@ export class Checkcommentsfound implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const id = route.paramMap.get('id'); // assuming your route has /posts/:postId
     if (!id) {
-        console.log(55);
+        //console.log(55);
         
       this.router.navigate(['/not-found']);
       return of(false);
@@ -27,7 +27,7 @@ export class Checkcommentsfound implements CanActivate {
 
     return this.http.get(`http://localhost:8087/posts/${id}`, { withCredentials: true }).pipe(
       map(() =>{
-        console.log(56);
+        //console.log(56);
         return true;
       } ), 
       catchError(err => {
