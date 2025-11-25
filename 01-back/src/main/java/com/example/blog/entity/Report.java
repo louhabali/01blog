@@ -20,8 +20,6 @@ public class Report {
     private Long id;
 
     private String reason;
-    private String description;
-
     @ManyToOne
     @JoinColumn(name = "reporter_user_id")
     private User reporterUser;
@@ -64,15 +62,6 @@ public class Report {
     public void setReason(String reason) {
         this.reason = reason;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Post getPost() {
         return post;
     }

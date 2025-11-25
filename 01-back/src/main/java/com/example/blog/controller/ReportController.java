@@ -25,13 +25,18 @@ public class ReportController {
         return reportRepository.findAll();
     }
 
-        @PostMapping("/create")
+    @PostMapping("/create")
         public ResponseEntity<?> createReport(@RequestBody Report report) {
          if (report.getReporterUser() == null || report.getReporterUser().getId() == 0) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body("You must log in to submit a report");
-    }
+        }
+        if (report.getReason() != null && report.getReason().length() > 40) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Reason must be less than 40 characters.");
+        }
 
         Report savedReport = reportRepository.save(report);
         return ResponseEntity.ok(savedReport);
