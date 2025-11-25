@@ -8,12 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { importProvidersFrom } from '@angular/core';
-import { withXsrfConfiguration ,withInterceptors } from '@angular/common/http';
+import { withInterceptors } from '@angular/common/http';
 import { credentialsInterceptor } from './app/interceptor';
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(
-      withFetch(), // <-- This is CRITICAL for sending cookies
+      withFetch(), 
       withInterceptors([
         credentialsInterceptor
       ])
