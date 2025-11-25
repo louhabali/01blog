@@ -233,7 +233,7 @@ a {
   }
 
   .stats-panel {
-    width: 100%;
+    width: 90%;
     max-width: none;
     margin-bottom: 10px;
     flex-direction: row;

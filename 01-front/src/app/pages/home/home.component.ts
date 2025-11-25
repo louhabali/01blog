@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('fileUploadInput') fileUploadInput!: ElementRef<HTMLInputElement>;
 
   currentUserId!: number;
+  userIdLoaded = false;
   banned !: boolean;
   isDarkMode: boolean = false;
   posts: Post[] = [];
@@ -81,6 +82,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUserId = user.id;
+        this.userIdLoaded = true;
         this.banned = user.enabled;
            if (!this.banned) {
           this.auth.logout().subscribe(() => {

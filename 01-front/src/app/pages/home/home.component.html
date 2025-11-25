@@ -98,9 +98,14 @@
     <div class="no-more" *ngIf="noMorePosts && posts.length > 0">
       <p>You've reached the end!</p>
     </div>
-    <div *ngIf="!loading && posts.length === 0" class="no-posts">
-      <p>No posts available.</p>
-    </div>
+    <div *ngIf="userIdLoaded">
+  
+  <!-- No posts for followed users -->
+  <div *ngIf="currentUserId && !loading && posts.length === 0" class="no-posts">
+    <p>No subscribers posts available.</p>
+  </div>
+
+</div>
   </div>
 
   <!-- Delete Confirmation Modal -->
