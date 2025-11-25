@@ -26,7 +26,24 @@ List<Post> findWithOffsetLimit(
     @Param("limit") int limit,
     @Param("showAll") boolean showAll
 );
+    @Query(value = """
+    SELECT p.*
+    FROM posts p
+    JOIN subscriptions s 
+    ON s.followed_id = p.user_id
+    WHERE s.follower_id = :currentUserId
+    AND (:showAll = true OR p.is_appropriate = true)
+    ORDER BY p.created_at DESC
+    LIMIT :limit OFFSET :offset
+""", nativeQuery = true)
+List<Post> findWithOffsetLimitofsubscribed(
+    @Param("offset") int offset,
+    @Param("limit") int limit,
+    @Param("showAll") boolean showAll,
+    @Param("currentUserId") Long currentUserId
+);
     void deleteByUserId(Long userId);
+   
     @Query(value = """
     SELECT * FROM posts WHERE (user_id = :userId AND is_appropriate = true) 
     ORDER BY created_at DESC LIMIT :limit OFFSET :offset

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
     uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "followed_id"})
 )
 public class Subscription {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

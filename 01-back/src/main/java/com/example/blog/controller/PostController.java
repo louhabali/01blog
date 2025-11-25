@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -151,8 +151,7 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
         Principal principal) { // Principal is NULL if user is not logged in
             System.out.println("PRINCIPAL ");
     // 1. Get the posts (this works for everyone)
-    List<Post> posts = postRepo.findWithOffsetLimit(offset, limit, false);
-    
+    List<Post> posts = new ArrayList<>();
     // 2. Determine the Current User ID (Safely)
     Long currentUserId = null;
     
@@ -167,16 +166,17 @@ public ResponseEntity<List<PostResponse>> getAllPosts(
 
     // 3. Make "currentUserId" effectively final for the lambda below
     final Long finalUserId = currentUserId; 
-
+    if (finalUserId != null) {
+       posts = postRepo.findWithOffsetLimitofsubscribed(offset, limit, false , finalUserId);
+    }else {
+        // return the posts empty 
+        return ResponseEntity.ok(new ArrayList<>());
+    }
     List<PostResponse> responses = posts.stream()
             .map(post -> {
                 // 4. Only check "liked" if we actually have a user ID
                 boolean liked = false;
-                if (finalUserId != null) {
-                    System.out.println("FINAL USER ID : "+finalUserId);
-                    liked = postService.isPostLikedByUser(post.getId(), finalUserId);
-                }
-
+                liked = postService.isPostLikedByUser(post.getId(), finalUserId);
                 Long likes = interactionService.getLikesCount(post.getId());
                 return new PostResponse(post, liked, likes);
             })
