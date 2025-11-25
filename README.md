@@ -55,7 +55,7 @@ By completing this project, you will:
 
 ### 📰 Posts
 - Create, edit, delete posts.  
-- Add **media (images/videos)** with preview.  
+- Add **media (image/video)** with preview.  
 - Like & comment on posts.  
 - Automatic timestamps for each post.
 
@@ -128,7 +128,7 @@ By completing this project, you will:
 
 ### Tools
 - GitHub
-- Postman (API testing)
+- Postman , curl (API testing)
 - VS Code
 
 ---
