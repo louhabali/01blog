@@ -1,5 +1,9 @@
 package com.example.blog.controller;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
 import com.example.blog.entity.User;
 import com.example.blog.service.UserService;
 
@@ -67,21 +71,20 @@ public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
       @PostMapping("/{id}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(
             @PathVariable Long id,
-            @RequestParam("avatar") MultipartFile file
-    ) {
+            @RequestParam("avatar") MultipartFile file) {
+        String uploadDir = "/app/uploads/";
         try {
-            // Create uploads folder if not exists
-            String uploadDir = System.getProperty("user.dir") + "/uploads/";
-            File directory = new File(uploadDir);
-            if (!directory.exists()) directory.mkdirs();
+            // Save file to app/uploads in container
+           Files.createDirectories(Path.of(uploadDir));
 
-            // Save file with unique name
-            String filename = id + "_" + file.getOriginalFilename();
-            File dest = new File(uploadDir + filename);
-            file.transferTo(dest);
+            // Full path for the file
+            Path filePath = Path.of(uploadDir + file.getOriginalFilename());
 
-            // Build URL for frontend
-            String avatarUrl = "http://localhost:8087/uploads/" + filename;
+            // Save the file
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Return URL for frontend
+            String avatarUrl =  "http://localhost:8087/uploads/" + file.getOriginalFilename();
 
             // Update user in DB
             User user = userRepository.findById(id)
