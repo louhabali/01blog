@@ -157,20 +157,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
   isvideo : boolean = false;
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.newMedia = file;
-      const reader = new FileReader();
-      reader.onload = () => { 
-        this.mediaPreviewUrl = reader.result; 
-        this.isvideo = file.type.startsWith("video/");
-      };
-      reader.readAsDataURL(file);
-    } else {
-      this.cancelMediaPreview();
-    }
+ onFileSelected(event: any) {
+  const file = event.target.files[0];
+
+  if (!file) {
+    this.cancelMediaPreview();
+    return;
   }
+
+  // ✅ Fast size check before reading
+  if (file.size > 200 * 1024 * 1024) { // 200MB
+    this.errorMessage = "File size exceeds 200MB limit.";
+    this.showError = true;
+    setTimeout(() => { this.showError = false; }, 2000);
+    this.cancelMediaPreview();
+    return; // exit immediately
+  }
+
+  // If size is OK, proceed with preview
+  this.newMedia = file;
+  this.isvideo = file.type.startsWith("video/");
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.mediaPreviewUrl = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 
   cancelMediaPreview() {
     this.newMedia = null;
@@ -186,10 +200,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
       formData.append("file", this.newMedia);
 
       this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' ,withCredentials:true})
-        .subscribe(url => { this.createPost(url); });
+        .subscribe({
+          next : (mediaUrl) => {
+              this.createPost(mediaUrl);
+          },
+          error : (err) => {
+            //console.error("Media upload failed", err);
+            if (err.status === 400) {
+               this.errorMessage = "Media upload failed. Please try again.";
+                this.showError = true;
+            setTimeout(() => { this.showError = false; }, 2000);
+            }else if(err.status === 500)  {
+              this.errorMessage = "Server error during media upload.";
+              this.showError = true;
+              setTimeout(() => { this.showError = false; }, 2000);
+            }
+           
+          }
+        }
+          );
     } else {
       this.createPost(null);
     }
+  
   }
 
   createPost(mediaUrl: string | null) {

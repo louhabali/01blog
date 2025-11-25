@@ -125,7 +125,12 @@
 #file-upload {
   display: none;
 }
-
+.loading {
+  margin-left: auto;
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+}
 .file-label {
   display: flex;
   align-items: center;
