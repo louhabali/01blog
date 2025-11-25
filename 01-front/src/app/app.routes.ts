@@ -6,13 +6,13 @@
   import { HomeComponent } from './pages/home/home.component';
   import { CommentsComponent } from './pages/comments/comments.component';
   import { PostdetailsComponent } from './pages/postdetails/postdetails.component';
-  import { LoggedInGuard } from './services/loggedIn.guard';
-  import { AuthGuard } from './services/auth.guard';
-  import { Checkprofilefound } from './services/checkprofilefound.guard';
-  import { Checkcommentsfound } from './services/checkcommentsfound.guard';
+  import { LoggedInGuard } from './routingGuards/loggedIn.guard';
+  import { AuthGuard } from './routingGuards/auth.guard';
+  import { AdminGuard } from './routingGuards/admin.guard';
+  import { Checkprofilefound } from './routingGuards/checkprofilefound.guard';
+  import { Checkcommentsfound } from './routingGuards/checkcommentsfound.guard';
   import { NotificationsComponent } from './pages/notifications/notifications.component';
   import { AdmindashboardComponent } from './pages/admindashboard/admindashboard.component';
-  import { AdminGuard } from './services/admin.guard';
   import { NotFoundComponent } from './pages/not-found/not-found.component';
   export const routes: Routes = [
 

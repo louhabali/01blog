@@ -1,24 +1,23 @@
-
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
 @Injectable({ providedIn: 'root' })
-// logged in logic
-export class LoggedInGuard implements CanActivate {
+// handling if he's alredy or not logged
+export class AuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> {
     return this.auth.getAuthCheckResult().pipe(
       map(res => {
-
         if (res.loggedIn) {
-          // Already logged in → redirect to home or dashboard
-          return this.router.parseUrl('/home');
-        } else {
-          // Not logged in → allow access
+          // User is logged in, allow access
           return true;
+        } else {
+          // Not logged in, redirect to login
+          return this.router.parseUrl('/login');
         }
       })
     );
