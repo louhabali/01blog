@@ -1,45 +1,56 @@
 package com.example.blog.config;
 
+import com.example.blog.entity.*;
+import com.example.blog.repository.BlacklistedTokenRepository;
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional; // 💡 Import this for cleanup
+
 @Component
 public class TokenBlacklist {
-    private final Map<String, Long> blacklist = new ConcurrentHashMap<>();
+    
     private final JwtUtil jwtUtil;
+    private final BlacklistedTokenRepository tokenRepository;
 
-    public TokenBlacklist(JwtUtil jwtUtil) {
+    public TokenBlacklist(JwtUtil jwtUtil, BlacklistedTokenRepository tokenRepository) {
         this.jwtUtil = jwtUtil;
+        this.tokenRepository = tokenRepository;
     }
 
     public void add(String token) {
         try {
-            // Get the expiration date from the token
+            // 1. Get the expiration date from the token
             Date expiration = jwtUtil.extractExpiration(token);
+            
             if (expiration != null) {
-                // Store the token string and its expiry timestamp
-                blacklist.put(token, expiration.getTime());
-                System.out.println("Token added to blacklist: " + token);
+                // 2. Create and save the new BlacklistedToken entity
+                BlacklistedToken blacklistedToken = new BlacklistedToken(token, expiration);
+                tokenRepository.save(blacklistedToken);
+                System.out.println("Token added to DB blacklist: " + token);
             }
         } catch (Exception e) {
-            // Log the error, but don't crash
-            System.err.println("Error parsing token for blacklist: " + e.getMessage());
+            System.err.println("Error parsing or saving token for blacklist: " + e.getMessage());
         }
     }
 
     public boolean isBlacklisted(String token) {
-        return blacklist.containsKey(token);
+        // Check if the token exists in the database table
+        return tokenRepository.existsByToken(token);
     }
-    // run automatically every hour
-    @Scheduled(fixedRate = 3600000)
+    
+    // Cleanup must be transactional to ensure operations are atomic
+    @Transactional
+    @Scheduled(fixedRate = 3600000) // Every hour
     public void cleanup() {
-        long now = System.currentTimeMillis();
-        System.out.println("clean token blacklist");
-        blacklist.entrySet().removeIf(entry -> entry.getValue() <= now);
-        
-        System.out.println("cleanup complete , Blacklist size: " + blacklist.size());
+        Date now = new Date();
+        System.out.println("Starting database token blacklist cleanup...");
+        // Find all tokens whose expiry date is before the current time
+        List<BlacklistedToken> expiredTokens = tokenRepository.findAllByExpiryDateBefore(now);
+        // Delete them from the database
+        tokenRepository.deleteAll(expiredTokens);
+        System.out.println("Cleanup complete. Deleted " + expiredTokens.size() + " expired tokens.");
     }
 }
