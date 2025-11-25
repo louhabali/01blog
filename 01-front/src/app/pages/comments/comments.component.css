@@ -84,7 +84,14 @@
 .back-button-container {
   margin-bottom: 15px;
 }
-
+.error-box {
+  color: red;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+  
+}
 .back-button {
   display: inline-block;
   background-color: #000000;

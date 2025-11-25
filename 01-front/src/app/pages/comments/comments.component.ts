@@ -24,6 +24,7 @@ interface Comment {
 export class CommentsComponent implements OnInit {
   comments: Comment[] = [];
   newComment = '';
+  badrequestmessage: string = '';
   currentUserId!: number;
   postId!: number;
 
@@ -58,10 +59,13 @@ export class CommentsComponent implements OnInit {
       }
     });
 
+   
     this.route.paramMap.subscribe(params => {
-      this.postId = Number(params.get('id'));
+      const id = params.get('id');
+      if (id) this.postId = Number(id);
       this.loadComments();
     });
+  
   }
 
   // 📜 Load comments
@@ -81,7 +85,13 @@ export class CommentsComponent implements OnInit {
 
   // 📝 Add new comment
   addComment() {
-    if (!this.newComment.trim()) return;
+    if (!this.newComment.trim()) {
+      this.badrequestmessage = "Comment cannot be empty.";
+      setTimeout(() => {
+        this.badrequestmessage = '';
+      }, 2000);
+      return;
+    };
 
     const dto = { userId: this.currentUserId, postId: this.postId, content: this.newComment };
 

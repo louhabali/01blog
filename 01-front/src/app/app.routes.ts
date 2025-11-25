@@ -8,6 +8,8 @@
   import { PostdetailsComponent } from './pages/postdetails/postdetails.component';
   import { LoggedInGuard } from './services/loggedIn.guard';
   import { AuthGuard } from './services/auth.guard';
+  import { Checkprofilefound } from './services/checkprofilefound.guard';
+  import { Checkcommentsfound } from './services/checkcommentsfound.guard';
   import { NotificationsComponent } from './pages/notifications/notifications.component';
   import { AdmindashboardComponent } from './pages/admindashboard/admindashboard.component';
   import { AdminGuard } from './services/admin.guard';
@@ -19,8 +21,8 @@
     { path: 'register', component: RegisterComponent,canActivate:[LoggedInGuard] },
     { path: 'home', component: HomeComponent },
     { path: 'posts/:id',component:PostdetailsComponent},
-    { path: 'posts/:id/comments',component:CommentsComponent},
-    { path: 'profile/:id', component: ProfileComponent },
+    { path: 'posts/:id/comments',component:CommentsComponent ,canActivate:[Checkcommentsfound]},
+    { path: 'profile/:id', component: ProfileComponent ,canActivate:[Checkprofilefound]},
     { path: 'notifications', component: NotificationsComponent,canActivate:[AuthGuard] },
     { path: 'dashboard', component: AdmindashboardComponent,canActivate:[AdminGuard] },
 

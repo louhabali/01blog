@@ -9,9 +9,13 @@
         ← Back to Post
       </a>
     </div>
-
     <!-- Comment Form -->
     <div class="post-form">
+      <div *ngIf="badrequestmessage">
+        <div class="error-box">
+          <span>{{ badrequestmessage }}</span>
+        </div>
+      </div>
       <textarea class="content-input" placeholder="Write a comment..." [(ngModel)]="newComment"></textarea>
       <div class="form-actions">
         <button class="publish-btn" (click)="addComment()">Publish</button>

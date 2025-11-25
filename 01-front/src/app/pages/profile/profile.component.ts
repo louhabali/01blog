@@ -92,12 +92,13 @@ export class ProfileComponent implements OnInit {
         this.currentUserId = user.id;
         this.route.paramMap.subscribe(params => {
           const id = params.get('id');
+          // check if profile exists
+       
           if (id) this.loadProfile(Number(id));
         });
       },
       error: (err) => {
         if (err.status === 401) {
-          console.warn('Guest mode');
           this.currentUserId = 0;
           this.route.paramMap.subscribe(params => {
             const id = params.get('id');
