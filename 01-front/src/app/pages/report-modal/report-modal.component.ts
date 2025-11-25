@@ -30,13 +30,21 @@ export class ReportModalComponent {
 
   close() {
     this.closed.emit();
+    // reset form
+    this.reportData.reason = '';
   }
 
   submit() {
  
     if (this.reportData.reason.trim().length > 40) {
       
-      this.reasonmessage = "Reason must be less than 30 characters.";
+      this.reasonmessage = "Reason must be less than 40 characters.";
+      setTimeout(() => {
+        this.reasonmessage = '';
+      }, 2000);
+       return;
+    }else if (this.reportData.reason.trim().length === 0) {
+      this.reasonmessage = "Reason cannot be empty.";
       setTimeout(() => {
         this.reasonmessage = '';
       }, 2000);
@@ -52,7 +60,9 @@ export class ReportModalComponent {
     this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
       .subscribe({
         next: () => {
-          this.submitted.emit();  
+          this.submitted.emit(); 
+          // reset form
+          this.reportData.reason = '';
         },
         error: (err) => {
            if (err.status === 401 || err.status == 403){
