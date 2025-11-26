@@ -49,7 +49,7 @@ interface User {
 export class HeaderComponent implements OnInit {
   isMobile = false;
   menuActive = false;
-  showBadge = true;
+  showBadge = localStorage.getItem('notifBadge') !== 'false';
   notifsnumber: number = 0;
 
   currentUserId!: number;
@@ -84,11 +84,22 @@ export class HeaderComponent implements OnInit {
         this.role = user.role;
 
         this.wsService.getNotifications().subscribe(notifs => {
-          if (!this.showBadge) {
-            this.notifsnumber = 0;
-            return;
-          }
-          this.notifsnumber = notifs.filter(n => n.actorId !== this.currentUserId && !n.seen).length;
+            if (!notifs) return;
+
+  const currentCount = notifs.filter(
+    n => n.actorId !== this.currentUserId && !n.seen
+  ).length;
+
+  // Get previous count (default = 0)
+  const storedCount = Number(localStorage.getItem('lastNotifCount') || '0');
+  if (currentCount > storedCount) {
+    this.showBadge = true; 
+    localStorage.setItem('notifBadge', 'true');
+  }
+
+  // 🔄 Always update last count
+  localStorage.setItem('lastNotifCount', String(currentCount));
+
         });
        
 
@@ -107,7 +118,11 @@ export class HeaderComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (!event.url.includes('/notifications')) {
-          this.showBadge = true;
+          // store in localstorage
+          if (localStorage.getItem('notifBadge') === 'true') {
+            localStorage.setItem('notifBadge', 'true');
+            this.showBadge = true;
+          }
         }
       });
   }
@@ -168,8 +183,9 @@ export class HeaderComponent implements OnInit {
   }
 
   hideBadge() {
+    localStorage.setItem('notifBadge', 'false');
     this.showBadge = false;
-    this.notifsnumber = 0;
+   
   }
 
   toggleMenu() {

@@ -14,18 +14,26 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.Optional;
+
+import com.example.blog.entity.User;
+import com.example.blog.repository.*;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final TokenBlacklist tokenBlacklist;
     private final CustomUserDetailsService userDetailsService; // 💡 INJECT THIS
+    private final UserRepository userRepository; // 💡 INJECT USER REPOSITORY
 
     // 💡 UPDATE CONSTRUCTOR
-    public JwtAuthFilter(JwtUtil jwtUtil, TokenBlacklist tokenBlacklist, CustomUserDetailsService userDetailsService) {
+    public JwtAuthFilter(JwtUtil jwtUtil, TokenBlacklist tokenBlacklist, CustomUserDetailsService userDetailsService,
+                            UserRepository userRepository
+    ) {
         this.jwtUtil = jwtUtil;
         this.tokenBlacklist = tokenBlacklist;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -93,8 +101,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Load user details from the username in the token
         System.out.println("YES username : "+username);
 
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
+            UserDetails userDetails =  this.userDetailsService.loadUserByUsername(username);
+            // load user with username to check isEnabled
+            Optional<User> userOptional = userRepository.findByUsername(username);
+            if (userOptional.isEmpty() || !userOptional.get().isEnabled()) {
+                System.out.println("USER BANNED");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
             // Create an authentication token
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,

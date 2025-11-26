@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,7 +39,6 @@ public class NotificationController {
         Optional<User> u = ur.findByUsername(username);
         if (u.isEmpty()) {
             System.out.println("userprincipal NULL");
-
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         if (u.get().getId() != userId) {
@@ -49,9 +50,12 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    @PostMapping("/mark-as-seen")
-    public void markSeen() {
-        svc.markAllAsSeen();
+    @PostMapping("/mark-as-seen/{id}")
+    public HashMap<String , Boolean> markSeen(@PathVariable long id) {
+        // mark the notif with the id as seen
+        //System.out.println("+++++++");
+       return svc.markAsSeen(id);
+
     }
 
 }

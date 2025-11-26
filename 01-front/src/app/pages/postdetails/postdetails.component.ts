@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { AuthService } from '../../services/auth.service';
+import { log } from 'console';
 interface Post {
   id: number;
   title: string;
@@ -88,7 +89,7 @@ export class PostdetailsComponent {
           //console.log("Fetched post:", post);
           this.post = post;
         },
-        error: () => {
+        error: (err) => {
           this.router.navigate(['/404']); // redirect if error
         } // redirect if not found
       });

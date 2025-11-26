@@ -61,6 +61,8 @@ export class WebsocketService {
     this.http.get<NotificationDTO[]>(`http://localhost:8087/api/notifications/${userId}`,{withCredentials :true})
       .subscribe( {
          next: (fetchedNotifs) => {
+          console.log("fetched notifs : ",fetchedNotifs);
+          
         fetchedNotifs = fetchedNotifs.filter(n => n.actorId !== userId);
         const current = this.notifications$.getValue();
         this.notifications$.next([...fetchedNotifs, ...current]); // prepend stored notifications

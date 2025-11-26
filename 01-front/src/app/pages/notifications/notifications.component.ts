@@ -5,6 +5,8 @@ import { UserService } from '../../services/user.service';
 import { Observable, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -15,9 +17,10 @@ import { AuthService } from '../../services/auth.service';
 export class NotificationsComponent implements OnInit {
   notifications$!: Observable<NotificationDTO[]>;
   currentUserId!: number;
-
+  alreadyseen !: boolean;
+  notifId !: number;
   constructor(private wsService: WebsocketService, private userService: UserService,private router: Router,
-    private auth : AuthService
+    private auth : AuthService, private http :HttpClient
   ) {}
 
   ngOnInit() {
@@ -59,11 +62,34 @@ export class NotificationsComponent implements OnInit {
     
   }
     handleNotificationClick(n: any) {
-      //console.log("Notification clicked:", n);
+    console.log("Notification clicked:", n);
+    // coonvert n.id to number 
+    this.notifId = Number(n.id);
     if (n.type === 'FOLLOW') {
       this.router.navigate(['/profile', n.actorId]); // or whatever field contains user id
     } else if (n.type === 'POST') {
       this.router.navigate(['/posts', n.postId]);
     }
+      if (!n.seen) {
+        this.http
+          .post<{seen: boolean}>(`http://localhost:8087/api/notifications/mark-as-seen/${this.notifId}`, {}, { withCredentials: true }).subscribe({
+            next: (seenobject) => {
+              // set the color of the notif to white
+              console.log("seen now of is ",this.notifId , "is ",seenobject.seen);
+              
+              n.seen = seenobject.seen;
+            },
+            error: (err) => {
+              if (err.status === 401 || err.status == 403){
+                this.auth.logout().subscribe()
+              }else if (err.status === 500) {
+                console.log("the error is : ",err.error);
+              }
+                
+              //console.error('Error marking notification as seen', err);
+            }
+          });
+      }
+    
   }
 }

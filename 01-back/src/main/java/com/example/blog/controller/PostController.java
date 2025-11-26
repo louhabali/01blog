@@ -46,7 +46,7 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, HttpServletRequest httpRequest) {
-
+        // 
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
@@ -86,10 +86,11 @@ public class PostController {
     public ResponseEntity<PostResponse> getPostById(
             @PathVariable Long id,
             @RequestParam(required = false) Long currentUserId) {
-
-        Post post = postRepo.findById(id)
+                Post post = postRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
-                System.out.println("ZOOZOZZOZOZOOZOZOZOZ");
+                
+                System.out.println("GET POST BY ID CALLED WITH ID: " + id + " and currentUserId: " + currentUserId);
+        
         boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
         Long likes = interactionService.getLikesCount(post.getId());
 

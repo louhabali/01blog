@@ -3,7 +3,10 @@
 
   <div class="notifications-list">
     <div class="notification-item" 
-         
+          [ngClass]="{ 
+        'seen': n.seen, 
+        'unseen': !n.seen
+     }"
          style="cursor: pointer;"
          *ngFor="let n of (notifications$ | async)" 
          (click)="handleNotificationClick(n)">

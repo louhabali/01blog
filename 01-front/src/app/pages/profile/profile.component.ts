@@ -163,11 +163,15 @@ export class ProfileComponent implements OnInit {
         this.user.isFollowed = isNowFollowed;
         if (this.user.isFollowed) {
           this.followmessage = 'You are now following ' + this.user.username;
-          setTimeout(() => { this.followmessage = ''; }, 2000);
+          setTimeout(() => { this.followmessage = ''; }, 1000);
         }
         this.refreshFollowCounts();
       },
-      error: err => console.error('Error toggling follow', err)
+      error: err => {
+        if (err.status === 401 || err.status == 403){
+          this.auth.logout().subscribe()
+        }
+      }
     });
   }
 
