@@ -12,6 +12,7 @@ export interface NotificationDTO {
   postId: number | null;
   createdAt: string;
   seen: boolean;
+  allseen: boolean;
 }
 
 @Injectable({

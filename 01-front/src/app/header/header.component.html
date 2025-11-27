@@ -62,7 +62,7 @@
       </a>
 
       <a mat-button class="nav-link-item" routerLink="/notifications" (click)="hideBadge()">
-          <mat-icon>notifications<span *ngIf="showBadge && notifsnumber > 0" class="notif-badge-nav">{{ notifsnumber }}</span></mat-icon>
+          <mat-icon>notifications<span *ngIf="showBadge" class="notif-badge-nav"></span></mat-icon>
         <span>Notifications</span>
       </a>
       

@@ -12,7 +12,7 @@ public class Post {
     private Long id;
     @Size(max = 500)
     private String title;
-
+    
     @Column(columnDefinition = "TEXT")
     private String content;
      @Column(nullable=false ,columnDefinition = "BOOLEAN DEFAULT TRUE")
