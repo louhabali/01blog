@@ -14,7 +14,7 @@ public class MediaController {
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file) {
         // Path inside container (matches Docker volume)
-        String uploadDir = "/app/uploads/";
+        String uploadDir = "uploads/";
 
         try {
             // Create directory if it doesn't exist

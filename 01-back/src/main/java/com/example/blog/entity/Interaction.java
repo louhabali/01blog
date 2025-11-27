@@ -2,7 +2,9 @@ package com.example.blog.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "interactions")
+@Table(name = "interactions",
+     uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"})
+)
 public class Interaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

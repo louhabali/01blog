@@ -2,6 +2,9 @@ package com.example.blog.service;
 
 import com.example.blog.entity.*;
 import com.example.blog.repository.*;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +29,7 @@ public class PostService {
         this.notifservice = notifservice;
         this.userRepository = userRepository;
     }
-
+    @Transactional
     public Post createPost(Post post) {
         User author = post.getUser();
         Post savedPost = postRepository.save(post);

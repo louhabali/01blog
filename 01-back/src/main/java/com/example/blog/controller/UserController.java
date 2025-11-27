@@ -72,7 +72,7 @@ public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
     public ResponseEntity<Map<String, String>> uploadAvatar(
             @PathVariable Long id,
             @RequestParam("avatar") MultipartFile file) {
-        String uploadDir = "/app/uploads/";
+        String uploadDir = "uploads/";
         try {
             // Save file to app/uploads in container
            Files.createDirectories(Path.of(uploadDir));

@@ -5,6 +5,8 @@ import com.example.blog.repository.NotificationRepository;
 import com.example.blog.repository.SubscriptionRepository;
 import com.example.blog.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class SubscriptionService {
         this.repo = repo;
     }
 
+    @Transactional
     public boolean toggleFollow(Long followerId, Long followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new RuntimeException("Follower not found"));
