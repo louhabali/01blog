@@ -18,14 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-
+    
     private final PostService postService;
     private final PostRepository postRepo;
     private final UserRepository userRepository;
@@ -36,7 +39,7 @@ public class PostController {
     public PostController(PostService postService, UserRepository userRepository,
             PostRepository postRepo, InteractionService interactionService,
             CommentRepository commentRepository, InteractionRepository interactionRepository) {
-        this.postService = postService;
+                this.postService = postService;
         this.userRepository = userRepository;
         this.postRepo = postRepo;
         this.interactionService = interactionService;
@@ -44,9 +47,107 @@ public class PostController {
         this.interactionRepository = interactionRepository;
     }
 
+     // Get all posts with pagination and subscription filtering
+    @GetMapping("/all")
+    public ResponseEntity<List<PostResponse>> getAllPosts(
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String lastPostCreatedAt,
+            @RequestParam(required = false) Long lastPostId,
+            Principal principal) {
+
+        // 1. Get the posts (this works for everyone)
+        List<Post> posts = new ArrayList<>();
+        // 2. Determine the Current User ID (Safely)
+        Long currentUserId = null;
+
+        if (principal != null) {
+            String username = principal.getName();
+            // We use ifPresent or similar logic to avoid crashing if DB is weird
+            User currentUser = userRepository.findByUsername(username).orElse(null);
+            if (currentUser != null) {
+                currentUserId = currentUser.getId();
+            }
+        }
+
+        // 3. Make "currentUserId" effectively final for the lambda below
+        final Long finalUserId = currentUserId;
+        String lastPostCreatedAtStr = lastPostCreatedAt; // Use the String received
+        LocalDateTime lastPostCreatedAtToDate = null;
+
+        if (lastPostCreatedAtStr != null) {
+            try {
+                // 1. Parse the full ISO string as an Instant (handles the 'Z')
+                Instant instant = Instant.parse(lastPostCreatedAtStr);
+                // 2. Convert the Instant to a LocalDateTime (discarding the Z)
+                lastPostCreatedAtToDate = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+            } catch (DateTimeParseException e) {
+                // Log the error
+                System.err.println(
+                        "Failed to parse date string: " + lastPostCreatedAtStr + " | Error: " + e.getMessage());
+            }
+        }
+        if (finalUserId != null) {
+
+            posts = postRepo.findWithOffsetLimitofsubscribed(limit, false, finalUserId, lastPostCreatedAtToDate,
+                    lastPostId);
+        } else {
+            // return the posts empty
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+        List<PostResponse> responses = posts.stream()
+                .map(post -> {
+                    // 4. Only check "liked" if we actually have a user ID
+                    boolean liked = false;
+                    liked = postService.isPostLikedByUser(post.getId(), finalUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+    // Get posts by user with pagination
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PostResponse>> getPostsByUser(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Long currentUserId,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String lastPostCreatedAt,
+            @RequestParam(required = false) Long lastPostId
+        
+        ) {
+     String lastPostCreatedAtStr = lastPostCreatedAt; // Use the String received
+    LocalDateTime lastPostCreatedAtToDate = null;
+        
+        if (lastPostCreatedAtStr != null) {
+            try {
+                // 1. Parse the full ISO string as an Instant (handles the 'Z')
+                Instant instant = Instant.parse(lastPostCreatedAtStr);
+                // 2. Convert the Instant to a LocalDateTime (discarding the Z)
+                lastPostCreatedAtToDate = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+            } catch (DateTimeParseException e) {
+                // Log the error
+                System.err.println(
+                        "Failed to parse date string: " + lastPostCreatedAtStr + " | Error: " + e.getMessage());
+            }
+        }
+        List<Post> posts = postRepo.findPostsByUserWithPagination(userId, limit, lastPostCreatedAtToDate, lastPostId);
+    
+        List<PostResponse> responses = posts.stream()
+                .map(post -> {
+                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
+                    Long likes = interactionService.getLikesCount(post.getId());
+                    return new PostResponse(post, liked, likes);
+                })
+                .toList();
+    
+        return ResponseEntity.ok(responses);
+    }
+
+    // Create a new post
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, HttpServletRequest httpRequest) {
-        // 
+        //
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
@@ -62,41 +163,22 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PostResponse>> getPostsByUser(
-            @PathVariable Long userId,
-            @RequestParam(required = false) Long currentUserId,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit) {
-
-        List<Post> posts = postRepo.findPostsByUserWithPagination(userId, offset, limit);
-
-        List<PostResponse> responses = posts.stream()
-                .map(post -> {
-                    boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
-                    Long likes = interactionService.getLikesCount(post.getId());
-                    return new PostResponse(post, liked, likes);
-                })
-                .toList();
-
-        return ResponseEntity.ok(responses);
-    }
-
+    // Get a post by ID
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(
             @PathVariable Long id,
             @RequestParam(required = false) Long currentUserId) {
-                Post post = postRepo.findById(id)
+        Post post = postRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
-                
-                System.out.println("GET POST BY ID CALLED WITH ID: " + id + " and currentUserId: " + currentUserId);
-        
+
+        System.out.println("GET POST BY ID CALLED WITH ID: " + id + " and currentUserId: " + currentUserId);
+
         boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
         Long likes = interactionService.getLikesCount(post.getId());
 
         return ResponseEntity.ok(new PostResponse(post, liked, likes));
     }
-
+    // Toggle like on a post
     @PostMapping("/{postId}/like")
     public ResponseEntity<Boolean> toggleLike(@PathVariable Long postId,
             @RequestParam(required = false) Long userId) {
@@ -112,6 +194,7 @@ public class PostController {
         boolean liked = interactionService.toggleLike(user, post);
         return ResponseEntity.ok(liked);
     }
+    // Delete a post by ID
     @Transactional
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
@@ -120,7 +203,7 @@ public class PostController {
         postRepo.deleteById(postId);
         return ResponseEntity.noContent().build();
     }
-
+    // Edit a post
     @PutMapping("/edit/{id}")
     public ResponseEntity<Post> editPost(@PathVariable Long id, @Valid @RequestBody PostRequest updatedPost) {
         try {
@@ -144,47 +227,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    @GetMapping("/all")
-public ResponseEntity<List<PostResponse>> getAllPosts(
-        @RequestParam(defaultValue = "0") int offset,
-        @RequestParam(defaultValue = "10") int limit, 
-        Principal principal) { // Principal is NULL if user is not logged in
-            System.out.println("PRINCIPAL ");
-    // 1. Get the posts (this works for everyone)
-    List<Post> posts = new ArrayList<>();
-    // 2. Determine the Current User ID (Safely)
-    Long currentUserId = null;
-    
-    if (principal != null) {
-        String username = principal.getName();
-        // We use ifPresent or similar logic to avoid crashing if DB is weird
-        User currentUser = userRepository.findByUsername(username).orElse(null);
-        if (currentUser != null) {
-            currentUserId = currentUser.getId();
-        }
-    }
-
-    // 3. Make "currentUserId" effectively final for the lambda below
-    final Long finalUserId = currentUserId; 
-    if (finalUserId != null) {
-       posts = postRepo.findWithOffsetLimitofsubscribed(offset, limit, false , finalUserId);
-    }else {
-        // return the posts empty 
-        return ResponseEntity.ok(new ArrayList<>());
-    }
-    List<PostResponse> responses = posts.stream()
-            .map(post -> {
-                // 4. Only check "liked" if we actually have a user ID
-                boolean liked = false;
-                liked = postService.isPostLikedByUser(post.getId(), finalUserId);
-                Long likes = interactionService.getLikesCount(post.getId());
-                return new PostResponse(post, liked, likes);
-            })
-            .toList();
-
-    return ResponseEntity.ok(responses);
-}
+   
 
     @GetMapping("/user/{userId}/count")
     public ResponseEntity<Long> countPostsByUser(@PathVariable Long userId) {
