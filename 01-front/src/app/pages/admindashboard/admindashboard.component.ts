@@ -83,7 +83,7 @@ export class AdmindashboardComponent implements OnInit {
   loadStats() {
     this.adminService.getStats().subscribe({
       next: stats => {
-        this.usersCount = stats.usersCount;
+        this.usersCount = stats.usersCount -1;
         this.bannedUsersCount = stats.bannedUsersCount;
         this.postsCount = stats.postsCount;
         this.hiddenPostsCount = stats.hiddenPostsCount;
@@ -116,7 +116,14 @@ export class AdmindashboardComponent implements OnInit {
 
   toggleBan(user: any) {
     this.adminService.banUser(user.id).subscribe({
-      next: updated => user.enabled = updated.enabled,
+      next: updated =>{
+        user.enabled = updated.enabled
+        if (user.enabled){
+        this.bannedUsersCount -= 1
+        }else {
+        this.bannedUsersCount += 1
+        }
+      } ,
       error: () => this.error = 'Failed to change ban status'
     });
   }
@@ -124,7 +131,10 @@ export class AdmindashboardComponent implements OnInit {
   deleteUser(user: any) {
     this.openConfirm(`Are you sure you want to delete ${user.username}'s account?`, () => {
       this.adminService.deleteUser(user.id).subscribe({
-        next: () => this.users = this.users.filter(u => u.id !== user.id),
+        next: () =>{
+          this.users = this.users.filter(u => u.id !== user.id)
+          this.usersCount -=1
+        } ,
         error: () => this.error = 'Failed to delete user'
       });
     });
@@ -154,7 +164,14 @@ export class AdmindashboardComponent implements OnInit {
 
   hidePost(post: any) {
     this.adminService.toggleHidePost(post.id).subscribe({
-      next: updated => post.appropriate = updated.appropriate,
+      next: updated =>{
+        post.appropriate = updated.appropriate
+        if (post.appropriate){
+        this.hiddenPostsCount -= 1
+        }else {
+        this.hiddenPostsCount += 1
+        }
+      } ,
       error: () => this.error = 'Failed to toggle hide'
     });
   }
@@ -162,7 +179,10 @@ export class AdmindashboardComponent implements OnInit {
   deletePost(post: any) {
     this.openConfirm(`Are you sure you want to delete post number ${post.id} ?`, () => {
       this.adminService.deletePost(post.id).subscribe({
-        next: () => this.posts = this.posts.filter(p => p.id !== post.id),
+        next: () =>{
+          this.posts = this.posts.filter(p => p.id !== post.id)
+          this.postsCount -= 1
+        } ,
         error: () => this.error = 'Failed to delete post'
       });
     });
