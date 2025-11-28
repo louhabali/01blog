@@ -10,7 +10,7 @@ export class TimeAgoPipe implements PipeTransform {
   transform(value: string | Date): string {
     if (!value) return 'just now';
 
-    const date = new Date(value + 'Z'); // Ensure UTC by appending 'Z'
+    const date = new Date(value); // Ensure UTC by appending 'Z'
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 

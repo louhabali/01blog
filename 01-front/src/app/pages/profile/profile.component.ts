@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
   showError = false;
   successMessage: string = '';
   followmessage: string = '';
-  offset = 0;
+
   limit = 10;
   loading = false;
   noMorePosts = false;
@@ -133,7 +133,7 @@ export class ProfileComponent implements OnInit {
 
   private loadProfile(id: number) {
     // Reset pagination before loading
-    this.offset = 0;
+    
     this.noMorePosts = false;
     this.posts = [];
 
@@ -199,24 +199,26 @@ export class ProfileComponent implements OnInit {
     if (this.loading || this.noMorePosts) return;
 
     this.loading = true;
-    const params = `currentUserId=${this.currentUserId}&offset=${this.offset}&limit=${this.limit}`;
+    const lastPost = this.posts.length > 0 ? this.posts[this.posts.length - 1] : null;
+    const lastPostCreatedAt = lastPost ? new Date(lastPost.createdAT).toISOString() : null; 
+    const lastPostId = lastPost ? lastPost.id : 0; // Use null for the first fetch ID too.
+    const params = `currentUserId=${this.currentUserId}&limit=${this.limit}&lastPostCreatedAt=${lastPostCreatedAt}&lastPostId=${lastPostId}`;
 
     this.http.get<Post[]>(`http://localhost:8087/posts/user/${userId}?${params}`, { withCredentials: true })
       .subscribe({
         next: posts => {
-          //console.log("profiel posssssssssss",posts);
-          
+
           if (posts.length === 0) {
             this.noMorePosts = true;
           } else {
             if (append) this.posts = [...this.posts, ...posts];
             else this.posts = posts;
-            this.offset += this.limit;
+          
           }
           this.loading = false;
         },
         error: err => {
-          console.error('Error fetching posts:', err);
+          console.error('Error fetching posts:', err.error);
           this.loading = false;
         }
       });

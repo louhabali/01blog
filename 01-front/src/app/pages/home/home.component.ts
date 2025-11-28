@@ -44,7 +44,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isDarkMode: boolean = false;
   posts: Post[] = [];
   newPost: Partial<Post> = { title: '', content: '', likes: 0 };
-  currentOffset = 0;
   limit = 10;
   loading = false;
   noMorePosts = false;
@@ -108,9 +107,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.loading = true;
     const idParam = this.currentUserId ? `currentUserId=${this.currentUserId}&` : '';
+    const lastPost = this.posts.length > 0 ? this.posts[this.posts.length - 1] : null;
+
+    // 1. Get the date as a standard ISO string (which Spring handles better).
+    // 2. Use 'null' (or undefined) for the initial fetch, not '1970-01-01 00:00:00'.
+    const lastPostCreatedAt = lastPost ? new Date(lastPost.createdAT).toISOString() : null; 
+    const lastPostId = lastPost ? lastPost.id : null; // Use null for the first fetch ID too.
+
+    // 3. Build the URL by conditionally adding the keyset parameters.
+    let url = `http://localhost:8087/posts/all?${idParam}limit=${this.limit}`;
+    
+    if (lastPostCreatedAt !== null) {
+        // Append date and ID only if we are paginating (not the first fetch)
+        url += `&lastPostCreatedAt=${lastPostCreatedAt}`;
+        url += `&lastPostId=${lastPostId}`;
+    }
     this.http
-      .get<Post[]>(`http://localhost:8087/posts/all?${idParam}offset=${this.currentOffset}&limit=${this.limit}`,
-        { withCredentials: true })
+      .get<Post[]>(url,{ withCredentials: true })
       .subscribe({
         next: (posts) => {
           const formatted = posts.map(p => ({
@@ -124,14 +137,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
           if (posts.length < this.limit) {
             this.noMorePosts = true;
-          } else {
-            this.currentOffset += this.limit;
-          }
+          } 
 
           this.loading = false;
         },
         error: (err) => {
-       
+          console.error('Error fetching posts', err.error);
           this.loading = false;
         }
       });
