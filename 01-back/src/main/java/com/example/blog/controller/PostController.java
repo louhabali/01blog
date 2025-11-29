@@ -39,7 +39,7 @@ public class PostController {
     public PostController(PostService postService, UserRepository userRepository,
             PostRepository postRepo, InteractionService interactionService,
             CommentRepository commentRepository, InteractionRepository interactionRepository) {
-                this.postService = postService;
+        this.postService = postService;
         this.userRepository = userRepository;
         this.postRepo = postRepo;
         this.interactionService = interactionService;
@@ -71,17 +71,14 @@ public class PostController {
 
         // 3. Make "currentUserId" effectively final for the lambda below
         final Long finalUserId = currentUserId;
-        String lastPostCreatedAtStr = lastPostCreatedAt; // Use the String received
+        String lastPostCreatedAtStr = lastPostCreatedAt; 
         LocalDateTime lastPostCreatedAtToDate = null;
 
         if (lastPostCreatedAtStr != null) {
             try {
-                // 1. Parse the full ISO string as an Instant (handles the 'Z')
                 Instant instant = Instant.parse(lastPostCreatedAtStr);
-                // 2. Convert the Instant to a LocalDateTime (discarding the Z)
                 lastPostCreatedAtToDate = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
             } catch (DateTimeParseException e) {
-                // Log the error
                 System.err.println(
                         "Failed to parse date string: " + lastPostCreatedAtStr + " | Error: " + e.getMessage());
             }
@@ -116,17 +113,14 @@ public class PostController {
             @RequestParam(required = false) Long lastPostId
         
         ) {
-     String lastPostCreatedAtStr = lastPostCreatedAt; // Use the String received
+     String lastPostCreatedAtStr = lastPostCreatedAt;
     LocalDateTime lastPostCreatedAtToDate = null;
         
         if (lastPostCreatedAtStr != null) {
             try {
-                // 1. Parse the full ISO string as an Instant (handles the 'Z')
                 Instant instant = Instant.parse(lastPostCreatedAtStr);
-                // 2. Convert the Instant to a LocalDateTime (discarding the Z)
                 lastPostCreatedAtToDate = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
             } catch (DateTimeParseException e) {
-                // Log the error
                 System.err.println(
                         "Failed to parse date string: " + lastPostCreatedAtStr + " | Error: " + e.getMessage());
             }
@@ -147,15 +141,23 @@ public class PostController {
     // Create a new post
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, HttpServletRequest httpRequest) {
-        //
+        
+        // Input validation: Must have content/title OR mediaUrls
+        if ((request.getTitle() == null || request.getTitle().trim().isEmpty()) &&
+            (request.getContent() == null || request.getContent().trim().isEmpty()) &&
+            (request.getMediaUrls() == null || request.getMediaUrls().isEmpty())) {
+            
+            return ResponseEntity.badRequest().body("Post must contain a title/content or media URLs.");
+        }
+
         User author = userRepository.findById(request.getAuthorId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in"));
 
         Post post = new Post();
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
-        post.setImageUrl(request.getImageUrl());
-        post.setVideoUrl(request.getVideoUrl());
+        // MODIFIED: Use the new List field
+        post.setMediaUrls(request.getMediaUrls());
         post.setCreatedAt(request.getCreatedAt() != null ? request.getCreatedAt() : LocalDateTime.now());
         post.setUser(author);
 
@@ -171,8 +173,9 @@ public class PostController {
         Post post = postRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
 
-        System.out.println("GET POST BY ID CALLED WITH ID: " + id + " and currentUserId: " + currentUserId);
-
+            if (!post.isAppropriate()){
+               throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
+            }
         boolean liked = postService.isPostLikedByUser(post.getId(), currentUserId);
         Long likes = interactionService.getLikesCount(post.getId());
 
@@ -213,11 +216,10 @@ public class PostController {
             }
 
             // Update fields
-
             post.setTitle(updatedPost.getTitle());
             post.setContent(updatedPost.getContent());
-            post.setImageUrl(updatedPost.getImageUrl());
-            post.setVideoUrl(updatedPost.getVideoUrl());
+            // MODIFIED: Use the new List field
+            post.setMediaUrls(updatedPost.getMediaUrls());
 
             Post savedPost = postService.savePost(post);
 

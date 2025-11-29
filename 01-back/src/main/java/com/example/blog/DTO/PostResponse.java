@@ -1,8 +1,9 @@
 package com.example.blog.DTO;
 import java.time.LocalDateTime;
+import java.util.List; // Import List
 
 import com.example.blog.entity.*;
-//DTO => 
+
 public class PostResponse {
     private Long id;
     private String title;
@@ -11,26 +12,28 @@ public class PostResponse {
     private long authorId;
     private boolean liked;
     private long likes;
-    private String imageUrl;
-     private String videoUrl;
-     private String avatar;
-     private LocalDateTime createdAt; 
-     private boolean isAppropriate;
+    // MODIFIED: Replaced single media fields with a list
+    private List<String> mediaUrls; 
+    
+    private String avatar;
+    private LocalDateTime createdAt; 
+    private boolean isAppropriate;
 
     // Constructor
-    public PostResponse(Post post, boolean liked,Long likes) {
+    public PostResponse(Post post, boolean liked, Long likes) {
         this.id = post.getId();
         this.isAppropriate = post.isAppropriate();
         this.createdAt = post.getCreatedAt();
-        this.likes =likes;
+        this.likes = likes;
         this.avatar = post.getUser().getAvatar();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.authorName = post.getUser().getUsername(); 
         this.authorId = post.getUser().getId();
         this.liked = liked;
-        this.imageUrl = post.getImageUrl();
-        this.videoUrl = post.getVideoUrl();
+        // NEW/MODIFIED: Use the list of media URLs from the Post entity
+        this.mediaUrls = post.getMediaUrls(); 
+        // Removed imageUrl and videoUrl mapping
     }
 
     // Getters and setters
@@ -41,8 +44,12 @@ public class PostResponse {
     public Long getAuthorId() { return authorId; }
     public boolean isLiked() { return liked; }
     public Long getLikes() { return likes ; }
-    public String getImageUrl() { return imageUrl;}
-    public String getVideoUrl() { return videoUrl;} 
+    
+    // NEW/MODIFIED: Getter for the list of media URLs
+    public List<String> getMediaUrls() { return mediaUrls; }
+    
+    // Removed getImageUrl and getVideoUrl
+
     public LocalDateTime getCreatedAT() { return createdAt ; }
     public boolean getAppropriate() { return isAppropriate ; }
     public String getAvatar() { return avatar ; }

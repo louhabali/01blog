@@ -10,9 +10,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "reports")
+@Table(name = "reports",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"reporter_user_id","post_id"}))
 public class Report {
 
     @Id

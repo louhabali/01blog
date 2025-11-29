@@ -1,36 +1,34 @@
 package com.example.blog.DTO;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List; // Import List
 
 public class PostRequest {
-    @NotBlank(message = "Title is required")
+    // Removed @NotBlank to allow posts with only media
     @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
 
-    @NotBlank(message = "Content is required")
     @Size(max = 1000, message = "Content cannot exceed 1000 characters")
     private String content;
 
-    private String imageUrl;
-    private String videoUrl;
+    // MODIFIED: Replaced single media fields with a list
+    private List<String> mediaUrls;
 
-    private LocalDateTime createdAt; // we let Spring convert it automatically
+    private LocalDateTime createdAt;
+    private Long authorId;
 
-    private Long authorId; // comes from frontend
-
-    // ✅ Getters and Setters are mandatory
+    // ✅ Getters and Setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    // NEW/MODIFIED: Getter and Setter for the list of media URLs
+    public List<String> getMediaUrls() { return mediaUrls; }
+    public void setMediaUrls(List<String> mediaUrls) { this.mediaUrls = mediaUrls; }
 
-    public String getVideoUrl() { return videoUrl; }
-    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+    // Removed getImageUrl/setVideoUrl
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
