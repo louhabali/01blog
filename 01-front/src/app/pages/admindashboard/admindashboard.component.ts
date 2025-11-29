@@ -98,6 +98,7 @@ export class AdmindashboardComponent implements OnInit {
     this.loadingUsers = true;
     this.adminService.getUsers(this.usersOffset, this.usersLimit).subscribe({
       next: newUsers => {
+        console.log(newUsers)
         if (newUsers.length < this.usersLimit) this.allUsersLoaded = true;
         this.users.push(...newUsers);
         this.usersOffset += newUsers.length;
@@ -146,6 +147,8 @@ export class AdmindashboardComponent implements OnInit {
     this.loadingPosts = true;
     this.adminService.getPosts(this.postsOffset, this.postsLimit).subscribe({
       next: newPosts => {
+        console.log(newPosts)
+
         if (newPosts.length < this.postsLimit) this.allPostsLoaded = true;
         this.posts.push(...newPosts);
         this.postsOffset += newPosts.length;

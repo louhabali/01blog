@@ -48,6 +48,7 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>joined on</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -58,6 +59,7 @@
                   <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.id }}</a></td>
                   <td><a [routerLink]="['/profile', u.id]" class="link">{{ u.username }}</a></td>
                   <td class="email">{{ u.email }}</td>
+                  <td class="email">{{ u.createdAt | timeAgo }}</td>
                   <td  [class.active]="u.enabled" [class.banned]="!u.enabled">
                     {{ u.enabled ? 'Active' : 'Banned' }}
                   </td>
@@ -86,6 +88,7 @@
                 <th>ID</th>
                 <th>Author</th>
                 <th>Title</th>
+                <th>posted on</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -97,6 +100,7 @@
                   <a [routerLink]="['/profile', p.user.id]" class="link">{{ p.user.username }}</a>
                 </td>
                 <td class="title">{{ p.title | slice:0:10 }}...</td>
+                <td class="title">{{ p.createdAt | timeAgo }}</td>
                 <td [class.hidden]="!p.appropriate">
                   {{ p.appropriate ? 'Visible' : 'Hidden' }}
                 </td>
@@ -129,8 +133,8 @@
                 <th>ID</th>
                 <th>Post</th>
                 <th>reported user</th>
-                <th>Reason</th>
                 <th>reveived</th>
+                <th>Reason</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -145,8 +149,8 @@
                 <td>
                   <a [routerLink]="['/profile', r.post.user.id]" class="link">{{ r.post.user.username }}</a>
                 </td>
+                <td class="link">{{ r.createdAt | timeAgo }}</td>
                 <td class="reason">{{ r.reason }}</td>
-                <td class="reason">{{ r.createdAt | timeAgo }}</td>
                 <td class="actions">
                   <i class="fas fa-check" (click)="resolveReport(r)" title="Resolve report"></i>
                   <i class="fas fa-trash" (click)="deletePostFromReport(r.post.id)" title="Delete post"></i>
