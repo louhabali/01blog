@@ -46,24 +46,29 @@ public class MediaController {
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported file type: " + mimeType);
         }
 
-        // --- 2. Rename File using UUID ---
-        String originalFilename = Objects.requireNonNull(file.getOriginalFilename());
-        // Extract extension (e.g., .jpg, .mp4)
-      
+     String originalFilename = Objects.requireNonNull(file.getOriginalFilename());
+        String fileExtension = "";
+        int dotIndex = originalFilename.lastIndexOf('.');
+        if (dotIndex > 0) {
+            fileExtension = originalFilename.substring(dotIndex); // Includes the dot, e.g., ".mp4"
+        }
+        
+        // Generate a unique file name using UUID
+        String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
         try {
             // Create directory if it doesn't exist
             Files.createDirectories(Path.of(UPLOAD_DIR));
 
             // Full path for the file
-            Path filePath = Path.of(UPLOAD_DIR + originalFilename);
+            Path filePath = Path.of(UPLOAD_DIR + uniqueFileName);
 
             // Save the file
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // --- 3. Return URL ---
             // Frontend will need to store this URL in the PostRequest DTO array.
-            return "http://localhost:8087/uploads/" + originalFilename;
+            return "http://localhost:8087/uploads/" + uniqueFileName;
 
         } catch (Exception e) {
             // Log the error for debugging

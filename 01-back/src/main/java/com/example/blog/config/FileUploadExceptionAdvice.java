@@ -12,7 +12,7 @@ public class FileUploadExceptionAdvice {
     public ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException ex) {
         return ResponseEntity
                 .badRequest()
-                .body("File is too large! Maximum allowed size is 500MB.");
+                .body("File is too large! Maximum allowed size is 20MB ");
     }
 
     @ExceptionHandler(RuntimeException.class)
