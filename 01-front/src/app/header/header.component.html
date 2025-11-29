@@ -61,8 +61,8 @@
         <span>Dashboard</span>
       </a>
 
-      <a mat-button class="nav-link-item" routerLink="/notifications" (click)="hideBadge()">
-          <mat-icon>notifications<span *ngIf="showBadge" class="notif-badge-nav"></span></mat-icon>
+      <a mat-button class="nav-link-item" routerLink="/notifications">
+          <mat-icon>notifications</mat-icon>
         <span>Notifications</span>
       </a>
       
@@ -98,7 +98,7 @@
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </button>
-      <button mat-menu-item routerLink="/notifications" (click)="hideBadge()">
+      <button mat-menu-item routerLink="/notifications">
         <mat-icon>notifications</mat-icon>
         <span>Notifications</span>
       </button>

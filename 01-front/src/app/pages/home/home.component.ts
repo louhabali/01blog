@@ -266,10 +266,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.createPost(mediaUrls); 
         },
         error: (err) => {
-          console.error("Media upload failed", err);
-          this.errorMessage = "Media upload failed. Please check file formats and size.";
-          this.showError = true;
-          setTimeout(() => { this.showError = false; }, 3000);
+          //console.log(err.error);
+          
+         //Media upload failed. Please check file formats and size.
+          this.toast.open(err.error, "", {
+            duration: 2000,
+            horizontalPosition: "end",
+            panelClass: "errorAction"
+
+          })
         }
       });
     } else {
@@ -324,14 +329,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
             if (this.errorResponse.title && this.errorResponse.content) this.errorMessage = 'Title and content are required';
             else if (this.errorResponse.title) this.errorMessage = this.errorResponse.title;
             else if (this.errorResponse.content) this.errorMessage = this.errorResponse.content;
-
-            this.showError = true;
-            setTimeout(() => { this.showError = false; }, 2000);
+           this.toast.open(this.errorMessage, "", {
+            duration: 2000,
+            horizontalPosition: "end",
+            panelClass: "errorAction"
+            })
           } else if (err.status === 401 || err.status === 403) {
             this.auth.logout().subscribe();
           } else {
-            console.error('Unexpected error:', err);
+            this.toast.open(err.error, "", {
+            duration: 2000,
+            horizontalPosition: "end",
+            panelClass: "errorAction"
+          })
+            
           }
+
         }
       });
   }
@@ -399,9 +412,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.toast.open("report sent successfully", "", {
       duration: 2000,
       horizontalPosition: "end",
-
     })
-    setTimeout(() => { this.successMessage = ''; }, 2000);
     this.isReportModalOpen = false;
   }
 }

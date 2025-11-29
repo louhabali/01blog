@@ -17,6 +17,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field'; // <-- For search bar
 import { MatInputModule } from '@angular/material/input'; // <-- For search bar
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'; // <-- For search "pop-up"
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // --- User Interface (from your UsersComponent) ---
 interface User {
@@ -49,7 +50,7 @@ interface User {
 export class HeaderComponent implements OnInit {
   isMobile = false;
   menuActive = false;
-  showBadge : boolean = localStorage.getItem('notifBadge') === 'true';
+  isFirsttime = false;
   currentUserId!: number;
   avatarUrl: string = '';
   role: string = '';
@@ -67,42 +68,30 @@ export class HeaderComponent implements OnInit {
     public auth: AuthService,
     private router: Router,
     private userService: UserService,
-    private http: HttpClient 
+    private http: HttpClient ,
+    private toast: MatSnackBar
   ) { }
 
   ngOnInit() {
+    
     this.checkScreenSize();
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUserId = user.id;
         this.avatarUrl = user.avatar || 'default-avatar.png';
         this.role = user.role;
-        this.wsService.getNotifications().subscribe(notifs => {
-          // we count our notifs
-          const countnotif = notifs.filter(n => n.actorId !== this.currentUserId && !n.seen).length
-          // before we store them 
-          const lastcount = localStorage.getItem('lastcount') || '0'
-          if (Number(lastcount)< countnotif){
-            this.showBadge = true;
-            localStorage.setItem('notifBadge', 'true');
-            localStorage.setItem('lastcount',String(countnotif));
-          } 
-          }
-        )
-      },
-      error: (err) => {
-        if (err.status === 401) {
-          this.currentUserId = 0;
-        }
+        
+    },
+    error: (err) => {
+      if (err.status === 401) {
+        this.currentUserId = 0;
       }
-    });
-    this.fetchUsers();
+    }
+  });
+  this.fetchUsers();
+  this.isFirsttime = true
   }
-      hideBadge() {
-        localStorage.setItem('notifBadge', 'false');
-        this.showBadge = false;
-      }
-
+    
  
   fetchUsers() {
     this.http.get<User[]>('http://localhost:8087/users', { withCredentials: true })
