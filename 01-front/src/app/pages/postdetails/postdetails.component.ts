@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core'; 
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -7,13 +7,13 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { AuthService } from '../../services/auth.service';
-import { log } from 'console';
+
 interface Post {
   id: number;
   title: string;
   content: string;
-  imageUrl: string | null;
-  videoUrl: string | null;
+  // MODIFIED: Consolidate media into an array for slideshow support
+  mediaUrls: string[] | null; 
   author: string;
   authorId: number;
   likes: number;
@@ -23,8 +23,7 @@ interface Post {
   isEditing?: boolean;
   originalTitle?: string;
   originalContent?: string;
-  originalImage?: string | null;
-  originalVideo?: string | null;
+  originalMediaUrls?: string[] | null;
 }
 
 @Component({
@@ -34,7 +33,7 @@ interface Post {
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css']
 })
-export class PostdetailsComponent {
+export class PostdetailsComponent implements OnInit { 
 
   post!: Post;
   currentUserId!: number;
@@ -43,6 +42,9 @@ export class PostdetailsComponent {
   errorResponse: any = {};
   errorMessage: string = '';
   showError: boolean = false;
+  
+  // State for the media slider
+  currentMediaIndex: number = 0; 
 
   constructor(
     private userService: UserService,
@@ -59,7 +61,6 @@ export class PostdetailsComponent {
       next: (user) => {
         this.currentUserId = user.id;
         if (!user.enabled) {
-          //console.log("aaaaaaaaaaaaaa")
           this.auth.logout().subscribe(() => {
               this.router.navigate(['/login'])
               return;
@@ -74,6 +75,29 @@ export class PostdetailsComponent {
     });
   }
 
+  // Helper to determine media type
+  getMediaType(url: string): 'image' | 'video' | 'unknown' {
+    if (url.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {
+        return 'image';
+    } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+        return 'video';
+    }
+    return 'unknown';
+  }
+
+  // Navigation for the media slider
+  nextMedia() {
+    if (this.post.mediaUrls && this.post.mediaUrls.length > 1) {
+      this.currentMediaIndex = (this.currentMediaIndex + 1) % this.post.mediaUrls.length;
+    }
+  }
+
+  prevMedia() {
+    if (this.post.mediaUrls && this.post.mediaUrls.length > 1) {
+      this.currentMediaIndex = (this.currentMediaIndex - 1 + this.post.mediaUrls.length) % this.post.mediaUrls.length;
+    }
+  }
+  
   fetchPost() {
     const postIdStr = this.route.snapshot.paramMap.get('id');
     if (!postIdStr) {
@@ -86,12 +110,18 @@ export class PostdetailsComponent {
     this.http.get<Post>(`http://localhost:8087/posts/${postId}?currentUserId=${this.currentUserId}`, { withCredentials: true })
       .subscribe({
         next: post => {
-          //console.log("Fetched post:", post);
+          // NOTE: Assuming backend returns media as mediaUrls: string[]
+          if (post.mediaUrls && !Array.isArray(post.mediaUrls)) {
+            post.mediaUrls = [post.mediaUrls as any].filter(url => url); 
+          }
           this.post = post;
         },
         error: (err) => {
-          this.router.navigate(['/404']); // redirect if error
-        } // redirect if not found
+          if (err.status === 404 || err.status === 500){
+            this.router.navigate(['/404']); // redirect if error
+          }
+          
+        }
       });
   }
 
@@ -101,17 +131,12 @@ export class PostdetailsComponent {
 
   toggleLike(post: Post): void {
      if (this.currentUserId == 0){
-        //console.log("liked btn")
           this.auth.logout().subscribe()
           return
     }
     this.postService.toggleLike(post.id).subscribe({
       next: (liked) => {
-        if (liked == true) {
-          post.likes += 1;
-        } else {
-          post.likes -= 1;
-        }
+        post.likes += liked ? 1 : -1;
         post.liked = liked;
       },
       error: (err) => {
@@ -122,6 +147,7 @@ export class PostdetailsComponent {
     });
   }
   
+  // Modified: changeMedia signature remains the same, implementation doesn't need to change.
   changeMedia(post: Post) {
     const input = document.createElement('input');
     input.type = 'file';
@@ -130,6 +156,7 @@ export class PostdetailsComponent {
     input.click();
   }
 
+  // 🛠️ CORRECTED LOGIC: Update array element at currentMediaIndex
   onMediaSelected(event: any, post: Post) {
     const file = event.target.files[0];
     if (!file) return;
@@ -137,19 +164,23 @@ export class PostdetailsComponent {
     this.selectedMedia = file;
     const formData = new FormData();
     formData.append("file", file);
+    
+    // IMPORTANT: Ensure mediaUrls is an array before attempting to update it.
+    if (!post.mediaUrls || post.mediaUrls.length === 0) {
+        post.mediaUrls = ['']; // Initialize with a placeholder if it's null/empty
+        this.currentMediaIndex = 0;
+    }
 
     // 🔼 Upload to backend
     this.http.post("http://localhost:8087/api/media/upload", formData, { responseType: 'text' })
       .subscribe({
         next: (url) => {
-          //console.log("Uploaded media URL:", url);
-          if (url.endsWith(".mp4")) {
-            post.videoUrl = url;
-            post.imageUrl = null; // reset image if new video
-          } else {
-            //console.log("URL IS ", url);
-            post.imageUrl = url;
-            post.videoUrl = null; // reset video if new image
+          // 🚀 FIX: Replace the item at the current index only
+          if (post.mediaUrls) {
+            post.mediaUrls[this.currentMediaIndex] = url;
+            // Trigger change detection manually if needed (often not necessary in Angular, 
+            // but good practice when mutating arrays directly):
+            post.mediaUrls = [...post.mediaUrls]; 
           }
         },
         error: (err) => console.error("Error uploading media", err)
@@ -161,34 +192,30 @@ export class PostdetailsComponent {
     post.isEditing = true;
     post.originalTitle = post.title;
     post.originalContent = post.content;
-    post.originalImage = post.imageUrl;
-    post.originalVideo = post.videoUrl;
+    post.originalMediaUrls = post.mediaUrls ? [...post.mediaUrls] : null; 
   }
 
   savePost(post: Post, event?: MouseEvent) {
     if (event) event.stopPropagation();
-    //console.log("IMAAAAAGE :", post.imageUrl);
 
+    // Pass mediaUrls array
     this.http.put<Post>(`http://localhost:8087/posts/edit/${post.id}`, {
       title: post.title,
       content: post.content,
-      imageUrl: post.imageUrl,
-      videoUrl: post.videoUrl
+      mediaUrls: post.mediaUrls 
     }, { withCredentials: true })
       .subscribe({
         next: (updated) => {
-          //console.log(updated);
           post.title = updated.title;
           post.content = updated.content;
-          post.imageUrl = updated.imageUrl;
-          post.videoUrl = updated.videoUrl;
+          post.mediaUrls = updated.mediaUrls;
           post.isEditing = false;
           post.originalTitle = undefined;
           post.originalContent = undefined;
+          post.originalMediaUrls = undefined;
         },
         error: (err) => {
           if (err.status === 400) {
-            //console.log("errror response is ", err.error);
             this.errorResponse = err.error;
             // 🧠 combine messages
             if (this.errorResponse.title && this.errorResponse.content) {
@@ -212,12 +239,15 @@ export class PostdetailsComponent {
   cancelEdit(post: Post) {
     post.title = post.originalTitle || post.title;
     post.content = post.originalContent || post.content;
+    // Restore original media array
+    post.mediaUrls = post.originalMediaUrls || post.mediaUrls;
+    this.currentMediaIndex = 0;
     post.isEditing = false;
   }
 
   deletePost(post: Post) {
     if (confirm("Are you sure you want to delete this post?")) {
-      // optionally: call API to delete
+      // Logic for delete (e.g., call API)
       this.router.navigate(['/']); // back to home
     }
   }
@@ -233,6 +263,4 @@ export class PostdetailsComponent {
   goToComments(postId: number) {
     this.router.navigate([`/posts/${postId}/comments`]);
   }
-
-  // --- REMOVED changePicture() and onImageChange() ---
 }

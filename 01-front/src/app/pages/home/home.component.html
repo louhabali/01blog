@@ -1,51 +1,43 @@
 <div class="home-container">
 
-  <!-- Posts Panel -->
   <div class="posts-panel" #postsPanel [ngClass]="{'dark-mode': isDarkMode}">
 
-    <!-- Post Creation Form -->
     <div class="post-form">
-      <div *ngIf="showError" class="error-box">
-        <span>{{ errorMessage }}</span>
-      </div>
-      <div *ngIf="successMessage" class="success-box">
-        <span>{{ successMessage }}</span>
-      </div>
       <input type="text" placeholder="Title" [(ngModel)]="newPost.title" class="title-input" />
       <textarea placeholder="Tell your story..." [(ngModel)]="newPost.content" class="content-input"></textarea>
 
-      <div *ngIf="mediaPreviewUrl" class="media-preview-container">
-        <img *ngIf="!isvideo" [src]="mediaPreviewUrl" alt="Selected media preview" class="media-preview-image">
-        <video *ngIf="isvideo" width="200" height="160" controls class="media-preview-image">
-          <source [src]="mediaPreviewUrl" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <button (click)="cancelMediaPreview()" class="cancel-preview-btn">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+      <div *ngIf="mediaPreviewUrls.length > 0" class="media-previews-container">
+        <div *ngFor="let preview of mediaPreviewUrls; let i = index" class="media-preview-item">
+          <img *ngIf="!preview.isVideo" [src]="preview.url" alt="Selected media preview" class="media-preview-image">
+          <video *ngIf="preview.isVideo" width="100%" height="100%" controls class="media-preview-image">
+            <source [src]="preview.url" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <button (click)="cancelMediaPreview(i)" class="cancel-preview-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
-
       <div class="form-actions">
-        <input type="file" (change)="onFileSelected($event)" id="file-upload" #fileUploadInput />
+        <input type="file" (change)="onFileSelected($event)" id="file-upload" #fileUploadInput multiple />
         <label for="file-upload" class="file-label">
           <i class="fa-solid fa-image"></i>
+          <span *ngIf="newMedia.length > 0" class="media-count">({{ newMedia.length }}/3)</span>
         </label>
         <button (click)="submitPost()" class="publish-btn">Publish</button>
       </div>
     </div>
 
-    <!-- Posts Feed -->
     <div class="posts-feed">
       <article class="post-card" *ngFor="let post of posts">
         <div *ngIf="post.appropriate">
 
-          <!-- Post Header -->
           <div class="post-header">
             <a [routerLink]="['/profile', post.authorId]">
               <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.authorName}}" class="avatar">
             </a>
             <div class="author-info">
-              <span class="author-name">{{ post.authorName }}  | </span>
+              <span class="author-name">{{ post.authorName }} | </span>
               <span style="color: rgb(148, 143, 143);font-size: 0.875rem;">{{ post.createdAT | timeAgo }} </span>
             </div>
 
@@ -55,7 +47,6 @@
             </div>
           </div>
 
-          <!-- Post Body -->
           <div class="post-body">
             <div class="post-text">
               <h2 class="post-title">{{ post.title }}</h2>
@@ -64,22 +55,20 @@
                 <span style="color: rgb(20, 98, 154);" class="read-more" (click)="goTopostdetails(post)">...Read more</span>
               </p>
             </div>
-
-            <div *ngIf="post.imageUrl" class="post-thumbnail">
-              <img (click)="goTopostdetails(post)"  [src]="post.imageUrl" alt="post image">
-            </div>
-            <div *ngIf="post.videoUrl" class="post-thumbnail">
-              <video width="200" height="160" controls (click)="goTopostdetails(post)">
-                <source [src]="post.videoUrl" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-
-            </div>
-
-
           </div>
-
-          <!-- Post Footer -->
+            
+          <div *ngIf="post.mediaUrls && post.mediaUrls.length > 0" class="post-media-grid">
+              <div *ngFor="let mediaUrl of post.mediaUrls" class="post-media-item" (click)="goTopostdetails(post)">
+                  <ng-container [ngSwitch]="getMediaType(mediaUrl)">
+                      <img *ngSwitchCase="'image'" [src]="mediaUrl" alt="post image thumbnail">
+                      
+                      <ng-container *ngSwitchCase="'video'">
+                          <video [src]="mediaUrl" alt="video thumbnail" class="video-thumbnail-placeholder"></video>
+                          <i class="fa-solid fa-play video-play-icon"></i>
+                      </ng-container>
+                  </ng-container>
+              </div>
+          </div>
           <div class="post-footer">
             <div class="post-actions">
               <button class="action-btn" (click)="toggleLike(post)">
@@ -100,15 +89,13 @@
     </div>
     <div *ngIf="userIdLoaded">
   
-  <!-- No posts for followed users -->
-  <div *ngIf="currentUserId && !loading && posts.length === 0" class="no-posts">
-    <p>No subscribers posts available.</p>
+      <div *ngIf="currentUserId && !loading && posts.length === 0" class="no-posts">
+        <p>No subscribers posts available.</p>
+      </div>
+
+    </div>
   </div>
 
-</div>
-  </div>
-
-  <!-- Delete Confirmation Modal -->
   <div class="modal-backdrop" *ngIf="isDeleteConfirmOpen"></div>
   <div class="delete-confirm-modal" *ngIf="isDeleteConfirmOpen">
     <p>Are you sure you want to delete this post?</p>
@@ -118,7 +105,6 @@
     </div>
   </div>
 
-  <!-- Report Modal -->
   <app-report-modal
     [isOpen]="isReportModalOpen"
     [currentUserId]="currentUserId"

@@ -8,7 +8,7 @@ import { PostService } from '../../services/post.service';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
-
+import {MatSnackBar} from '@angular/material/snack-bar';
 interface Post {
   id: number;
   title: string;
@@ -83,7 +83,8 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
-    private auth :AuthService
+    private auth :AuthService , 
+    private toast : MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -162,7 +163,12 @@ export class ProfileComponent implements OnInit {
       next: (isNowFollowed) => {
         this.user.isFollowed = isNowFollowed;
         if (this.user.isFollowed) {
-          this.followmessage = 'You are now following ' + this.user.username;
+          this.toast.open("followed successfully","",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "successAction"
+        
+         })
           setTimeout(() => { this.followmessage = ''; }, 1000);
         }
         this.refreshFollowCounts();
@@ -295,8 +301,12 @@ ngAfterViewInit() {
     this.http.post<Post>('http://localhost:8087/posts/create', postPayload, { withCredentials: true })
       .subscribe({
         next: post => {
-          this.successMessage = 'Post created successfully!';
-          setTimeout(() => { this.successMessage = ''; }, 2000);
+          this.toast.open("post created successfully","",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "successAction"
+        
+         })
           post.authorId = this.currentUserId;
           // You might need to add authorName and avatar from the current user object
           post.authorName = this.user.username; 

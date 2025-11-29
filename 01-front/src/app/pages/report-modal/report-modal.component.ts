@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'app-report-modal',
   standalone: true,
@@ -26,7 +27,7 @@ export class ReportModalComponent {
     reason: '',
   };
 
-  constructor(private http: HttpClient, private router: Router , private auth : AuthService) {}
+  constructor(private http: HttpClient, private router: Router , private auth : AuthService, private toast : MatSnackBar) {}
 
   close() {
     this.closed.emit();
@@ -65,9 +66,18 @@ export class ReportModalComponent {
           this.reportData.reason = '';
         },
         error: (err) => {
-           if (err.status === 401 || err.status == 403){
+          if (err.status === 401 || err.status == 403){
           this.auth.logout().subscribe()
-        }else console.error('Unexpected error:', err);
+          }else if (err.status === 500){
+            this.close()
+          this.toast.open("you can't report this post two times","",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "errorAction",
+        
+         })
+
+        }else  console.error('Unexpected error:', err);
         }
       });
   }

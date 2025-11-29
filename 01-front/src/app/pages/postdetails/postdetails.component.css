@@ -79,9 +79,9 @@
   font-weight: 700;
   font-family: "Saira", sans-serif !important;
   white-space: pre-line;
-  overflow-wrap: break-word;    /* Modern standard */
-  max-width: 100%;              /* Prevent content from stretching container */
-  word-break: break-word;       /* Force breaking long tokens like URLs */
+  overflow-wrap: break-word;    
+  max-width: 100%;              
+  word-break: break-word;       
   line-height: 1.2;
   margin: 0 0 32px 0;
   color: #242424;
@@ -128,7 +128,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .author-details {
@@ -203,7 +203,7 @@
   color: #156d13;
 }
 
-/* Engagement Bar */
+/* Engagement Bar (Not used in the final HTML but kept for context) */
 .engagement-bar {
   padding: 16px 0;
   border-top: 1px solid #f2f2f2;
@@ -255,12 +255,13 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Featured Media */
+/* Featured Media - Used inside the slider */
 .featured-image,
 .featured-video {
-  margin: 32px 0 48px;
   width: 100%;
+  display: flex;
   justify-content: center;
+  object-fit: contain;
 }
 
 .featured-image img,
@@ -269,40 +270,117 @@
   height: auto;
   object-fit: contain;
   max-height: 500px;
+  border-radius: 8px; /* Added for styling */
 }
 
-/* --- NEW STYLES --- */
-/* Edit Mode Media Preview */
-.edit-media-container {
+/* ------------------------------------- */
+/* --- NEW SLIDER STYLES --- */
+/* ------------------------------------- */
+.media-slider {
+  position: relative;
   margin: 32px 0 48px;
-  width: 85%;
-  border: 2px dashed #e6e6e6;
+  width: 100%;
+  max-width: 700px; /* Optional max width for a cleaner look */
+  aspect-ratio: 16 / 9; /* Common aspect ratio for a controlled size */
+  
   border-radius: 8px;
-  padding: 24px;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
 }
-.article-panel.dark-mode .edit-media-container {
-  border-color: #2d2d2d;
-}
-
-.edit-media-container .featured-image,
-.edit-media-container .featured-video {
-  margin: 0; /* Remove extra margin inside container */
+.article-panel.dark-mode .media-slider {
+  background-color: #1a1a1a;
 }
 
-/* Style the change media button to be more prominent */
+.media-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* Use flex/grid if implementing actual sliding transition (omitted for simplicity) */
+}
+
+.media-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute; /* Ensures only one item takes up space at a time */
+  top: 0;
+  left: 0;
+}
+
+.media-item img, .media-item video {
+  max-height: 100%;
+  width: auto; /* Let media size naturally within the max-height/width */
+  object-fit: contain;
+}
+
+.slider-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 12px 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+
+.slider-control:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.slider-control.prev {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.slider-control.next {
+  right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.media-index-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+/* Edit Mode Overlay */
+.edit-media-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5); /* Dim background */
+  z-index: 5;
+}
+
 .change-media-btn {
-  width: auto; /* No longer just an icon */
-  padding: 8px 16px;
-  border-radius: 99px; /* Pill shape */
+  /* Use styles from the old .edit-media-container for the button */
+  width: auto; 
+  padding: 10px 20px;
+  border-radius: 99px; 
   background: #f2f2f2;
-  gap: 8px; /* Space between icon and text */
+  gap: 8px; 
   font-family: "Saira", sans-serif !important;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  color: #242424;
 }
 .change-media-btn:hover {
   background: #e6e6e6;
@@ -314,15 +392,16 @@
 .article-panel.dark-mode .change-media-btn:hover {
   background: #3a3a3a;
 }
-/* --- END NEW STYLES --- */
+/* ------------------------------------- */
+
 
 /* Article Content */
 .article-content {
   margin: 48px 0;
   white-space: pre-line;
-  overflow-wrap: break-word;    /* Modern standard */
-  max-width: 100%;              /* Prevent content from stretching container */
-  word-break: break-word;       /* Force breaking long tokens like URLs */
+  overflow-wrap: break-word;    
+  max-width: 100%;              
+  word-break: break-word;       
 }
 
 .content-text {
@@ -414,5 +493,17 @@
   .theme-icon {
     top: 72px;
     right: 16px;
+  }
+  
+  /* Slider adjustments for mobile */
+  .media-slider {
+    aspect-ratio: 4 / 3; /* Taller aspect ratio on mobile */
+    max-height: 400px;
+    margin: 20px 0 30px;
+  }
+  
+  .slider-control {
+    padding: 8px 6px;
+    font-size: 1rem;
   }
 }

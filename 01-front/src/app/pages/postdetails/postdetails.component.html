@@ -35,35 +35,60 @@
               <button class="icon-btn save-btn" *ngIf="post.isEditing" (click)="savePost(post, $event)" title="Save">
                 <i class="fa-solid fa-check"></i>
               </button>
-      
-           
-              
-              </ng-container>
+              <button class="icon-btn save-btn" *ngIf="post.isEditing" (click)="cancelEdit(post)" title="Cancel">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="post.authorId !== currentUserId">
+              <button class="icon-btn" (click)="reportPost(post)" title="Report">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </button>
+            </ng-container>
           </div>
         </div>
       </header>
 
-      <div *ngIf="!post.isEditing">
-        <div *ngIf="post.imageUrl" class="featured-image">
-          <img [src]="post.imageUrl" alt="Article featured image" />
-        </div>
-        <div *ngIf="post.videoUrl" class="featured-video">
-          <video controls [src]="post.videoUrl"></video>
-        </div>
-      </div>
-
-      <div *ngIf="post.isEditing" class="edit-media-container">
-        <div *ngIf="post.imageUrl" class="featured-image">
-          <img [src]="post.imageUrl" alt="Article featured image" />
-        </div>
-        <div *ngIf="post.videoUrl" class="featured-video">
-          <video controls [src]="post.videoUrl"></video>
-        </div>
-        <button class="icon-btn change-media-btn" title="Change Media" (click)="changeMedia(post)">
-          <i class="fa-solid fa-image"></i> Change Media
+      <div *ngIf="post.mediaUrls && post.mediaUrls.length > 0" class="media-slider">
+        <button 
+          *ngIf="post.mediaUrls.length > 1" 
+          class="slider-control prev" 
+          (click)="prevMedia()">
+          <i class="fa-solid fa-chevron-left"></i>
         </button>
-      </div>
 
+        <div class="media-content">
+          <ng-container *ngFor="let mediaUrl of post.mediaUrls; let i = index">
+            
+            <div *ngIf="i === currentMediaIndex" class="media-item">
+              <ng-container [ngSwitch]="getMediaType(mediaUrl)">
+                <div *ngSwitchCase="'image'" class="featured-image">
+                  <img [src]="mediaUrl" alt="Article featured image" />
+                </div>
+                <div *ngSwitchCase="'video'" class="featured-video">
+                  <video controls [src]="mediaUrl"></video>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+          
+          <div *ngIf="post.isEditing" class="edit-media-overlay">
+             <button class="icon-btn change-media-btn" title="Change Media" (click)="changeMedia(post)">
+              <i class="fa-solid fa-image"></i> Change Media
+            </button>
+          </div>
+        </div>
+
+        <button 
+          *ngIf="post.mediaUrls.length > 1" 
+          class="slider-control next" 
+          (click)="nextMedia()">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        
+        <div *ngIf="post.mediaUrls.length > 1" class="media-index-indicator">
+          {{ currentMediaIndex + 1 }} / {{ post.mediaUrls.length }}
+        </div>
+      </div>
       <div class="article-content">
         <div *ngIf="!post.isEditing; else editContent" class="content-text">
           <p>{{ post.content }}</p>

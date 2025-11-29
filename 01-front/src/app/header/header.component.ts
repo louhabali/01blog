@@ -61,7 +61,7 @@ export class HeaderComponent implements OnInit {
 
   // New property for mobile search toggle ---
   mobileSearchActive: boolean = false;
-
+  
   constructor(
     public wsService: WebsocketService,
     public auth: AuthService,
