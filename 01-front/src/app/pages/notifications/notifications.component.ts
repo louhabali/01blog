@@ -6,7 +6,7 @@ import { Observable, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -20,7 +20,7 @@ export class NotificationsComponent implements OnInit {
   alreadyseen !: boolean;
   notifId !: number;
   constructor(private wsService: WebsocketService, private userService: UserService,private router: Router,
-    private auth : AuthService, private http :HttpClient , private toast :MatSnackBar
+    private auth : AuthService, private http :HttpClient 
   ) {}
 
   ngOnInit() {
@@ -57,39 +57,12 @@ export class NotificationsComponent implements OnInit {
           })
         );
         
-        this.wsService.getNotifications().subscribe(notifications => {
-          if (notifications && notifications.length > 0) {
-              const newestNotif = notifications[notifications.length - 1]; 
-              const newest = notifications.reduce((latest, current) => {
-                  return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
-              }, notifications[0]);
-              this.showToast(newest);
-          }
-      });
-
+        // 2. Logic for showing toast ONLY for real-time notifications
+      
     });
     
   }
-  showToast(notif: NotificationDTO) {
-      // Create a descriptive message
-      let message = '';
-      if (notif.type === 'FOLLOW') {
-          message = `${notif.actorId} started following you!`;
-      } else if (notif.type === 'POST') {
-          message = `${notif.actorId} just posted new update`; // Assuming postTitle is in DTO
-      } else {
-          message = `New Notification: ${notif.type}`;
-      }
-
-      this.toast.open(message, "View", { 
-          duration: 4000, 
-          horizontalPosition: "end",
-          verticalPosition: "bottom",
-          panelClass: "successAction"
-      }).onAction().subscribe(() => {
-          this.handleNotificationClick(notif);
-      });
-  }
+  
     handleNotificationClick(n: any) {
     //console.log("Notification clicked:", n);
     // coonvert n.id to number 
