@@ -148,10 +148,14 @@ export class AdmindashboardComponent implements OnInit {
  }
 
  deleteUser(user: any) {
+  console.log("todleteposts",this.posts)
+  console.log("todlteReports",this.reports)
   this.openConfirm(`Are you sure you want to delete this user?`, () => {
    this.adminService.deleteUser(user.id).subscribe({
     next: () =>{
      this.users = this.users.filter(u => u.id !== user.id)
+     this.posts = this.posts.filter(p => p.user.id !== user.id )
+     this.reports = this.reports.filter(r => r.reporterUser.id !== user.id )
      this.usersCount -=1
     } ,
     error: () => this.error = 'Failed to delete user'
@@ -217,6 +221,7 @@ export class AdmindashboardComponent implements OnInit {
    this.adminService.deletePost(post.id).subscribe({
     next: () =>{
      this.posts = this.posts.filter(p => p.id !== post.id)
+     this.reports = this.reports.filter(r => r.post.id !== post.id )
      this.postsCount -= 1
     } ,
     error: () => this.error = 'Failed to delete post'
