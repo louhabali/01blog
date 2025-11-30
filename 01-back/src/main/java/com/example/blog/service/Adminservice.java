@@ -55,6 +55,7 @@ public class Adminservice {
         subscriptionRepository.deleteByFollowedId(id);
         notificationRepository.deleteByRecipientId(id);
         notificationRepository.deleteByActorId(id);
+         reportRepository.deleteByReporterUserId(id);
          // Then delete the user
         userrepo.deleteById(id);
         return ResponseEntity.ok().build();

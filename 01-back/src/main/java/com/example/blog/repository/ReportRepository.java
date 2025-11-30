@@ -23,4 +23,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             @Param("lastReportId") Long lastReportId);
     @Transactional
     void deleteByPostId(Long postId);
+    void deleteByReporterUserId(Long userId);
 }
