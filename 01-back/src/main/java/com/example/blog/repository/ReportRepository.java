@@ -12,8 +12,15 @@ import com.example.blog.entity.Report;
 import jakarta.transaction.Transactional;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
-    @Query(value = "SELECT * FROM reports ORDER BY id ASC LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<Report> findWithOffsetLimit(@Param("offset") int offset, @Param("limit") int limit);
+    @Query(value = """
+            SELECT * FROM reports 
+            WHERE (CAST(:lastReportId AS bigint) IS NULL) OR (id > :lastReportId) 
+            ORDER BY id ASC 
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Report> findNextPage(
+            @Param("limit") int limit,
+            @Param("lastReportId") Long lastReportId);
     @Transactional
     void deleteByPostId(Long postId);
 }

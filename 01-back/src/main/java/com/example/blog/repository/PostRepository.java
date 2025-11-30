@@ -23,13 +23,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = """
                 SELECT * FROM posts
                 WHERE (:showAll = true OR is_appropriate = true)
-                ORDER BY created_at DESC
-                LIMIT :limit OFFSET :offset
+                AND (
+                    (CAST(:lastPostCreatedAt AS timestamp) IS NULL) OR
+                    (created_at < :lastPostCreatedAt) OR
+                    (created_at = :lastPostCreatedAt AND id > :lastPostId)
+                )
+                ORDER BY created_at DESC, id ASC
+                LIMIT :limit
             """, nativeQuery = true)
-    List<Post> findWithOffsetLimit(
-            @Param("offset") int offset,
+    List<Post> findGlobalFeed(
             @Param("limit") int limit,
-            @Param("showAll") boolean showAll);
+            @Param("showAll") boolean showAll,
+            @Param("lastPostCreatedAt") LocalDateTime lastPostCreatedAt,
+            @Param("lastPostId") Long lastPostId);
 
     @Query(value = """
                 SELECT p.*

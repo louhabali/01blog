@@ -18,8 +18,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findById(long id);
     long countByEnabledFalse(); // count banned users
-    @Query(value = "SELECT * FROM users ORDER BY id ASC LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<User> findWithOffsetLimit(@Param("offset") int offset, @Param("limit") int limit);
+   @Query(value = """
+            SELECT * FROM users 
+            WHERE (CAST(:lastUserId AS bigint) IS NULL) OR (id > :lastUserId) 
+            ORDER BY id ASC 
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<User> findNextPage(
+            @Param("limit") int limit,
+            @Param("lastUserId") Long lastUserId);
 
 
 }

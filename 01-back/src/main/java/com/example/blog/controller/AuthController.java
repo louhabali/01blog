@@ -116,10 +116,7 @@ public class AuthController {
             for (Cookie cookie : request.getCookies()) {
                 if ("jwt".equals(cookie.getName())) {
                     String token = cookie.getValue();
-
-                    // 🧱 add token to blacklist
                     tokenBlacklist.add(token);
-
                     break;
                 }
             }
