@@ -2,11 +2,12 @@
 
     import jakarta.persistence.*;
     import java.time.LocalDateTime;
-    
-    import com.fasterxml.jackson.annotation.JsonIgnore;
+   
     import com.fasterxml.jackson.annotation.JsonProperty;
     @Entity
-    @Table(name = "users")
+    @Table(name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"username","email"})
+    )
     public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
