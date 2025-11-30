@@ -5,10 +5,10 @@ import java.util.List; // Import List
 
 public class PostRequest {
     // Removed @NotBlank to allow posts with only media
-    @Size(min = 5 , max = 100, message = "Title cannot be less than 6 or exceed 100 characters")
+    @Size(min = 5 , max = 100, message = "Title cannot be less than 5 or exceed 100 characters")
     private String title;
 
-    @Size(min=5 ,max = 1000, message = "Content cannot be less than 6 or  exceed 1000 characters")
+    @Size(min=5 ,max = 1000, message = "Content cannot be less than 5 or  exceed 1000 characters")
     private String content;
 
     // MODIFIED: Replaced single media fields with a list

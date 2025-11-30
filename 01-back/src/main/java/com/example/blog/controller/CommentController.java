@@ -40,6 +40,10 @@ public List<Comment> getComments(
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                              .body("You must log in to submit a report");
         }
+        if (dto.content.length() > 100){
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body("Content cannot exceed 100 chars.");
+        }
         User user = userService.getUserById(dto.userId);
         Post post = postService.getPostById(dto.postId);
 
@@ -57,7 +61,7 @@ public List<Comment> getComments(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody CommentDTO dto) {
-
+            
         Comment existing = commentService.getCommentById(commentId);
         if (existing == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -68,7 +72,10 @@ public List<Comment> getComments(
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("You can only edit your own comments");
         }
-
+        if (dto.content.length() > 100){
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body("Content cannot exceed 100 chars.");
+        }
         existing.setContent(dto.content);
         commentService.updateComment(existing);
 
