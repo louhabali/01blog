@@ -56,8 +56,9 @@ export class AppComponent {
     });
   }
   showToast(notif: NotificationDTO) {
-      // Create a descriptive message
-      console.log("notifnewwwwwwwwwww is : ",notif)
+      if (notif.sender == null){
+        return;
+      }
       let message = '';
       if (notif.type === 'FOLLOW') {
           message = `${notif.sender} started following you!`;
