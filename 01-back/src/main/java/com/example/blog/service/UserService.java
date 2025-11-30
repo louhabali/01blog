@@ -18,8 +18,9 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-     public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> searchUsersByUsername(String usernamePartial) {
+        // Calls the new custom repository method
+        return userRepository.findByUsernameContainingIgnoreCase(usernamePartial);
     }
     public User getUserById(long id){
         Optional<User> optionalUser = userRepository.findById(id);

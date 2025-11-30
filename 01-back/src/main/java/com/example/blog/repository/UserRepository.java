@@ -28,5 +28,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("limit") int limit,
             @Param("lastUserId") Long lastUserId);
 
-
+        List<User> findByUsernameContainingIgnoreCase(String username);
 }

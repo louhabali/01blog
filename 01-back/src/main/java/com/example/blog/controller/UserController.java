@@ -33,9 +33,13 @@ public class UserController {
     }
 
     // GET /users - list all users
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+   @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsersByName(
+            // Expects 'name' query parameter (e.g., /users/search?name=john)
+            @RequestParam("name") String name) { 
+        
+        
+        List<User> users = userService.searchUsersByUsername(name);
         return ResponseEntity.ok(users);
     }
     
