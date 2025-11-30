@@ -69,7 +69,7 @@ export class AppComponent {
       }
 
       this.toast.open(message, "View", { 
-          duration: 4000, 
+          duration: 3000, 
           horizontalPosition: "end",
           verticalPosition: "bottom",
           panelClass: "successAction"
@@ -91,16 +91,18 @@ export class AppComponent {
         this.http
           .post<{seen: boolean}>(`http://localhost:8087/api/notifications/mark-as-seen/${this.notifId}`, {}, { withCredentials: true }).subscribe({
             next: (seenobject) => {
-              // set the color of the notif to white
-              console.log("seen now of is ",this.notifId , "is ",seenobject.seen);
-              
               n.seen = seenobject.seen;
             },
             error: (err) => {
               if (err.status === 401 || err.status == 403){
                 this.auth.logout().subscribe()
               }else if (err.status === 500) {
-                console.log("the error is : ",err.error);
+                 this.toast.open(err.error, "View", { 
+                  duration: 2000, 
+                  horizontalPosition: "end",
+                  verticalPosition: "bottom",
+                  panelClass: "errorAction"
+      })
               }
                 
               //console.error('Error marking notification as seen', err);

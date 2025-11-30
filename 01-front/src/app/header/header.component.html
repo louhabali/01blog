@@ -20,16 +20,13 @@
 </mat-autocomplete>
 </mat-form-field>
 </div>
-
-
 <span class="spacer"></span>
-
-
 <nav class="nav-links" *ngIf="!isMobile">
 <a mat-button class="nav-link-item" routerLink="/home"><mat-icon>home</mat-icon><span>Home</span></a>
 <ng-container *ngIf="!auth.isLoggedIn()">
 <a mat-button class="nav-link-item" routerLink="/login"><mat-icon>login</mat-icon><span>Sign in</span></a>
-</ng-container>
+</ng-container> 
+
 <ng-container *ngIf="auth.isLoggedIn()">
 <a *ngIf="role === 'ADMIN'" mat-button class="nav-link-item" routerLink="/dashboard"><mat-icon>dashboard</mat-icon><span>Dashboard</span></a>
 <a mat-button class="nav-link-item" routerLink="/notifications"><mat-icon>notifications</mat-icon><span>Notifications</span></a>

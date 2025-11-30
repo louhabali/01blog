@@ -155,8 +155,7 @@ export class AdmindashboardComponent implements OnInit {
  }
 
  deleteUser(user: any) {
-  console.log("todleteposts",this.posts)
-  console.log("todlteReports",this.reports)
+ 
   this.openConfirm(`Are you sure you want to delete this user?`, () => {
    this.adminService.deleteUser(user.id).subscribe({
     next: () =>{
