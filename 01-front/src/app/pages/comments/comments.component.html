@@ -11,11 +11,6 @@
     </div>
     <!-- Comment Form -->
     <div class="post-form">
-      <div *ngIf="badrequestmessage">
-        <div class="error-box">
-          <span>{{ badrequestmessage }}</span>
-        </div>
-      </div>
       <textarea class="content-input" placeholder="Write a comment..." [(ngModel)]="newComment"></textarea>
       <div class="form-actions">
         <button class="publish-btn" (click)="addComment()">Publish</button>
@@ -60,13 +55,12 @@
               <i class="fas fa-trash"></i>
             </button>
 
-            <!-- ✅ Save/Cancel buttons -->
             <div *ngIf="editingCommentId === comment.id" class="edit-actions">
               <button class="save-btn" (click)="saveEdit(comment)" title="Save">
-                <i class="fas fa-save"></i> 
+                <i class="fa-solid fa-check"></i> 
               </button>
               <button class="cancel-btn" (click)="cancelEdit()" title="Cancel">
-                <i class="fas fa-times"></i> 
+                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
           </div>

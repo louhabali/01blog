@@ -7,7 +7,7 @@ import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { UserService } from '../../services/user.service';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 interface Comment {
   id: number;
   user: { id: number; username: string; avatar?: string };
@@ -46,7 +46,8 @@ export class CommentsComponent implements OnInit {
     private http: HttpClient,
     private userService: UserService,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private toast : MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -83,16 +84,24 @@ export class CommentsComponent implements OnInit {
       });
   }
 
-  // 📝 Add new comment
+  
   addComment() {
     if (!this.newComment.trim()) {
       this.badrequestmessage = "Comment cannot be empty.";
-      setTimeout(() => {
-        this.badrequestmessage = '';
-      }, 2000);
+      
       return;
     };
-
+    if (this.newComment.trim().length >100){
+        
+        this.badrequestmessage = "Comment cannot exceed 100 characters.";
+        this.toast.open(this.badrequestmessage, "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "errorAction"
+ 
+           })
+           return;
+      }
     const dto = { userId: this.currentUserId, postId: this.postId, content: this.newComment };
 
     this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto, { withCredentials: true })
@@ -107,8 +116,14 @@ export class CommentsComponent implements OnInit {
         error: err => {
           if (err.status === 401 || err.status == 403) {
             this.auth.logout().subscribe();
-          } else {
-            console.error('Unexpected error:', err);
+          } else if (err.status === 400) {
+              this.badrequestmessage = "Comment cannot exceed 100 characters.";
+              this.toast.open(this.badrequestmessage, "", {
+              duration: 2000,
+              horizontalPosition: "end",
+              panelClass: "errorAction"
+ 
+           })
           }
         },
       });
@@ -123,7 +138,6 @@ export class CommentsComponent implements OnInit {
     }
   }
 
-  // ✏️ Editing comment
   startEdit(comment: Comment) {
     this.editingCommentId = comment.id;
     this.editedContent = comment.content;
@@ -136,7 +150,16 @@ export class CommentsComponent implements OnInit {
 
   saveEdit(comment: Comment) {
     if (!this.editedContent.trim()) return;
-
+    if (comment.content.trim().length >100){
+        this.badrequestmessage = "Comment cannot exceed 100 characters.";
+        this.toast.open(this.badrequestmessage, "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "errorAction"
+ 
+           })
+           return;
+      }
     const dto = { userId: this.currentUserId, postId: this.postId, content: this.editedContent };
 
     this.http.put(`http://localhost:8087/posts/${this.postId}/comments/${comment.id}`, dto, { withCredentials: true })
@@ -145,17 +168,26 @@ export class CommentsComponent implements OnInit {
           comment.content = this.editedContent; // update UI instantly
           this.cancelEdit();
         },
-        error: err => console.error('Edit failed', err),
-      });
-  }
+        error: err => {
+          if (err.status === 400) {
+              this.badrequestmessage = "Comment cannot exceed 100 characters.";
+              this.toast.open(this.badrequestmessage, "", {
+              duration: 2000,
+              horizontalPosition: "end",
+              panelClass: "errorAction"
+              })
+          }
+        },
 
-  // 🗑️ Open delete confirmation modal
+      })
+      
+    }
+
+
   deleteComment(commentId: number) {
     this.commentToDeleteId = commentId;
     this.isDeleteConfirmOpen = true;
   }
-
-  // ✅ Confirm delete
   proceedDelete() {
     if (!this.commentToDeleteId) return;
     this.http
