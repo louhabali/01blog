@@ -42,6 +42,7 @@ public class PostService {
             n.setActorId(author.getId()); // the one who posted
             n.setType("POST");
             n.setPostId(savedPost.getId());
+            n.setSender(savedPost.getUser().getUsername());
             n.setMessage(savedPost.getUser().getUsername() + " has posted a new update!");
 
             // Save to DB

@@ -15,6 +15,7 @@ public class Notification {
     private String type; // FOLLOW / LIKE / COMMENT
     private String message;
     private Long postId;
+    private String sender;
     private boolean seen = false;
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -46,7 +47,12 @@ public class Notification {
     public void setType(String type) {
         this.type = type;
     }
-
+    public String getSender() {
+        return sender;
+    }
+    public void setSender(String s) {
+        this.sender = s;
+    }
     public String getMessage() {
         return message;
     }

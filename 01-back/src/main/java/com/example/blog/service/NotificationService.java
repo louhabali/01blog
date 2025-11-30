@@ -34,6 +34,7 @@ public class NotificationService {
         notification.getType(),
         notification.getMessage(),
         notification.getPostId(),
+        notification.getSender(),
         notification.getCreatedAt(),
         notification.isSeen()
     );

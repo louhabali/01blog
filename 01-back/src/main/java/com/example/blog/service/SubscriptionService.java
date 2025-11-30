@@ -44,6 +44,7 @@ public class SubscriptionService {
                     n.setRecipientId(followedId);
                     n.setActorId(followerId);
                     n.setType("FOLLOW");
+                    n.setSender(follower.getUsername());
                     n.setMessage(follower.getUsername() +" has followed you!");
                 //n.setPostId(postId);
                 

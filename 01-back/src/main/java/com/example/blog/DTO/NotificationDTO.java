@@ -8,6 +8,7 @@ public record NotificationDTO(
     String type,
     String message,
     Long postId,
+    String sender,
     LocalDateTime createdAt,
     boolean seen
 ) {}
