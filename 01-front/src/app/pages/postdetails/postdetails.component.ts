@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
 import { AuthService } from '../../services/auth.service';
-
+import {MatSnackBar} from '@angular/material/snack-bar';
 interface Post {
   id: number;
   title: string;
@@ -52,7 +52,8 @@ export class PostdetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private postService: PostService ,
-    private auth : AuthService
+    private auth : AuthService,
+    private toast : MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -206,6 +207,12 @@ export class PostdetailsComponent implements OnInit {
     }, { withCredentials: true })
       .subscribe({
         next: (updated) => {
+           this.toast.open(`updated successfully`,"",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "successAction",
+        
+         })
           post.title = updated.title;
           post.content = updated.content;
           post.mediaUrls = updated.mediaUrls;
@@ -225,10 +232,12 @@ export class PostdetailsComponent implements OnInit {
             } else if (this.errorResponse.content) {
               this.errorMessage = this.errorResponse.content;
             }
-            this.showError = true;
-            setTimeout(() => {
-              this.showError = false;
-            }, 2000);
+            this.toast.open(`${this.errorMessage }`,"",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "errorAction",
+        
+         })
           } else {
             console.error('Unexpected error:', err);
           }

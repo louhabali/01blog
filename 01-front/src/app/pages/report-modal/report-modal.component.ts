@@ -58,6 +58,8 @@ export class ReportModalComponent {
       reason: this.reportData.reason,
     };
 
+    // jd
+    
     this.http.post('http://localhost:8087/reports/create', payload, { withCredentials: true })
       .subscribe({
         next: () => {

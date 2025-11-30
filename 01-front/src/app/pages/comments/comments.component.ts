@@ -88,7 +88,12 @@ export class CommentsComponent implements OnInit {
   addComment() {
     if (!this.newComment.trim()) {
       this.badrequestmessage = "Comment cannot be empty.";
-      
+      this.toast.open(this.badrequestmessage, "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "errorAction"
+ 
+           })
       return;
     };
     if (this.newComment.trim().length >100){
@@ -107,6 +112,12 @@ export class CommentsComponent implements OnInit {
     this.http.post(`http://localhost:8087/posts/${this.postId}/comments`, dto, { withCredentials: true })
       .subscribe({
         next: () => {
+          this.toast.open("comment posted successfully", "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "successAction"
+ 
+           })
           this.comments = [];
           this.offset = 0;
           this.allLoaded = false;
@@ -165,6 +176,12 @@ export class CommentsComponent implements OnInit {
     this.http.put(`http://localhost:8087/posts/${this.postId}/comments/${comment.id}`, dto, { withCredentials: true })
       .subscribe({
         next: () => {
+          this.toast.open("comment updated successfully", "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "successAction"
+ 
+           })
           comment.content = this.editedContent; // update UI instantly
           this.cancelEdit();
         },
@@ -195,6 +212,13 @@ export class CommentsComponent implements OnInit {
         { withCredentials: true })
       .subscribe({
         next: () => {
+
+          this.toast.open("comment deleted successfully", "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "successAction"
+ 
+           })
           this.comments = [...this.comments.filter(c => c.id !== this.commentToDeleteId)];
           this.isDeleteConfirmOpen = false;
           this.commentToDeleteId = null;

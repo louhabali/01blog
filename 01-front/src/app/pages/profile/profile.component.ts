@@ -126,7 +126,14 @@ export class ProfileComponent implements OnInit {
         formData,
         { withCredentials: true }
       ).subscribe({
-        next: (res) => this.user.avatar = res.avatarUrl,
+        next: (res) =>{
+          this.toast.open("avatar updated successfully", "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "successAction"
+ 
+           })
+         this.user.avatar = res.avatarUrl},
         error: (err) => console.error('Error uploading avatar', err)
       });
     }
@@ -298,6 +305,12 @@ ngAfterViewInit() {
     this.http.delete(`http://localhost:8087/posts/delete/${this.postToDelete.id}`, { withCredentials: true })
       .subscribe({
         next: () => {
+          this.toast.open("post deleted successfully", "", {
+             duration: 2000,
+             horizontalPosition: "end",
+             panelClass: "successAction"
+ 
+           })
           this.posts = this.posts.filter(p => p.id !== this.postToDelete!.id);
           this.cancelDelete();
         },
@@ -322,9 +335,11 @@ ngAfterViewInit() {
     this.isReportModalOpen = false;
   }
    hideReportModal() {
-    this.centerPanel.nativeElement.scrollTop = 0;
-    this.successMessage = 'Report submitted successfully!';
-    setTimeout(() => { this.successMessage = ''; }, 2000);
+     this.toast.open("report sent successfully", "", {
+   duration: 2000,
+   horizontalPosition: "end",
+   panelClass: "successAction" // Added panelClass for consistency
+  })
     this.isReportModalOpen = false;
   }
 }
