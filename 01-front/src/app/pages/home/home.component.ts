@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
  errorResponse: any = {};
  successMessage: string = '';
  errorMessage: string = '';
- showError: boolean = false;
+
 
  // MODIFIED: Media handling now uses arrays
  newMedia: File[] = [];
@@ -221,14 +221,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   if (fileError) {
-   this.showError = true;
+ 
    // ✅ Apply toast logic here for file validation errors
    this.toast.open(this.errorMessage, "", {
     duration: 2000,
     horizontalPosition: "end",
     panelClass: "errorAction"
    });
-   setTimeout(() => { this.showError = false; }, 2000);
    return; 
   }
 
@@ -257,8 +256,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
  // MODIFIED: Handles parallel media uploads
  submitPost() {
-  this.showError = false; 
-
   if (this.newMedia.length > 0) {
    const uploadObservables = this.newMedia.map(file => {
     const formData = new FormData();
@@ -304,14 +301,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   if (mediaUrls === null && (!postPayload.title || postPayload.title.trim() === '') && (!postPayload.content || postPayload.content.trim() === '')) {
    this.errorMessage = 'Post must contain a title/content or media.';
-   this.showError = true;
+
    // ✅ Apply toast logic here for post content validation error
    this.toast.open(this.errorMessage, "", {
     duration: 2000,
     horizontalPosition: "end",
     panelClass: "errorAction"
    });
-   setTimeout(() => { this.showError = false; }, 2000);
+
    return;
   }
 

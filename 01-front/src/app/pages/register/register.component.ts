@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -24,7 +25,14 @@ export class RegisterComponent {
     errorMessage: string = '';
     showError: boolean = false;
 
- constructor(private http: HttpClient, private router: Router) {}
+ constructor(private http: HttpClient, private router: Router, private toast : MatSnackBar) {}
+  showtoast(msg : string){
+   this.toast.open(msg, "", {
+    duration: 2000,
+    horizontalPosition: "end",
+    panelClass: "errorAction"
+   });
+ }
   onSubmit() {
      this.http.post('http://localhost:8087/auth/register', this.formData)
       .subscribe({
@@ -35,7 +43,7 @@ export class RegisterComponent {
         },
         error: err => {
           if (err.status === 400) {
-            console.error('Registration failed:', err.error);
+            //console.error('Registration failed:', err.error);
             const errors = err.error;
     if (errors.username && errors.email) {
       this.errorMessage = errors.username;
@@ -48,9 +56,8 @@ export class RegisterComponent {
     } else {
       this.errorMessage = 'Registration failed due to unknown error.';
     }
+    this.showtoast(`${this.errorMessage}`)
 
-    this.showError = true;
-    setTimeout(() => this.showError = false, 3000);
   }
   }
       });

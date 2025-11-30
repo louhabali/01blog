@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -25,14 +26,21 @@ export class LoginComponent {
   errorMessage = '';
   formData = { email: '', password: '' };
 
-  constructor(private auth: AuthService, private router: Router) {}
-
+  constructor(private auth: AuthService, private router: Router,private toast : MatSnackBar) {}
+  showtoast(msg : string){
+   this.toast.open(msg, "", {
+    duration: 2000,
+    horizontalPosition: "end",
+    panelClass: "errorAction"
+   });
+ }
   onSubmit() {
     this.errorMessage = '';
     this.auth.login(this.formData).subscribe({
       next: (t) => {
         if (t.banned == true) {
-          this.errorMessage = 'Your account has been banned, Try later.';
+          this.showtoast(`Your account has been banned, Try later.`)
+         
           return;
         }
         // header will update because the signal was set in AuthService
@@ -43,8 +51,7 @@ export class LoginComponent {
       },
       error: err => {
         //console.log("error is : ",err);
-        
-        this.errorMessage = err.status === 401 ? err.error?.message || 'Invalid credentials' : 'Something went wrong';
+        err.status === 401 ?  this.showtoast(`${err.error.message}`) :  this.showtoast(`something went wrong`);
       }
     });
   }

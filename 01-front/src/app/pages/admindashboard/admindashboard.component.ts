@@ -4,7 +4,7 @@ import { AdminService } from '../../services/admin.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { TimeAgoPipe } from '../../services/time-ago.pipe';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
  selector: 'app-admindashboard',
  standalone: true,
@@ -54,7 +54,7 @@ export class AdmindashboardComponent implements OnInit {
  confirmMessage = '';
  confirmCallback: (() => void) | null = null;
 
- constructor(private adminService: AdminService, private router: Router) {}
+ constructor(private adminService: AdminService, private router: Router,private toast : MatSnackBar) {}
 
  ngOnInit(): void {
   this.loadStats();
@@ -124,7 +124,13 @@ export class AdmindashboardComponent implements OnInit {
    this.loadUsers();
   }
  }
-
+ showtoast(msg : string){
+   this.toast.open(msg, "", {
+    duration: 2000,
+    horizontalPosition: "end",
+    panelClass: "successAction"
+   });
+ }
  toggleBan(user: any) {
   let action = ""
   if (user.enabled){
@@ -135,6 +141,7 @@ export class AdmindashboardComponent implements OnInit {
   this.openConfirm(`Are you sure you want to ${action} this user ?`, () => {
   this.adminService.banUser(user.id).subscribe({
    next: updated =>{
+    this.showtoast(`${action}ned successfully!`)
     user.enabled = updated.enabled
     if (user.enabled){
     this.bannedUsersCount -= 1
@@ -153,6 +160,7 @@ export class AdmindashboardComponent implements OnInit {
   this.openConfirm(`Are you sure you want to delete this user?`, () => {
    this.adminService.deleteUser(user.id).subscribe({
     next: () =>{
+      this.showtoast(`deleted successfully!`)
      this.users = this.users.filter(u => u.id !== user.id)
      this.posts = this.posts.filter(p => p.user.id !== user.id )
      this.reports = this.reports.filter(r => r.reporterUser.id !== user.id )
@@ -204,6 +212,7 @@ export class AdmindashboardComponent implements OnInit {
   this.openConfirm(`Are you sure you want to ${action} this post ?`, () => {
   this.adminService.toggleHidePost(post.id).subscribe({
    next: updated =>{
+    this.showtoast(`${action}n successfully!`)
     post.appropriate = updated.appropriate
     if (post.appropriate){
     this.hiddenPostsCount -= 1
@@ -220,6 +229,7 @@ export class AdmindashboardComponent implements OnInit {
   this.openConfirm(`Are you sure you want to delete this post?`, () => {
    this.adminService.deletePost(post.id).subscribe({
     next: () =>{
+      this.showtoast(`deleted successfully!`)
      this.posts = this.posts.filter(p => p.id !== post.id)
      this.reports = this.reports.filter(r => r.post.id !== post.id )
      this.postsCount -= 1
@@ -261,7 +271,10 @@ export class AdmindashboardComponent implements OnInit {
 
   this.openConfirm(`Are you sure you want to make this report as resolved ?`, () => {
   this.adminService.resolveReport(report.id).subscribe({
-   next: () => this.reports = this.reports.filter(r => r.id !== report.id),
+   next: () =>{
+    this.showtoast(`resolved successfully!`)
+    this.reports = this.reports.filter(r => r.id !== report.id)
+  },
    error: () => this.error = 'Failed to resolve report'
   });
  })
@@ -271,6 +284,7 @@ export class AdmindashboardComponent implements OnInit {
   this.openConfirm(`Are you sure you want to delete this reported post?`, () => {
    this.adminService.deletePost(postId).subscribe({
     next: () => {
+      this.showtoast(`deleted successfully!`)
      this.posts = this.posts.filter(p => p.id !== postId);
      this.reports = this.reports.filter(r => r.post.id !== postId);
     },
