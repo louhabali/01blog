@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
  newMedia: File[] = [];
  mediaPreviewUrls: MediaPreview[] = [];
  readonly MAX_MEDIA_COUNT = 3;
- readonly MAX_FILE_SIZE_MB = 200;
+ readonly MAX_FILE_SIZE_MB = 20;
 
  // Report modal
  isReportModalOpen = false;
@@ -98,7 +98,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       return;
      })
     }
-
    },
    error: (err) => {
 
@@ -109,9 +108,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    }
   });
  }
-
  fetchPosts() {
-
   if (this.loading || this.noMorePosts) return;
 
   this.loading = true;
@@ -148,7 +145,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     },
     error: (err) => {
      this.loading = false;
-     // ✅ Add toast for general fetch error
+     
      
     }
    });
@@ -184,7 +181,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   return 'unknown';
  }
 
-
+ 
  // MODIFIED: Handles multi-file selection
  onFileSelected(event: any) {
   const files: FileList | null = event.target.files;
@@ -222,7 +219,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   if (fileError) {
  
-   // ✅ Apply toast logic here for file validation errors
    this.toast.open(this.errorMessage, "", {
     duration: 2000,
     horizontalPosition: "end",
@@ -268,11 +264,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
      this.createPost(mediaUrls); 
     },
     error: (err) => {
-     // ✅ Error handling for Media upload failure
-     //console.log(err.error);
-     
-    //Media upload failed. Please check file formats and size.
-     this.toast.open(err.error || 'Media upload failed.', "", { // Use default if err.error is undefined
+     this.toast.open(err.error || 'Media upload failed.', "", { 
       duration: 2000,
       horizontalPosition: "end",
       panelClass: "errorAction"
@@ -288,9 +280,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
  // MODIFIED: Accepts an array of media URLs
  createPost(mediaUrls: string[] | null) {
- 
 
- 
   const postPayload: any = {
    title: this.newPost.title,
    content: this.newPost.content,
@@ -301,8 +291,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   if (mediaUrls === null && (!postPayload.title || postPayload.title.trim() === '') && (!postPayload.content || postPayload.content.trim() === '')) {
    this.errorMessage = 'Post must contain a title/content or media.';
-
-   // ✅ Apply toast logic here for post content validation error
    this.toast.open(this.errorMessage, "", {
     duration: 2000,
     horizontalPosition: "end",
@@ -356,7 +344,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
        });
       });
      } else {
-      // ✅ Handle general unexpected error
+     
       this.toast.open(err.error || 'An unexpected error occurred.', "", {
       duration: 2000,
       horizontalPosition: "end",

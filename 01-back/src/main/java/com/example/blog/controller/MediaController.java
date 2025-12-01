@@ -26,8 +26,10 @@ public class MediaController {
             MediaType.IMAGE_JPEG_VALUE, 
             MediaType.IMAGE_PNG_VALUE, 
             MediaType.IMAGE_GIF_VALUE,
+           "image/webp",
             "video/mp4", 
-            "video/webm"
+            "video/webm",
+            "video/ogg"
     );
 
     @PostMapping("/upload")

@@ -2,8 +2,6 @@ package com.example.blog.config;
 
 import java.security.Principal;
 import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpRequest;

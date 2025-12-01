@@ -184,7 +184,16 @@ export class PostdetailsComponent implements OnInit {
             post.mediaUrls = [...post.mediaUrls]; 
           }
         },
-        error: (err) => console.error("Error uploading media", err)
+        error: (err) => {
+          
+          
+           this.toast.open(`${err.error}`,"",{
+          duration : 5000,
+          horizontalPosition : "end",
+          panelClass : "errorAction",
+        
+         })
+        }
       });
   }
   
@@ -239,7 +248,14 @@ export class PostdetailsComponent implements OnInit {
         
          })
           } else {
-            console.error('Unexpected error:', err);
+            //console.log(333);
+            
+             this.toast.open(`${err.error}`,"",{
+          duration : 2000,
+          horizontalPosition : "end",
+          panelClass : "errorAction",
+        
+         })
           }
         }
       });

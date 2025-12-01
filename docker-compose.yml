@@ -16,52 +16,6 @@ services:
     # Persist Postgres data using Docker volume which is a named volume defined below
     volumes: 
       - db-data:/var/lib/postgresql/data
-    networks:
-    # connect to blog-network for inter-service communication
-      - blog-network
-# Define backend service
-  backend:
-  #  this line searches for Dockerfile in the specified directory to build the image
-    build: ./01-back
-    ports:
-    # map host port 8087 to container port 8088
-      - "8087:8088"
-    environment:
-    # Set environment variables for Spring Boot application so that it can connect to Postgres DB
-      SERVER_PORT: 8088
-      # use the service name 'db' as hostname to connect to Postgres container , docker DNS will resolve it and get the correct IP
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/01-blogdb
-      SPRING_DATASOURCE_USERNAME: alouhab
-      SPRING_DATASOURCE_PASSWORD: alilo
-    networks:
-    # connect to blog-network which is the shared network for all services
-      - blog-network
-    volumes:
-      - uploads-data:/app/uploads
-    depends_on:
-    # ensure that the db service is started before the backend service
-      - db
 
-  frontend:
-  # this line searches for Dockerfile in the specified directory to build the image
-    build: ./01-front
-    ports:
-    # map host port 4200 to container port 80
-      - "4200:80"
-      
-    networks:
-    # connect to blog-network
-      - blog-network
-    depends_on:
-    # ensure that the backend service is started before the frontend service
-      - backend
-# Define custom network for inter-service communication
-networks:
-  # this network allows containers to communicate with each other
-  blog-network:
-  # use the default bridge driver for container networking , if we dont set it , bridge is used by default
-  # its role is to allow containers to communicate within the same host
-    driver: bridge
 volumes:
-  uploads-data:
   db-data:
