@@ -48,17 +48,32 @@ public class Adminservice {
     }
     @Transactional
     public ResponseEntity<Void> deleteUserwithTransaction(Long id){
-        interactionRepository.deleteByUserId(id);
-        commentRepository.deleteByUserId(id);
-        postrepo.deleteByUserId(id);
-        subscriptionRepository.deleteByFollowerId(id);
-        subscriptionRepository.deleteByFollowedId(id);
-        notificationRepository.deleteByRecipientId(id);
-        notificationRepository.deleteByActorId(id);
-         reportRepository.deleteByReporterUserId(id);
-         // Then delete the user
-        userrepo.deleteById(id);
-        return ResponseEntity.ok().build();
+    // Delete all reports that targeted posts owned by the user
+    reportRepository.deleteByPost_UserId(id); 
+    // Delete all interactions (likes/dislikes) made on posts owned by the user
+    interactionRepository.deleteByPost_UserId(id); 
+    commentRepository.deleteByPost_UserId(id); 
+    postrepo.deleteByUserId(id);
+    // Interactions created BY the user
+    interactionRepository.deleteByUserId(id); 
+
+    // Comments created BY the user
+    commentRepository.deleteByUserId(id); 
+
+    // Subscriptions (where the user is the follower OR the followed)
+    subscriptionRepository.deleteByFollowerId(id);
+    subscriptionRepository.deleteByFollowedId(id);
+
+    // Notifications (where the user is the recipient OR the actor)
+    notificationRepository.deleteByRecipientId(id);
+    notificationRepository.deleteByActorId(id);
+
+    // Reports (where the user is the reporter OR the reported user)
+    reportRepository.deleteByReporterUserId(id);
+    reportRepository.deleteByReportedUserId(id);
+    userrepo.deleteById(id);
+
+    return ResponseEntity.ok().build();
     }
     @Transactional
     public ResponseEntity<Void> deletePostwithTransaction(Long id){
