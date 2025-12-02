@@ -359,7 +359,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
  toggleLike(post: Post): void {
   if (this.currentUserId == 0) {
-   // ✅ Toast user that they need to log in
+  
    this.toast.open("You must be logged in to like posts.", "", {
     duration: 2000,
     horizontalPosition: "end",

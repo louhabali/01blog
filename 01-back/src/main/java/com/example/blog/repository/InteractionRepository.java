@@ -25,4 +25,5 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long> 
     @Query(value = "DELETE FROM interactions WHERE post_id = :postId", nativeQuery = true)
     void deleteByPostId(@Param("postId") Long postId);
     void deleteByUserId(Long userId);
+    void deleteByPost_UserId(Long userId);
 }

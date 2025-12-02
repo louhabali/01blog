@@ -17,4 +17,5 @@ List<Comment> findCommentsByPostWithLimit(
 
     void deleteByPostId(Long postId);
     void deleteByUserId(Long userId);
+    void deleteByPost_UserId(Long userId);
 }
