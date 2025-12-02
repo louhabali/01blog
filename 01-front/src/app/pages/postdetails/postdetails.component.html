@@ -5,6 +5,7 @@
         <div *ngIf="showError" class="error-box">
           <span>{{ errorMessage }}</span>
         </div>
+        
         <h1 *ngIf="!post.isEditing; else editTitle" class="article-title">
           {{ post.title }}
         </h1>
@@ -15,7 +16,9 @@
         <div class="author-section">
           <div class="author-info">
             <a [routerLink]="['/profile', post.authorId]">
-              <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" alt="{{post.author}}" class="author-avatar">
+              <img [src]="post.avatar ? post.avatar : 'default-avatar.png'" 
+                   alt="{{post.author}}" 
+                   class="author-avatar">
             </a>
             <div class="author-details">
               <span class="author-name">{{ post.author }}</span>
@@ -28,56 +31,64 @@
           </div>
 
           <div class="header-actions">
-            <ng-container *ngIf="post.authorId === currentUserId; ">
-              <button class="icon-btn" *ngIf="!post.isEditing" (click)="editPost(post, $event)" title="Edit">
+            <ng-container *ngIf="post.authorId === currentUserId">
+              <button class="icon-btn" *ngIf="!post.isEditing" 
+                      (click)="editPost(post, $event)" title="Edit">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button class="icon-btn save-btn" *ngIf="post.isEditing" (click)="savePost(post, $event)" title="Save">
+              <button class="icon-btn save-btn" *ngIf="post.isEditing" 
+                      (click)="savePost(post, $event)" title="Save">
                 <i class="fa-solid fa-check"></i>
               </button>
-              <button class="icon-btn save-btn" *ngIf="post.isEditing" (click)="cancelEdit(post)" title="Cancel">
+              <button class="icon-btn save-btn" *ngIf="post.isEditing" 
+                      (click)="cancelEdit(post)" title="Cancel">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </ng-container>
-            
           </div>
         </div>
       </header>
 
+      <!-- Media Slider for Existing Media -->
       <div *ngIf="post.mediaUrls && post.mediaUrls.length > 0" class="media-slider">
-        <button 
-          *ngIf="post.mediaUrls.length > 1" 
-          class="slider-control prev" 
-          (click)="prevMedia()">
+        <button *ngIf="post.mediaUrls.length > 1" 
+                class="slider-control prev" 
+                (click)="prevMedia()">
           <i class="fa-solid fa-chevron-left"></i>
         </button>
 
         <div class="media-content">
           <ng-container *ngFor="let mediaUrl of post.mediaUrls; let i = index">
-            
             <div *ngIf="i === currentMediaIndex" class="media-item">
               <ng-container [ngSwitch]="getMediaType(mediaUrl)">
                 <div *ngSwitchCase="'image'" class="featured-image">
                   <img [src]="mediaUrl" alt="Article featured image" />
+                  <!-- Remove button when editing -->
+                  <button *ngIf="post.isEditing" 
+                          class="remove-media-btn" 
+                          (click)="removeExistingMedia(i)"
+                          title="Remove this media">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
                 </div>
                 <div *ngSwitchCase="'video'" class="featured-video">
                   <video controls [src]="mediaUrl"></video>
+                  <!-- Remove button when editing -->
+                  <button *ngIf="post.isEditing" 
+                          class="remove-media-btn" 
+                          (click)="removeExistingMedia(i)"
+                          title="Remove this media">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
                 </div>
               </ng-container>
             </div>
           </ng-container>
-          
-          <div *ngIf="post.isEditing" class="edit-media-overlay">
-             <button class="icon-btn change-media-btn" title="Change Media" (click)="changeMedia(post)">
-              <i class="fa-solid fa-image"></i> Change Media
-            </button>
-          </div>
         </div>
 
-        <button 
-          *ngIf="post.mediaUrls.length > 1" 
-          class="slider-control next" 
-          (click)="nextMedia()">
+        <button *ngIf="post.mediaUrls.length > 1" 
+                class="slider-control next" 
+                (click)="nextMedia()">
           <i class="fa-solid fa-chevron-right"></i>
         </button>
         
@@ -85,12 +96,65 @@
           {{ currentMediaIndex + 1 }} / {{ post.mediaUrls.length }}
         </div>
       </div>
+
+      <!-- Media Previews for New Media (during editing) -->
+      <div *ngIf="post.isEditing && mediaPreviewUrls.length > 0" 
+           class="new-media-previews">
+        <h3>New Media to Add:</h3>
+        <div class="media-previews-container">
+          <div *ngFor="let preview of mediaPreviewUrls; let i = index" 
+               class="media-preview-item">
+            <img *ngIf="!preview.isVideo" 
+                 [src]="preview.url" 
+                 alt="Selected media preview" 
+                 class="media-preview-image">
+            <video *ngIf="preview.isVideo" 
+                   width="100%" 
+                   height="100%" 
+                   controls 
+                   class="media-preview-image">
+              <source [src]="preview.url" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <button (click)="cancelMediaPreview(i)" 
+                    class="cancel-preview-btn">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Media Button (only when editing) -->
+      <div *ngIf="post.isEditing" class="add-media-section">
+        <div class="form-actions">
+          <input type="file" 
+                 (change)="onFileSelected($event)" 
+                 id="file-upload-edit" 
+                 #fileUploadInput 
+                 multiple 
+                 accept="image/*,video/*" />
+          <label for="file-upload-edit" class="file-label">
+            <i class="fa-solid fa-plus"></i>
+            Add Media
+            <span *ngIf="newMedia.length > 0" class="media-count">
+              ({{ newMedia.length }}/{{ MAX_MEDIA_COUNT - (post.mediaUrls?.length || 0) }})
+            </span>
+          </label>
+          <div class="media-limit-info">
+            Maximum {{ MAX_MEDIA_COUNT }} files total. 
+            Current: {{ post.mediaUrls?.length || 0 }} existing + {{ newMedia.length }} new
+          </div>
+        </div>
+      </div>
+
       <div class="article-content">
         <div *ngIf="!post.isEditing; else editContent" class="content-text">
           <p>{{ post.content }}</p>
         </div>
         <ng-template #editContent>
-          <textarea [(ngModel)]="post.content" class="content-edit-textarea" placeholder="Tell your story..."></textarea>
+          <textarea [(ngModel)]="post.content" 
+                    class="content-edit-textarea" 
+                    placeholder="Tell your story..."></textarea>
         </ng-template>
       </div>
 
