@@ -16,8 +16,6 @@ public class PostRequest {
 
     private LocalDateTime createdAt;
     private Long authorId;
-
-    // ✅ Getters and Setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 

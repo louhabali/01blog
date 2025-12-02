@@ -27,7 +27,7 @@ public class MediaController {
             MediaType.IMAGE_PNG_VALUE, 
             MediaType.IMAGE_GIF_VALUE,
            "image/webp",
-          
+            "image/avif",
             "video/mp4", 
             "video/webm",
             "video/ogg"

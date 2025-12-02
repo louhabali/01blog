@@ -88,7 +88,7 @@ export class PostdetailsComponent {
   }
 
   getMediaType(url: string): 'image' | 'video' | 'unknown' {
-    if (url.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {
+    if (url.match(/\.(jpeg|jpg|png|gif|webp||avif)$/i)) {
       return 'image';
     } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
       return 'video';
